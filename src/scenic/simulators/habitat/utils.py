@@ -16,6 +16,7 @@ from habitat.config.default import get_agent_config
 import habitat
 from habitat_sim.physics import JointMotorSettings, MotionType
 from omegaconf import OmegaConf
+import os
 
 def make_sim_cfg(agent_dict):
     # Start the scene config
@@ -40,11 +41,12 @@ def make_sim_cfg(agent_dict):
     cfg.agents_order = list(cfg.agents.keys())
     return cfg
 
-def spawn_robot(name, agent_type, urdf_path, x=0, y=0, z=0, roll=0, pitch=0, yaw=0, sim_sensors=None):
+def create_agent_config(name, agent_type, urdf_path, x=0, y=0, z=0, roll=0, pitch=0, yaw=0, sim_sensors=None):
     main_agent_config = AgentConfig()
     main_agent_config.articulated_agent_urdf = urdf_path
     main_agent_config.articulated_agent_type = agent_type
     main_agent_config.sim_sensors = sim_sensors
+    return main_agent_config
 
 def init_rearrange_sim(agent_dict):
     # Start the scene config

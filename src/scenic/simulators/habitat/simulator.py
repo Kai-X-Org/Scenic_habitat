@@ -122,6 +122,7 @@ class HabitatSimulation(Simulation):
     gazebo_yaw_ground_truth: true offset FROM the Gazebo frame TO the robot frame"""
 
     def __init__(self, scene, client, render, record, timestep=0.1, **kwargs):
+        print('initializing!')
         self.client = client
         self.render = True
         self.record = record
@@ -130,14 +131,25 @@ class HabitatSimulation(Simulation):
         if 'cfg' in kwargs:
             self.cfg = kwargs['cfg']
         self.agent_dict = dict()
+        self.sim = None
+        self.observations = list()
+        self.ego = None
         super().__init__(scene, timestep=timestep, **kwargs)
 
     def setup(self):
 
         # self.sim = habitat_sim.Simulator(self.cfg)
         super().setup()  # Calls createObjectInSimulator for each object
-        self.sim = utils.init_rearrangement_sim(self.agent_dict)
-
+        print('settingup!!!')
+        self.sim = utils.init_rearrange_sim(self.agent_dict)
+        art_agent = self.sim.articulated_agent
+        art_agent.sim_obj.motion_type = MotionType.KINEMATIC
+        art_agent.base_pos = mn.Vector3(self.ego.position[0], 
+                                        self.ego.position[1], self.ego.position[2]) # TODO temporary solution
+        self.sim.step({}) # TODO, maybe change this?
+        self.observations.append(self.sim.get_sensor_observations())
+        print(self.observations[0].keys())
+        print(art_agent.params.cameras.keys())
         return
 
     def createObjectInSimulator(self, obj):
@@ -155,15 +167,16 @@ class HabitatSimulation(Simulation):
         if obj.object_type == 'regular_object':
             handle = obj.handle
             # obj.id = self.sim.add_object_by_handle(handle) # TODO uncomment this after order figured out
-        if obj.isAgent:
-            sensors = { # TODO temporary
+        if obj.is_agent:
+            self.ego = obj
+            sim_sensors = { # TODO temporary
                 "third_rgb": ThirdRGBSensorConfig(),
                 "head_rgb": HeadRGBSensorConfig(),
             }
             x, y, z = obj.position
-            agent = utils.spawn_agent(obj.name, obj.object_type, obj.urdf_path, 
-                                x, y, z, obj.roll, obj.pitch, obj.yaw, sim_sensors=sensors)
-            agent_dict[obj.name]
+            agent_config = utils.create_agent_config(obj.name, obj.object_type, obj.urdf_path, 
+                                x, y, z, obj.roll, obj.pitch, obj.yaw, sim_sensors=sim_sensors)
+            self.agent_dict['main_agent'] = agent_config
 
     def executeActions(self, allActions):
         """
@@ -174,34 +187,47 @@ class HabitatSimulation(Simulation):
             for action in actions:
                 try:
                     a = action.applyTo(agent, self)
-                    self.step_actions.append(a)
                 except Exception as e:
                     print(f"Failed to execute action, exception:\n{str(e)}")
                     logging.error(traceback.format_exc())
         return
 
     def step(self):
-        habitat_sim.step_physics(self.timestep)
+        print("stepping!")
+        self.sim.step_physics(self.timestep)
+        self.observations.append(self.sim.get_sensor_observations())
 
 
     def getProperties(self, obj, properties):
-        pass
+        d = dict(
+                position=Vector(0, 0, 0),
+                yaw=0,
+                pitch=0,
+                roll=0,
+                speed=0,
+                velocity=Vector(0, 0, 0),
+                angularSpeed=0,
+                angularVelocity=Vector(0, 0, 0),
+            )
+        return d
 
     def destroy(self):
         # TODO do the rendering here
+        print('destroying!!!')
+        print(self.observations)
         vut.make_video(
-            observations,
+            self.observations,
             "scene_camera_rgb",
             "color",
-            "robot_tutorial_video",
-            open_vid=True,
+            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_tutorial_video",
+            open_vid=False,
         )
         vut.make_video(
-            observations,
+            self.observations,
             "third_rgb",
             "color",
-            "robot_tutorial_video",
-            open_vid=True,
+            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_tutorial_video_2",
+            open_vid=False,
         )
         super().destroy()
         return

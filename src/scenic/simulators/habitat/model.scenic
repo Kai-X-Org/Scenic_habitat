@@ -1,11 +1,11 @@
 import math
 from scenic.core.utils import repairMesh
-from scenic.simulators.simulator import HabitatSimulation, HabitatSimulator
+from scenic.simulators.habitat.simulator import HabitatSimulation, HabitatSimulator
 import trimesh
 
 
 simulator HabitatSimulator()
-
+data_dir = '/home/ek65/habitat-lab/data/'
 
 class Robot():
     name: 'robot'
@@ -41,9 +41,10 @@ class Robot():
                 tgt = obj
         return tgt
 
-class Fetch(Robot):
+class FetchRobot(Robot):
     name: "FetchRobot"
     object_type: 'FetchRobot'
+    urdf_path: data_dir + 'robots/hab_fetch/robots/hab_fetch.urdf'
     
     shape: CylinderShape(dimensions=(0.508,0.559,1.096))
 
