@@ -20,4 +20,4 @@ behavior GoRel(x=0, y=0, z=0, rot=0, num_steps=100):
 
     terminate
 
-ego = new FetchRobot at (-5.5,0,-1.5), with behavior GoRel(x=2)
+ego = new FetchRobot at (-5.5,0,-1.5), with behavior GoRel(x=3, num_steps=100)

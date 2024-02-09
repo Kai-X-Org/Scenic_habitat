@@ -143,7 +143,7 @@ class HabitatSimulation(Simulation):
         print('settingup!!!')
         self.sim = utils.init_rearrange_sim(self.agent_dict)
         art_agent = self.sim.articulated_agent
-        art_agent.sim_obj.motion_type = MotionType.KINEMATIC
+        art_agent.sim_obj.motion_type = MotionType.DYNAMIC
         art_agent.base_pos = mn.Vector3(self.ego.position[0], 
                                         self.ego.position[1], self.ego.position[2]) # TODO temporary solution
         self.sim.step({}) # TODO, maybe change this?
@@ -199,6 +199,7 @@ class HabitatSimulation(Simulation):
 
 
     def getProperties(self, obj, properties):
+        print(self.sim.articulated_agent.base_pos)
         d = dict(
                 position=Vector(0, 0, 0),
                 yaw=0,
@@ -213,8 +214,8 @@ class HabitatSimulation(Simulation):
 
     def destroy(self):
         # TODO do the rendering here
-        print('destroying!!!')
-        print(self.observations)
+        # print('destroying!!!')
+        # print(self.observations)
         vut.make_video(
             self.observations,
             "scene_camera_rgb",
@@ -226,7 +227,7 @@ class HabitatSimulation(Simulation):
             self.observations,
             "third_rgb",
             "color",
-            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_tutorial_video_2",
+            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_tutorial_video_2_dynamic",
             open_vid=False,
         )
         super().destroy()
