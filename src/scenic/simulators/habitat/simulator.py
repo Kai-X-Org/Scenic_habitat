@@ -137,16 +137,29 @@ class HabitatSimulation(Simulation):
         super().__init__(scene, timestep=timestep, **kwargs)
 
     def setup(self):
+        for obj in self.objects:
+            if obj.is_agent:
+                # self.ego = obj
+                sim_sensors = { # TODO temporary
+                    "third_rgb": ThirdRGBSensorConfig(),
+                    "head_rgb": HeadRGBSensorConfig(),
+                }
+                x, y, z = obj.position
+                agent_config = utils.create_agent_config(obj.name, obj.object_type, obj.urdf_path, 
+                                    x, y, z, obj.roll, obj.pitch, obj.yaw, sim_sensors=sim_sensors)
+                self.agent_dict['main_agent'] = agent_config
 
-        # self.sim = habitat_sim.Simulator(self.cfg)
-        super().setup()  # Calls createObjectInSimulator for each object
-        print('settingup!!!')
+            else:
+                handle = obj.handle
+            # TODO add in the rest!!!
+
         self.sim = utils.init_rearrange_sim(self.agent_dict)
-        art_agent = self.sim.articulated_agent
-        art_agent.sim_obj.motion_type = MotionType.DYNAMIC
-        art_agent.base_pos = mn.Vector3(self.ego.position[0], 
-                                        self.ego.position[1], self.ego.position[2]) # TODO temporary solution
-        self.sim.step({}) # TODO, maybe change this?
+        # art_agent = self.sim.articulated_agent
+        # art_agent.sim_obj.motion_type = MotionType.DYNAMIC
+        # art_agent.base_pos = mn.Vector3(self.ego.position[0], 
+                                        # self.ego.position[1], self.ego.position[2]) # TODO temporary solution
+        super().setup()  # Calls createObjectInSimulator for each object
+        self.sim.step({}) # TODO is this needed???
         self.observations.append(self.sim.get_sensor_observations())
         print(self.observations[0].keys())
         print(art_agent.params.cameras.keys())
@@ -163,20 +176,17 @@ class HabitatSimulation(Simulation):
         Returns:
         Tuple(bool success, status_message)
         """
-        # TODO add the template code
-        if obj.object_type == 'regular_object':
-            handle = obj.handle
-            # obj.id = self.sim.add_object_by_handle(handle) # TODO uncomment this after order figured out
+        # TODO add in mechanism to handle different types of agent
         if obj.is_agent:
-            self.ego = obj
-            sim_sensors = { # TODO temporary
-                "third_rgb": ThirdRGBSensorConfig(),
-                "head_rgb": HeadRGBSensorConfig(),
-            }
-            x, y, z = obj.position
-            agent_config = utils.create_agent_config(obj.name, obj.object_type, obj.urdf_path, 
-                                x, y, z, obj.roll, obj.pitch, obj.yaw, sim_sensors=sim_sensors)
-            self.agent_dict['main_agent'] = agent_config
+            art_agent = ... # TODO what to do with this line? 
+            art_agent.sim_obj.motion_type = MotionType.Dynamic
+            art_agent.base_pos = mn.Vector3(obj.position[0], 
+                                            obj.position[1], obj.position[2]) # TODO temporary solution
+            art_agent.base_rot = ...
+
+        else:
+            handle = obj.handle
+            # TODO add in the rest!!!
 
     def executeActions(self, allActions):
         """
@@ -227,7 +237,7 @@ class HabitatSimulation(Simulation):
             self.observations,
             "third_rgb",
             "color",
-            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_tutorial_video_2_dynamic",
+            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_tutorial_video_2_test_collision",
             open_vid=False,
         )
         super().destroy()
