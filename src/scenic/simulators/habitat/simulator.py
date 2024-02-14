@@ -137,9 +137,13 @@ class HabitatSimulation(Simulation):
         super().__init__(scene, timestep=timestep, **kwargs)
 
     def setup(self):
+        agent_count = 0
         for obj in self.objects:
             if obj.is_agent:
                 # self.ego = obj
+                obj._agent_id = agent_count
+                agent_count += 1
+
                 sim_sensors = { # TODO temporary
                     "third_rgb": ThirdRGBSensorConfig(),
                     "head_rgb": HeadRGBSensorConfig(),
@@ -180,7 +184,7 @@ class HabitatSimulation(Simulation):
         # TODO need someway to pass on the agent_id field
         # Proposal, each agent gets a _agent_id field, that is set in setup() above
         if obj.is_agent:
-            art_agent = self.sim.agents_mgr[obj.agent_id].articulated_agent # TODO what to do with this line? 
+            art_agent = self.sim.agents_mgr[obj._agent_id].articulated_agent # TODO what to do with this line? 
             art_agent.sim_obj.motion_type = MotionType.Dynamic
             art_agent.base_pos = mn.Vector3(obj.position[0], 
                                             obj.position[1], obj.position[2]) # TODO temporary solution

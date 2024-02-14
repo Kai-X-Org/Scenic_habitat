@@ -7,7 +7,15 @@ import trimesh
 simulator HabitatSimulator()
 data_dir = '/home/ek65/habitat-lab/data/'
 
-class Robot():
+class HabitatAgent():
+    name: 'agent'
+    object_type: 'agent'
+    is_agent: True
+    _agent_id: None
+
+
+
+class Robot(HabitatAgent):
     name: 'robot'
     object_type: 'robot'
     urdf_path: ''
