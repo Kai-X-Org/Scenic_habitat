@@ -177,12 +177,15 @@ class HabitatSimulation(Simulation):
         Tuple(bool success, status_message)
         """
         # TODO add in mechanism to handle different types of agent
+        # TODO need someway to pass on the agent_id field
+        # Proposal, each agent gets a _agent_id field, that is set in setup() above
         if obj.is_agent:
-            art_agent = ... # TODO what to do with this line? 
+            art_agent = self.sim.agents_mgr[obj.agent_id].articulated_agent # TODO what to do with this line? 
             art_agent.sim_obj.motion_type = MotionType.Dynamic
             art_agent.base_pos = mn.Vector3(obj.position[0], 
                                             obj.position[1], obj.position[2]) # TODO temporary solution
-            art_agent.base_rot = ...
+            art_agent.base_rot = ... # ROTATION IS just the Yaw angle...can also
+                                    # set it directly with art_agent.sim_obj.rotation = <Quaternion>
 
         else:
             handle = obj.handle
