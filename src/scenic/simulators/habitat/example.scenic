@@ -12,9 +12,9 @@ behavior GoRel(x=0, y=0, z=0, rot=0, num_steps=100):
     dy = y/num_steps
     dz = z/num_steps
     
-    print('taking action!')
+    # print('taking action!')
     for _ in range(num_steps):
-        print('taking action!')
+        # print('taking action!')
         take GoRelDeltaAction(dx, dy, dz)
         # take GoRelDeltaAction()
 

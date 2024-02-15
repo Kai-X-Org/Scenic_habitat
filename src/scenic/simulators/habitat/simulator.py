@@ -138,7 +138,11 @@ class HabitatSimulation(Simulation):
 
     def setup(self):
         agent_count = 0
-        for obj in self.objects:
+        # print('entering loop!')
+        # print(self.scene.objects)
+        # print(self.agents)
+        for obj in self.scene.objects:
+            # print("entered loop!")
             if obj.is_agent:
                 # self.ego = obj
                 obj._agent_id = agent_count
@@ -151,12 +155,12 @@ class HabitatSimulation(Simulation):
                 x, y, z = obj.position
                 agent_config = utils.create_agent_config(obj.name, obj.object_type, obj.urdf_path, 
                                     x, y, z, obj.roll, obj.pitch, obj.yaw, sim_sensors=sim_sensors)
-                self.agent_dict['main_agent'] = agent_config
+                self.agent_dict['main_agent'] = agent_config # TODO change this for multi agets
 
             else:
                 handle = obj.handle
             # TODO add in the rest!!!
-
+        print(self.agent_dict)
         self.sim = utils.init_rearrange_sim(self.agent_dict)
         # art_agent = self.sim.articulated_agent
         # art_agent.sim_obj.motion_type = MotionType.DYNAMIC
@@ -166,7 +170,7 @@ class HabitatSimulation(Simulation):
         self.sim.step({}) # TODO is this needed???
         self.observations.append(self.sim.get_sensor_observations())
         print(self.observations[0].keys())
-        print(art_agent.params.cameras.keys())
+        # print(art_agent.params.cameras.keys())
         return
 
     def createObjectInSimulator(self, obj):
@@ -185,10 +189,10 @@ class HabitatSimulation(Simulation):
         # Proposal, each agent gets a _agent_id field, that is set in setup() above
         if obj.is_agent:
             art_agent = self.sim.agents_mgr[obj._agent_id].articulated_agent # TODO what to do with this line? 
-            art_agent.sim_obj.motion_type = MotionType.Dynamic
+            art_agent.sim_obj.motion_type = MotionType.DYNAMIC # TODO fixe the physics
             art_agent.base_pos = mn.Vector3(obj.position[0], 
                                             obj.position[1], obj.position[2]) # TODO temporary solution
-            art_agent.base_rot = ... # ROTATION IS just the Yaw angle...can also
+            art_agent.base_rot = obj.yaw # ROTATION IS just the Yaw angle...can also
                                     # set it directly with art_agent.sim_obj.rotation = <Quaternion>
 
         else:
@@ -244,7 +248,7 @@ class HabitatSimulation(Simulation):
             self.observations,
             "third_rgb",
             "color",
-            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_tutorial_video_2_test_collision",
+            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_tutorial_video_new_order",
             open_vid=False,
         )
         super().destroy()
