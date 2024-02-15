@@ -134,6 +134,7 @@ class HabitatSimulation(Simulation):
         self.sim = None
         self.observations = list()
         self.ego = None
+        self.habitat_agents = list()
         super().__init__(scene, timestep=timestep, **kwargs)
 
     def setup(self):
@@ -143,6 +144,7 @@ class HabitatSimulation(Simulation):
             # print("entered loop!")
             if obj.is_agent:
                 # self.ego = obj
+                self.habitat_agents.append(obj)
                 obj._agent_id = agent_count
                 agent_count += 1
 
@@ -164,6 +166,10 @@ class HabitatSimulation(Simulation):
             # TODO add in the rest!!!
         # print(self.agent_dict)
         self.sim = utils.init_rearrange_sim(self.agent_dict)
+
+        # for obj in self.habitat_agents: # TODO set the _articulated_agent field
+            # obj._articulated_agent = self.sim.agents_mgr[obj._agent_id].articulated_agent
+
         super().setup()  # Calls createObjectInSimulator for each object
         self.sim.step({}) # TODO is this needed???
         self.observations.append(self.sim.get_sensor_observations())
@@ -217,7 +223,7 @@ class HabitatSimulation(Simulation):
 
 
     def getProperties(self, obj, properties):
-        print(self.sim.articulated_agent.base_pos)
+        # print(self.sim.articulated_agent.base_pos)
         d = dict(
                 position=Vector(0, 0, 0),
                 yaw=0,
@@ -243,7 +249,7 @@ class HabitatSimulation(Simulation):
         )
         vut.make_video(
             self.observations,
-            "third_rgb",
+            self.habitat_agents[0].name + "_third_rgb",
             "color",
             "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_tutorial_video_new_order",
             open_vid=False,

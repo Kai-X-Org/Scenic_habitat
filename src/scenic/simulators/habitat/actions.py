@@ -22,12 +22,13 @@ from scenic.core.simulators import *
 
 class GoRelDeltaAction(Action):
 
-    def __init__(self, dx=0, dy=0, dz=0, rot=0):
+    def __init__(self, art_agent, dx=0, dy=0, dz=0, rot=0):
         self.pos_delta = mn.Vector3(dx, dy, dz)
+        self.art_agent = art_agent
         #TODO add rotation delta
     
     def applyTo(self, obj, sim):
-        art_agent = sim.sim.articulated_agent
-        art_agent.base_pos = art_agent.base_pos + self.pos_delta
+        # art_agent = sim.sim.articulated_agent
+        self.art_agent.base_pos = self.art_agent.base_pos + self.pos_delta
         return
 

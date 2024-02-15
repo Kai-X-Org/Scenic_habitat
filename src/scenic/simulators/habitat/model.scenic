@@ -14,6 +14,7 @@ class HabitatAgent():
     _agent_id: None
     _articulated_agent_type: None
     _motion_data_path: None
+    _articulated_agent: None
 
 
 
