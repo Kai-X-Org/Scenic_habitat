@@ -167,6 +167,10 @@ class HabitatSimulation(Simulation):
             # TODO add in the rest!!!
         # print(self.agent_dict)
         self.sim = utils.init_rearrange_sim(self.agent_dict)
+        self.obj_attr_mgr = self.sim.get_object_template_manager()
+        self.prim_attr_mgr = self.sim.get_asset_template_manager()
+        self.stage_attr_mgr = self.sim.get_stage_template_manager()
+        self.rigid_obj_mgr = self.sim.get_rigid_object_manager()
 
         # for obj in self.habitat_agents: # TODO set the _articulated_agent field
             # obj._articulated_agent = self.sim.agents_mgr[obj._agent_id].articulated_agent
@@ -193,10 +197,12 @@ class HabitatSimulation(Simulation):
         # Proposal, each agent gets a _agent_id field, that is set in setup() above
         if obj.is_agent:
             art_agent = self.sim.agents_mgr[obj._agent_id].articulated_agent # TODO what to do with this line? 
+            obj._articulated_agent = art_agent
             if obj._articulated_agent_type == 'KinematicHumanoid':
                 art_agent.sim_obj.motion_type = MotionType.KINEMATIC # TODO fixe the physics
                 # art_agent._fixed_base = True  # TODO should this be added?
-                obj._humanoid_controller = 
+                obj._humanoid_controller = HumanoidRearrangeController(obj._motion_data_path)
+                # TODO add potential resets
             else:
                 art_agent.sim_obj.motion_type = MotionType.DYNAMIC # TODO fixe the physics
                 art_agent._fixed_base = False

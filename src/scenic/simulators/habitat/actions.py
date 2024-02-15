@@ -13,6 +13,7 @@ from habitat.config.default import get_agent_config
 from habitat.config.default_structured_configs import ThirdRGBSensorConfig, HeadRGBSensorConfig, HeadPanopticSensorConfig
 from habitat.config.default_structured_configs import SimulatorConfig, HabitatSimV0Config, AgentConfig
 from habitat.config.default import get_agent_config
+from habitat.tasks.rearrange.actions.actions import HumanoidJointAction
 import habitat
 from habitat_sim.physics import JointMotorSettings, MotionType
 from omegaconf import OmegaConf
@@ -22,13 +23,18 @@ from scenic.core.simulators import *
 
 class GoRelDeltaAction(Action):
 
-    def __init__(self, art_agent, dx=0, dy=0, dz=0, rot=0):
+    def __init__(self, obj, dx=0, dy=0, dz=0, rot=0):
         self.pos_delta = mn.Vector3(dx, dy, dz)
-        self.art_agent = art_agent
+        self.art_agent = obj._articulated_agent
         #TODO add rotation delta
     
     def applyTo(self, obj, sim):
         # art_agent = sim.sim.articulated_agent
-        self.art_agent.base_pos = self.art_agent.base_pos + self.pos_delta
+        if obj._articulated_agent_type == 'KinematicHumanoid':
+            rel_pose = self.art_agent.base_pos + self.pos_delta
+            new_pose = obj._humanoid_controller.calculate_walk_pose(rel_pose)
+            joint_action = HumanoidJointAction(new_pose, sim=sim.sim)
+        else:
+            self.art_agent.base_pos = self.art_agent.base_pos + self.pos_delta
         return
 
