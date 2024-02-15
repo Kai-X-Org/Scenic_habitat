@@ -162,15 +162,10 @@ class HabitatSimulation(Simulation):
             # TODO add in the rest!!!
         print(self.agent_dict)
         self.sim = utils.init_rearrange_sim(self.agent_dict)
-        # art_agent = self.sim.articulated_agent
-        # art_agent.sim_obj.motion_type = MotionType.DYNAMIC
-        # art_agent.base_pos = mn.Vector3(self.ego.position[0], 
-                                        # self.ego.position[1], self.ego.position[2]) # TODO temporary solution
         super().setup()  # Calls createObjectInSimulator for each object
         self.sim.step({}) # TODO is this needed???
         self.observations.append(self.sim.get_sensor_observations())
         print(self.observations[0].keys())
-        # print(art_agent.params.cameras.keys())
         return
 
     def createObjectInSimulator(self, obj):
