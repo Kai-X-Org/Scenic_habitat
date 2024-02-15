@@ -23,6 +23,7 @@ from habitat.config.default_structured_configs import SimulatorConfig, HabitatSi
 from habitat.config.default import get_agent_config
 import habitat
 from habitat_sim.physics import JointMotorSettings, MotionType
+from habitat.articulated_agent_controllers import HumanoidRearrangeController, HumanoidSeqPoseController
 from omegaconf import OmegaConf
 
 
@@ -192,11 +193,18 @@ class HabitatSimulation(Simulation):
         # Proposal, each agent gets a _agent_id field, that is set in setup() above
         if obj.is_agent:
             art_agent = self.sim.agents_mgr[obj._agent_id].articulated_agent # TODO what to do with this line? 
-            art_agent.sim_obj.motion_type = MotionType.DYNAMIC # TODO fixe the physics
+            if obj._articulated_agent_type == 'KinematicHumanoid':
+                art_agent.sim_obj.motion_type = MotionType.KINEMATIC # TODO fixe the physics
+                # art_agent._fixed_base = True  # TODO should this be added?
+                obj._humanoid_controller = 
+            else:
+                art_agent.sim_obj.motion_type = MotionType.DYNAMIC # TODO fixe the physics
+                art_agent._fixed_base = False
             art_agent.base_pos = mn.Vector3(obj.position[0], 
                                             obj.position[1], obj.position[2]) # TODO temporary solution
             art_agent.base_rot = obj.yaw # ROTATION IS just the Yaw angle...can also
-                                    # set it directly with art_agent.sim_obj.rotation = <Quaternion>
+            # set it directly with art_agent.sim_obj.rotation = <Quaternion>
+
 
         else:
             handle = obj.handle
@@ -217,7 +225,7 @@ class HabitatSimulation(Simulation):
         return
 
     def step(self):
-        print("stepping!")
+        # print("stepping!")
         self.sim.step_physics(self.timestep)
         self.observations.append(self.sim.get_sensor_observations())
 

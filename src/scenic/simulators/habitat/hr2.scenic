@@ -20,5 +20,5 @@ behavior GoRel(x=0, y=0, z=0, rot=0, num_steps=100):
 
     terminate
 
-ego = new FetchRobot at (-5.5,0,-1.5), with behavior GoRel(x=3, z=3, num_steps=100)
-human = new Female_0 at (-4.5, 0, -1.5), with behavior GoRel(x=3)
+ego = new FetchRobot at (-5.5,0,-1.5), with behavior GoRel(x=-1)
+human = new Female_0 at (-4.5, 0, -1.5)

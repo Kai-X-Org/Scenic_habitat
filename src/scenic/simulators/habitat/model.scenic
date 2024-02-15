@@ -61,13 +61,14 @@ class FetchRobot(Robot):
     
     shape: CylinderShape(dimensions=(0.508,0.559,1.096))
 
-class Humanoid(HabitatAgent):
+class KinematicHumanoid(HabitatAgent):
     name: "Humanoid"
     object_type: 'KinematicHumanoid'
     _articulated_agent_type: 'KinematicHumanoid'
+    _humanoid_controller: None
     urdf_path: None
 
-class Female_0(Humanoid):
+class Female_0(KinematicHumanoid):
     name: "Female_0"
     urdf_path: data_dir + 'hab3_bench_assets/humanoids/female_0/female_0.urdf'
     _motion_data_path: data_dir + 'hab3_bench_assets/humanoids/female_0/female_0_motion_data_smplx.pkl'
