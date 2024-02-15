@@ -12,12 +12,15 @@ class HabitatAgent():
     object_type: 'agent'
     is_agent: True
     _agent_id: None
+    _articulated_agent_type: None
+    _motion_data_path: None
 
 
 
 class Robot(HabitatAgent):
     name: 'robot'
     object_type: 'robot'
+    _articulated_agent_type: None
     urdf_path: ''
     is_agent: True
     position: (0, 0, 0)
@@ -52,7 +55,19 @@ class Robot(HabitatAgent):
 class FetchRobot(Robot):
     name: "FetchRobot"
     object_type: 'FetchRobot'
+    _articulated_agent_type: 'FetchRobot'
     urdf_path: data_dir + 'robots/hab_fetch/robots/hab_fetch.urdf'
     
     shape: CylinderShape(dimensions=(0.508,0.559,1.096))
+
+class Humanoid(HabitatAgent):
+    name: "Humanoid"
+    object_type: 'KinematicHumanoid'
+    _articulated_agent_type: 'KinematicHumanoid'
+    urdf_path: None
+
+class Female_0(Humanoid):
+    name: "Female_0"
+    urdf_path: data_dir + 'hab3_bench_assets/humanoids/female_0/female_0.urdf'
+    _motion_data_path: data_dir + 'hab3_bench_assets/humanoids/female_0/female_0_motion_data_smplx.pkl'
 

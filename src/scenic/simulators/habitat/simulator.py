@@ -138,9 +138,7 @@ class HabitatSimulation(Simulation):
 
     def setup(self):
         agent_count = 0
-        # print('entering loop!')
-        # print(self.scene.objects)
-        # print(self.agents)
+        agent_names = []
         for obj in self.scene.objects:
             # print("entered loop!")
             if obj.is_agent:
@@ -153,14 +151,18 @@ class HabitatSimulation(Simulation):
                     "head_rgb": HeadRGBSensorConfig(),
                 }
                 x, y, z = obj.position
-                agent_config = utils.create_agent_config(obj.name, obj.object_type, obj.urdf_path, 
-                                    x, y, z, obj.roll, obj.pitch, obj.yaw, sim_sensors=sim_sensors)
-                self.agent_dict['main_agent'] = agent_config # TODO change this for multi agets
+                agent_config = utils.create_agent_config(obj.name, obj._articulated_agent_type, obj.urdf_path, 
+                                    motion_data_path=obj._motion_data_path, sim_sensors=sim_sensors)
 
-            else:
+                if obj.name in agent_names:
+                    raise HabitatSimCreationError(f"Error: two agents have the same name: {obj.name}")
+                else:
+                    self.agent_dict[obj.name] = agent_config # TODO change this for multi agets
+
+            else: # TODO add code for creating/deleting objects
                 handle = obj.handle
             # TODO add in the rest!!!
-        print(self.agent_dict)
+        # print(self.agent_dict)
         self.sim = utils.init_rearrange_sim(self.agent_dict)
         super().setup()  # Calls createObjectInSimulator for each object
         self.sim.step({}) # TODO is this needed???

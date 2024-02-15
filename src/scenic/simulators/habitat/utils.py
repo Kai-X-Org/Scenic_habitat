@@ -41,11 +41,14 @@ def make_sim_cfg(agent_dict):
     cfg.agents_order = list(cfg.agents.keys())
     return cfg
 
-def create_agent_config(name, agent_type, urdf_path, x=0, y=0, z=0, roll=0, pitch=0, yaw=0, sim_sensors=None):
+def create_agent_config(name, agent_type, urdf_path, motion_data_path=None, sim_sensors=None):
+    # TODO add cases for humanoids!!!
     main_agent_config = AgentConfig()
     main_agent_config.articulated_agent_urdf = urdf_path
     main_agent_config.articulated_agent_type = agent_type
     main_agent_config.sim_sensors = sim_sensors
+    if motion_data_path:
+        main_agent_config.motion_data_path = motion_data_path
     return main_agent_config
 
 def init_rearrange_sim(agent_dict):
