@@ -213,7 +213,8 @@ class HabitatSimulation(Simulation):
 
 
         else:
-            handle = obj.handle
+            handle = obj._object_file_handle
+            obj._object_id = ...
             # TODO add in the rest!!!
 
     def executeActions(self, allActions):

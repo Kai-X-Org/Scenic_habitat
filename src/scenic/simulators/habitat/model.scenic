@@ -28,6 +28,7 @@ class Robot(HabitatAgent):
     yaw: 0
     roll: 0
     pitch: 0
+    _object_template_handle: None
 
     def distanceToClosest(self, object_class):
         objects = simulation().objects
@@ -67,9 +68,25 @@ class KinematicHumanoid(HabitatAgent):
     _articulated_agent_type: 'KinematicHumanoid'
     _humanoid_controller: None
     urdf_path: None
+    shape: CylinderShape(dimensions=(0.508,0.559,1.75))
 
 class Female_0(KinematicHumanoid):
     name: "Female_0"
     urdf_path: data_dir + 'hab3_bench_assets/humanoids/female_0/female_0.urdf'
     _motion_data_path: data_dir + 'hab3_bench_assets/humanoids/female_0/female_0_motion_data_smplx.pkl'
 
+
+class HabitatObject:
+    name: 'HabitatObject'
+    object_type: None
+    _object_id: None
+    _use_file_handle: None
+    _object_file_handle: None
+    _object_template_handle: None
+
+class MasterChef(HabitatObject)
+    name: 'MasterChef'
+    object_type: 'MasterChef'
+    _use_file_handle: True
+    _object_file_handle: data_dir + 'objects/ycb/configs/002_master_chef_can.object_config.json'
+    shape: CylinderShape(dimensions=(0.1,0.1,0.5)) # TODO just a dummy dimensions
