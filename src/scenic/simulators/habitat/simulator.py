@@ -214,7 +214,8 @@ class HabitatSimulation(Simulation):
 
         else:
             handle = obj._object_file_handle
-            obj._object_id = ...
+            obj._object_id = self.sim.add_object_by_handle(handle)
+            self.sim.rigid_obj_mgr
             # TODO add in the rest!!!
 
     def executeActions(self, allActions):
@@ -239,6 +240,10 @@ class HabitatSimulation(Simulation):
 
     def getProperties(self, obj, properties):
         # print(self.sim.articulated_agent.base_pos)
+        if obj.is_agent:
+            agent_state = self.sim.agents_mgr[obj._agent_id].get_state()
+            position = agent_state.position
+            rotation = agent_state.rotation
         d = dict(
                 position=Vector(0, 0, 0),
                 yaw=0,
@@ -278,26 +283,7 @@ class HabitatSimulation(Simulation):
         Args:
         pose = Tuple(x, y, z, yaw)
         """
-        x_offset = self.gazebo_x_ground_truth
-        y_offset = self.gazebo_y_ground_truth
-        z_offset = self.gazebo_z_ground_truth
-        yaw_offset = self.gazebo_yaw_ground_truth
-        yaw_rotation = self.gazebo_to_robot_yaw_rot
-
-        g = np.array(
-            [
-                [np.cos(yaw_offset), -np.sin(yaw_offset), x_offset],
-                [np.sin(yaw_offset), np.cos(yaw_offset), y_offset],
-                [0, 0, 1],
-            ]
-        )
-        g = np.linalg.inv(g)
-
-        x, y, _ = g @ np.array(list(pose[:2]) + [1])
-        z = pose[2] - z_offset
-        yaw = pose[3] - yaw_offset
-
-        return (x, y, z, yaw)
+        pass
 
     def RobotToGazeboMap(self, pose):
         """
@@ -305,23 +291,7 @@ class HabitatSimulation(Simulation):
         Args:
         pose: (x, y, z, yaw)
         """
-        x_offset = self.gazebo_x_ground_truth
-        y_offset = self.gazebo_y_ground_truth
-        z_offset = self.gazebo_z_ground_truth
-        yaw_offset = self.gazebo_yaw_ground_truth
-        g = np.array(
-            [
-                [np.cos(yaw_offset), -np.sin(yaw_offset), x_offset],
-                [np.sin(yaw_offset), np.cos(yaw_offset), y_offset],
-                [0, 0, 1],
-            ]
-        )
-        x, y, _ = g @ np.array(list(pose[:2]) + [1])
-
-        z = pose[2] + z_offset
-        yaw = pose[3] + yaw_offset
-
-        return (x, y, z, yaw)
+        pass
 
     def ScenicToRobotMap(self, pose, obj=None):
         """
@@ -329,19 +299,8 @@ class HabitatSimulation(Simulation):
         Args:
         pose: (x, y, z, yaw)
         """
-        assert len(pose) == 4
-        x, y, z, yaw = pose
-        if obj and hasattr(obj, "positionOffset"):
-            dx, dy, dz = (
-                obj.positionOffset[0],
-                obj.positionOffset[1],
-                obj.positionOffset[2],
-            )
-            x = x + dx
-            y = y + dy
-            z = z + dz
+        pass
 
-        return (x, y, z, yaw + math.pi / 2)
 
     def RobotToScenicMap(self, pose, obj=None):
         """
@@ -350,27 +309,41 @@ class HabitatSimulation(Simulation):
         pose: (x, y, z, yaw)
         """
         assert len(pose) == 4
-        x, y, z, yaw = pose
+        pass
+        # x, y, z, yaw = pose
 
-        if obj and hasattr(obj, "positionOffset"):
-            dx, dy, dz = (
-                obj.positionOffset[0],
-                obj.positionOffset[1],
-                obj.positionOffset[2],
-            )
-            x = x - dx
-            y = y - dy
-            z = z - dz
-        return (x, y, z, yaw - math.pi / 2)
+        # if obj and hasattr(obj, "positionOffset"):
+            # dx, dy, dz = (
+                # obj.positionOffset[0],
+                # obj.positionOffset[1],
+                # obj.positionOffset[2],
+            # )
+            # x = x - dx
+            # y = y - dy
+            # z = z - dz
+        # return (x, y, z, yaw - math.pi / 2)
 
     def ScenicToHabitatMap(self, pose, obj=None):
         """
         Converts from the Scenic map coordinate to the Gazebo map frame coordinate
         Args:
-        pose: (x, y, z, yaw)
         """
         # assert len(pose) == 4
-        return self.RobotToHabitatMap(self.ScenicToRobotMap(pose, obj=obj))
+        # return self.RobotToHabitatMap(self.ScenicToRobotMap(pose, obj=obj))
+        # g = mn.Matrix4.from_()
+        g = np.array([[0, 1, 0, 0], 
+                      [0, 0, 1, 0], 
+                      [1, 0, 0, 0], 
+                      [0, 0, 0, 1]])
+        x, y, z, roll, pitch, yaw = pose
+        x, y, z, _ = g @ np.array([x, y, z, 1])
+
+        new_roll = pitch
+        new_pitch = yaw
+        new_yaw = roll
+        return (x, y, z, new_roll, new_pitch, new_yaw)
+
+
 
     def HabitatToScenicMap(self, pose, obj=None):
         """
@@ -379,4 +352,15 @@ class HabitatSimulation(Simulation):
         pose: (x, y, z, yaw)
         """
         # assert len(pose) == 4
-        return self.RobotToScenicMap(self.HabitatToRobotMap(pose), obj=obj)
+        # return self.RobotToScenicMap(self.HabitatToRobotMap(pose), obj=obj)
+        g = np.array([[0, 1, 0, 0], 
+                      [0, 0, 1, 0], 
+                      [1, 0, 0, 0], 
+                      [0, 0, 0, 1]])
+        g = np.linalg.inv(g)
+        x, y, z, roll, pitch, yaw = pose
+        x, y, z, _ = g @ np.array([x, y, z, 1])
+        new_roll = yaw
+        new_pitch = roll
+        new_yaw = pitch
+        return (x, y, z, new_roll, new_pitch, new_yaw)
