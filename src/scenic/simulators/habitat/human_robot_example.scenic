@@ -23,3 +23,4 @@ behavior GoRel(x=0, y=0, z=0, rot=0, num_steps=100):
 ego = new FetchRobot at (-5.5,0,-1.5), with behavior GoRel(x=3, z=3, num_steps=100)
 # human = new Female_0 at (-4.5, 0, -1.5), with behavior GoRel(x=3, num_steps=3)
 master_chef = new MasterChef at (-3.5, 0, -1.5)
+tennis_ball = new TennisBall at (-4.5, 0, -1.5)

@@ -79,14 +79,23 @@ class Female_0(KinematicHumanoid):
 class HabitatObject:
     name: 'HabitatObject'
     object_type: None
+    is_agent: False
     _object_id: None
     _use_file_handle: None
     _object_file_handle: None
     _object_template_handle: None
+    _managed_rigid_object: None
 
-class MasterChef(HabitatObject)
+class MasterChef(HabitatObject):
     name: 'MasterChef'
     object_type: 'MasterChef'
     _use_file_handle: True
     _object_file_handle: data_dir + 'objects/ycb/configs/002_master_chef_can.object_config.json'
+    shape: CylinderShape(dimensions=(0.1,0.1,0.5)) # TODO just a dummy dimensions
+
+class TennisBall(HabitatObject):
+    name: 'TennisBall'
+    object_type: 'TennisBall'
+    _use_file_handle: True
+    _object_file_handle: data_dir + 'objects/ycb/configs/056_tennis_ball.object_config.json'
     shape: CylinderShape(dimensions=(0.1,0.1,0.5)) # TODO just a dummy dimensions

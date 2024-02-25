@@ -162,8 +162,8 @@ class HabitatSimulation(Simulation):
                 else:
                     self.agent_dict[obj.name] = agent_config # TODO change this for multi agets
 
-            else: # TODO add code for creating/deleting objects
-                handle = obj.handle
+            # else: # TODO add code for creating/deleting objects
+                # handle = obj.handle
             # TODO add in the rest!!!
         # print(self.agent_dict)
         self.sim = utils.init_rearrange_sim(self.agent_dict)
@@ -214,8 +214,17 @@ class HabitatSimulation(Simulation):
 
         else:
             handle = obj._object_file_handle
-            obj._object_id = self.sim.add_object_by_handle(handle)
-            self.sim.rigid_obj_mgr
+            self.obj_attr_mgr.load_configs('/home/ek65/habitat-lab/data/objects/ycb/configs/')
+            obj_template_handle = self.obj_attr_mgr.get_template_handles(handle)[0]
+            obj._managed_rigid_object = self.rigid_obj_mgr.add_object_by_template_handle(obj_template_handle)
+
+            x, y, z = obj.position
+            obj._managed_rigid_object.translation = np.array([x, y, z])
+            obj._managed_rigid_object.rotation = mn.Quaternion.rotation(mn.Deg(90.0), [-1.0, 0.0, 0.0]) # TODO temporary solution
+            
+            # obj._object_id = self.sim.add_object_by_handle(handle)
+            # self.sim.set_translation
+            # self.sim.rigid_obj_mgr
             # TODO add in the rest!!!
 
     def executeActions(self, allActions):
@@ -241,18 +250,29 @@ class HabitatSimulation(Simulation):
     def getProperties(self, obj, properties):
         # print(self.sim.articulated_agent.base_pos)
         if obj.is_agent:
-            agent_state = self.sim.agents_mgr[obj._agent_id].get_state()
-            position = agent_state.position
-            rotation = agent_state.rotation
-        d = dict(
-                position=Vector(0, 0, 0),
-                yaw=0,
-                pitch=0,
-                roll=0,
-                speed=0,
-                velocity=Vector(0, 0, 0),
-                angularSpeed=0,
-                angularVelocity=Vector(0, 0, 0),
+            # agent_state = self.sim.agents_mgr[obj._agent_id].get_state()
+            position = obj._articulated_agent.base_pos
+            rotation = obj._articulated_agent.base_rot
+            d = dict(
+                    position=Vector(position[0], position[1], position[2]),
+                    yaw=rotation,
+                    pitch=0,
+                    roll=0,
+                    speed=0,
+                    velocity=Vector(0, 0, 0),
+                    angularSpeed=0,
+                    angularVelocity=Vector(0, 0, 0),
+            )
+        else:
+            d = dict(
+                    position=Vector(0, 0, 0),
+                    yaw=0,
+                    pitch=0,
+                    roll=0,
+                    speed=0,
+                    velocity=Vector(0, 0, 0),
+                    angularSpeed=0,
+                    angularVelocity=Vector(0, 0, 0),
             )
         return d
 
@@ -267,11 +287,18 @@ class HabitatSimulation(Simulation):
             "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_tutorial_video",
             open_vid=False,
         )
+        # vut.make_video(
+            # self.observations,
+            # self.habitat_agents[0].name + "_third_rgb",
+            # "color",
+            # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_tutorial_video_new_order",
+            # open_vid=False,
+        # )
         vut.make_video(
             self.observations,
-            self.habitat_agents[0].name + "_third_rgb",
+            "third_rgb",
             "color",
-            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_tutorial_video_new_order",
+            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_with_object",
             open_vid=False,
         )
         super().destroy()

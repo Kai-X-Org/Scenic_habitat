@@ -134,3 +134,7 @@ def get_agent_state(agent):
     # }
 
     # return habitat_sim.Configuration(sim_cfg, [agent_cfg])
+# COULD BE USEFUL?
+def remove_all_objects(sim):
+    for id in sim.get_existing_object_ids():
+        sim.remove_object(id)
