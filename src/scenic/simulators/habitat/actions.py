@@ -30,13 +30,81 @@ class GoRelDeltaAction(Action):
     
     def applyTo(self, obj, sim):
         # art_agent = sim.sim.articulated_agent
+        x, y, z = self.pos_delta
+        x, y, z, _, _, _ = sim.scenicToHabitatMap((x, y, z,0,0,0))
+        self.pos_delta = np.array([x, y, z])
         if obj._articulated_agent_type == 'KinematicHumanoid':
             rel_pose = self.art_agent.base_pos + self.pos_delta
-            new_pose = obj._humanoid_controller.calculate_walk_pose(rel_pose)
-            joint_action = HumanoidJointAction(new_pose, sim=sim.sim)
+            obj._humanoid_controller.calculate_walk_pose(rel_pose)
+            new_pose = obj._humanoid_controller.get_pose()
+            joint_action = obj._humanoid_joint_action
+            # print('action arg prefix!!!:', joint_action._action_arg_prefix)
+            key = joint_action._action_arg_prefix + 'human_joints_trans'
+            # key = f'agent_{obj._agent_id}' + '_human_joint_trans'
+            # print('KEY:', key)
+            arg_dict = dict()
+            arg_dict[key] = new_pose
+            # print('ARG_DICT', arg_dict)
+            joint_action.step(**arg_dict)
+
         else:
             self.art_agent.base_pos = self.art_agent.base_pos + self.pos_delta
         return
+
+class HumanGoAction(Action):
+    def __init__(self, x=0, y=0, z=0):
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def applyTo(self, obj, sim):
+        x, y, z, _, _, _ = sim.scenicToHabitatMap((self.x, self.y, self.z,0,0,0))
+        self.art_agent = obj._articulated_agent
+        self.pos_delta = np.array([x, y, z])
+        # rel_pose = self.art_agent.base_pos + self.pos_delta
+        rel_pose = mn.Vector3(x, y, z)
+        print('rel_pose', rel_pose)
+        obj._humanoid_controller.calculate_walk_pose(rel_pose)
+        human_joints_trans = obj._humanoid_controller.get_pose()
+
+        new_joints = human_joints_trans[:-32]
+        new_pos_transform_base = human_joints_trans[-16:]
+        new_pos_transform_offset = human_joints_trans[-32:-16]
+
+        # When the array is all 0, this indicates we are not setting
+        # the human joint
+        if np.array(new_pos_transform_offset).sum() != 0:
+            vecs_base = [
+                mn.Vector4(new_pos_transform_base[i * 4 : (i + 1) * 4])
+                for i in range(4)
+            ]
+            vecs_offset = [
+                mn.Vector4(new_pos_transform_offset[i * 4 : (i + 1) * 4])
+                for i in range(4)
+            ]
+            new_transform_offset = mn.Matrix4(*vecs_offset)
+            new_transform_base = mn.Matrix4(*vecs_base)
+            if (
+                new_transform_offset.is_rigid_transformation()
+                and new_transform_base.is_rigid_transformation()
+            ):
+                # TODO: this will cause many sampled actions to be invalid
+                # Maybe we should update the sampling mechanism
+                obj._articulated_agent.set_joint_transform(
+                    new_joints, new_transform_offset, new_transform_base
+                )
+        # joint_action = obj._humanoid_joint_action
+        # # print('action arg prefix!!!:', joint_action._action_arg_prefix)
+        # key = joint_action._action_arg_prefix + 'human_joints_trans'
+        # # key = f'agent_{obj._agent_id}' + '_human_joint_trans'
+        # # print('KEY:', key)
+        # arg_dict = dict()
+        # arg_dict[key] = new_pose
+        # # print('ARG_DICT', arg_dict)
+        # joint_action.step(**arg_dict)
+
+
+        
 
 class OpenGripperAction(Action):
     def applyTo(self, obj, sim):

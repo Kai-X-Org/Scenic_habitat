@@ -25,7 +25,8 @@ import habitat
 from habitat_sim.physics import JointMotorSettings, MotionType
 from habitat.articulated_agent_controllers import HumanoidRearrangeController, HumanoidSeqPoseController
 from omegaconf import OmegaConf
-
+from habitat.config.default_structured_configs import HumanoidJointActionConfig, HumanoidPickActionConfig
+from habitat.tasks.rearrange.actions.actions import HumanoidJointAction
 
 import scenic.core.errors as errors
 from scenic.core.simulators import Simulation, SimulationCreationError, Simulator
@@ -200,8 +201,10 @@ class HabitatSimulation(Simulation):
             obj._articulated_agent = art_agent
             if obj._articulated_agent_type == 'KinematicHumanoid':
                 art_agent.sim_obj.motion_type = MotionType.KINEMATIC # TODO fixe the physics
-                # art_agent._fixed_base = True  # TODO should this be added?
+                art_agent._fixed_base = True  # TODO should this be added?
                 obj._humanoid_controller = HumanoidRearrangeController(obj._motion_data_path)
+                obj._humanoid_joint_action = HumanoidJointAction(config=HumanoidJointActionConfig(),
+                                                                 sim=self.sim, name=f'agent_{obj._agent_id}')
                 # TODO add potential resets
             else:
                 art_agent.sim_obj.motion_type = MotionType.DYNAMIC # TODO fixe the physics
@@ -209,11 +212,12 @@ class HabitatSimulation(Simulation):
                 if obj._has_grasp:
                     obj._grasp_manager = self.sim.agents_mgr[obj._agent_id].grasp_mgrs[0]
 
-            art_agent.base_pos = mn.Vector3(obj.position[0], 
-                                            obj.position[1], obj.position[2]) # TODO temporary solution
+            x, y, z, _, _, _ = self.scenicToHabitatMap((obj.position[0], obj.position[1], obj.position[2],0, 0, 0))
+            # print('bot y:', y)
+            art_agent.base_pos = mn.Vector3(x, y, z) # TODO temporary solution
+            # print('here', obj.yaw)
             art_agent.base_rot = obj.yaw # ROTATION IS just the Yaw angle...can also
             # set it directly with art_agent.sim_obj.rotation = <Quaternion>
-
 
         else:
             handle = obj._object_file_handle
@@ -307,7 +311,7 @@ class HabitatSimulation(Simulation):
         super().destroy()
         return
 
-    def HabitatToRobotMap(self, pose):
+    def habitatToRobotMap(self, pose):
         """
         Converts from the gazebo map frame to the Robot map frame
         Args:
@@ -315,7 +319,7 @@ class HabitatSimulation(Simulation):
         """
         pass
 
-    def RobotToGazeboMap(self, pose):
+    def robotToGazeboMap(self, pose):
         """
         Converts from the Robot map frame to the gazebo map frame
         Args:
@@ -323,7 +327,7 @@ class HabitatSimulation(Simulation):
         """
         pass
 
-    def ScenicToRobotMap(self, pose, obj=None):
+    def scenicToRobotMap(self, pose, obj=None):
         """
         Converts from the Scenic map coordinate to the Robot map frame
         Args:
@@ -332,7 +336,7 @@ class HabitatSimulation(Simulation):
         pass
 
 
-    def RobotToScenicMap(self, pose, obj=None):
+    def robotToScenicMap(self, pose, obj=None):
         """
         Converts from the Robot 'map' frame coordinate to the Scenic map coordinate
         Args:
@@ -341,7 +345,7 @@ class HabitatSimulation(Simulation):
         assert len(pose) == 4
         pass
 
-    def ScenicToHabitatMap(self, pose, obj=None):
+    def scenicToHabitatMap(self, pose, obj=None):
         """
         Converts from the Scenic map coordinate to the Gazebo map frame coordinate
         Args:
@@ -363,7 +367,7 @@ class HabitatSimulation(Simulation):
 
 
 
-    def HabitatToScenicMap(self, pose, obj=None):
+    def habitatToScenicMap(self, pose, obj=None):
         """
         Converts from the Gazebo map frame coordinate to the Scenic map coordinate
         Args:
