@@ -206,6 +206,9 @@ class HabitatSimulation(Simulation):
             else:
                 art_agent.sim_obj.motion_type = MotionType.DYNAMIC # TODO fixe the physics
                 art_agent._fixed_base = False
+                if obj._has_grasp:
+                    obj._grasp_manager = self.sim.agents_mgr[obj._agent_id].grasp_mgrs[0]
+
             art_agent.base_pos = mn.Vector3(obj.position[0], 
                                             obj.position[1], obj.position[2]) # TODO temporary solution
             art_agent.base_rot = obj.yaw # ROTATION IS just the Yaw angle...can also
@@ -287,20 +290,20 @@ class HabitatSimulation(Simulation):
             "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_tutorial_video",
             open_vid=False,
         )
-        vut.make_video(
-            self.observations,
-            self.habitat_agents[0].name + "_third_rgb",
-            "color",
-            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/demo_vid",
-            open_vid=False,
-        )
         # vut.make_video(
             # self.observations,
-            # "third_rgb",
+            # self.habitat_agents[0].name + "_third_rgb",
             # "color",
-            # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_with_object",
+            # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/demo_vid",
             # open_vid=False,
         # )
+        vut.make_video(
+            self.observations,
+            "third_rgb",
+            "color",
+            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_robot_gripper",
+            open_vid=False,
+        )
         super().destroy()
         return
 
@@ -337,18 +340,6 @@ class HabitatSimulation(Simulation):
         """
         assert len(pose) == 4
         pass
-        # x, y, z, yaw = pose
-
-        # if obj and hasattr(obj, "positionOffset"):
-            # dx, dy, dz = (
-                # obj.positionOffset[0],
-                # obj.positionOffset[1],
-                # obj.positionOffset[2],
-            # )
-            # x = x - dx
-            # y = y - dy
-            # z = z - dz
-        # return (x, y, z, yaw - math.pi / 2)
 
     def ScenicToHabitatMap(self, pose, obj=None):
         """

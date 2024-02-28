@@ -38,3 +38,19 @@ class GoRelDeltaAction(Action):
             self.art_agent.base_pos = self.art_agent.base_pos + self.pos_delta
         return
 
+class OpenGripperAction(Action):
+    def applyTo(self, obj, sim):
+        obj._articulated_agent.open_gripper()
+
+class CloseGripperAction(Action):
+    def applyTo(self, obj, sim):
+        obj._articulated_agent.close_gripper()
+
+class SnapToObjectAction(Action):
+    def __init__(self, target_obj):
+        self.target_obj_id = target_obj._object_id
+
+    def applyTo(self, obj, sim):
+        obj._grasp_manager.snap_to_obj((self.target_obj_id))
+
+

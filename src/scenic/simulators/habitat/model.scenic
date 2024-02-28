@@ -29,6 +29,8 @@ class Robot(HabitatAgent):
     roll: 0
     pitch: 0
     _object_template_handle: None
+    _has_grasp: True
+    _grasp_manager: None
 
     # def distanceToClosest(self, object_class):
         # objects = simulation().objects
