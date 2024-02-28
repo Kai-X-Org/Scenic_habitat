@@ -225,9 +225,9 @@ class HabitatSimulation(Simulation):
             obj_template_handle = self.obj_attr_mgr.get_template_handles(handle)[0]
             obj._managed_rigid_object = self.rigid_obj_mgr.add_object_by_template_handle(obj_template_handle)
 
-            x, y, z = obj.position
+            x, y, z, _, _, _ = self.scenicToHabitatMap((obj.position[0], obj.position[1], obj.position[2],0, 0, 0))
             obj._managed_rigid_object.translation = np.array([x, y, z])
-            obj._managed_rigid_object.rotation = mn.Quaternion.rotation(mn.Deg(90.0), [-1.0, 0.0, 0.0]) # TODO temporary solution
+            obj._managed_rigid_object.rotation = mn.Quaternion.rotation(mn.Deg(0), [-1.0, 0.0, 0.0]) # TODO temporary solution
             
             # obj._object_id = self.sim.add_object_by_handle(handle)
             # self.sim.set_translation
@@ -294,20 +294,20 @@ class HabitatSimulation(Simulation):
             "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_tutorial_video",
             open_vid=False,
         )
-        # vut.make_video(
-            # self.observations,
-            # self.habitat_agents[0].name + "_third_rgb",
-            # "color",
-            # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/demo_vid",
-            # open_vid=False,
-        # )
         vut.make_video(
             self.observations,
-            "third_rgb",
+            self.habitat_agents[0].name + "_third_rgb",
             "color",
-            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_robot_gripper",
+            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/demo_vid",
             open_vid=False,
         )
+        # vut.make_video(
+            # self.observations,
+            # "third_rgb",
+            # "color",
+            # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_robot_gripper",
+            # open_vid=False,
+        # )
         super().destroy()
         return
 

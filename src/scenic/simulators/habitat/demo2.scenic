@@ -5,7 +5,7 @@ from scenic.simulators.habitat.behaviors import *
 from scenic.simulators.habitat.model import *
 import math
 import time
-
+import numpy as np
 behavior GoRel(x=0, y=0, z=0, rot=0, num_steps=100):
     # agent = simulation().sim.agents_mgr[self._agent_id].articulated_agent
     dx = x/num_steps
@@ -23,16 +23,22 @@ behavior GoRel(x=0, y=0, z=0, rot=0, num_steps=100):
         terminate
 
 behavior MoveAndBack(x=0, y=0, z=0, num_steps=100):
+    start_pos = self.position
     try:
         do GoRel(x=x, y=y, z=z, num_steps=100)
     interrupt when (self.distanceToClosest(KinematicHumanoid) < 1.5):
-        do GoRel(x=-x/2, y=-y/2, z=-z/2, num_steps=100)
+        try:
+            do GoRel(x=-x/2, y=-y/2, z=-z/2, num_steps=100)
+        interrupt when all(np.isclose(np.array((self.position - start_pos)), np.zeros(3), atol=0.1)):
+            terminate
         terminate
+    terminate
 
-ego = new FetchRobot at (Range(-6.0, -5.5), 0, Range(-1.8, -1.3)), with yaw -35 deg, with behavior MoveAndBack(x=3, z=0, num_steps=100)
-human = new Female_0 at (Range(-4.5, -2.5), 0, Range(0,1.5)), with yaw Range(90, 180) deg
+bed = RectangularRegion((0, -6.0, 0.4), 1.57, 1.0, 1.0)
+ego = new FetchRobot at (Range(-1.4, -1.2), Range(-5.5, -5.0), 0), with yaw Range(-35, 0) deg, with behavior MoveAndBack(x=3, y=2, num_steps=100)
+human = new Female_0 at (Range(-1.4, 1.5), Range(-4.5, -2.5), 0,), with yaw Range(90, 180) deg
 # master_chef = new MasterChef at (-3.5, 0, -1.5)
 # tennis_ball = new TennisBall at (-4.5, 0, -1.5)
-tennis_ball = new TennisBall at (-4.5, 0, Range(-1.5, 2.5))
-require distance from tennis_ball to ego > 1
-require distance from human to ego > 1
+master_chef = new MasterChef on bed
+# require distance from master_chef to ego 
+require distance from human to ego > 2
