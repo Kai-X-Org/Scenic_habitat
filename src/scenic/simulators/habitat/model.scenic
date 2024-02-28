@@ -30,11 +30,25 @@ class Robot(HabitatAgent):
     pitch: 0
     _object_template_handle: None
 
-    def distanceToClosest(self, object_class):
+    # def distanceToClosest(self, object_class):
+        # objects = simulation().objects
+        # minDist = float('inf')
+        # for obj in objects:
+            # if not isinstance(obj, object_class):
+                # continue
+            # d = distance from self to obj
+            # if 0 < d < minDist:
+                # minDist = d
+        # return minDist
+    def distanceToClosest(self, type: type) -> Object:
+        """Compute the distance to the closest object of the given type.
+
+        For example, one could write :scenic:`self.distanceToClosest(Car)` in a behavior.
+        """
         objects = simulation().objects
         minDist = float('inf')
         for obj in objects:
-            if not isinstance(obj, object_class):
+            if not isinstance(obj, type):
                 continue
             d = distance from self to obj
             if 0 < d < minDist:
@@ -98,4 +112,11 @@ class TennisBall(HabitatObject):
     object_type: 'TennisBall'
     _use_file_handle: True
     _object_file_handle: data_dir + 'objects/ycb/configs/056_tennis_ball.object_config.json'
+    shape: CylinderShape(dimensions=(0.1,0.1,0.5)) # TODO just a dummy dimensions
+
+class GelatinBox(HabitatObject):
+    name: 'GelatinBox'
+    object_type: 'GelatinBox'
+    _use_file_handle: True
+    _object_file_handle: data_dir + 'objects/ycb/configs/009_gelatin_box.object_config.json'
     shape: CylinderShape(dimensions=(0.1,0.1,0.5)) # TODO just a dummy dimensions
