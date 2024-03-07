@@ -262,10 +262,12 @@ class HabitatSimulation(Simulation):
         # print(self.sim.articulated_agent.base_pos)
         if obj.is_agent:
             # agent_state = self.sim.agents_mgr[obj._agent_id].get_state()
-            position = obj._articulated_agent.base_pos
+            x, y, z = obj._articulated_agent.base_pos
+            x, y, z, _, _, _ = self.habitatToScenicMap((x, y, z, 0, 0, 0))
             rotation = obj._articulated_agent.base_rot
+            
             d = dict(
-                    position=Vector(position[0], position[1], position[2]),
+                    position=Vector(x, y, z),
                     yaw=rotation,
                     pitch=0,
                     roll=0,

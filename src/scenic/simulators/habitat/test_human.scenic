@@ -3,6 +3,7 @@ model scenic.simulators.habitat.model
 from scenic.simulators.habitat.actions import *
 from scenic.simulators.habitat.behaviors import *
 from scenic.simulators.habitat.model import *
+from scenic.core.vectors import Vector
 import math
 import time
 
@@ -37,11 +38,19 @@ behavior HumanGo(x=0, y=0, z=0, num_steps=100):
         # step_count += 1
 
     step_count = 0
-    while step_count < num_steps:
-        take HumanGoAction(x, y, z)
+    # pos_delta = Vector(x, y, z)
+    
+    # x, y, z = self.position + pos_delta
+    start_position = self.position
+    while step_count < num_steps and \
+            not np.isclose((self.position - start_position).norm(), Vector(x, y, z).norm(), atol=0.1):
+        take HumanGoAction(x, y, z) # TODO temporary implementation
+        print(f"Scenic position: {self.position}")
         step_count += 1
 
     print('finished walking')
+    print(f"target: {x, y, z}")
+    # print(f"pos_delta: {pos_delta}")
     t0 = time.time()
     t1 = t0
     while t1 - t0 < 3:

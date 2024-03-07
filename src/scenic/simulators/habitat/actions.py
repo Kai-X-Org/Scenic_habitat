@@ -58,17 +58,17 @@ class HumanGoAction(Action):
         self.z = z
 
     def applyTo(self, obj, sim):
-        x, y, z, _, _, _ = sim.scenicToHabitatMap((self.x, self.y, self.z,0,0,0))
-        print(f'Moving {(x, y, z)}')
         self.art_agent = obj._articulated_agent
+        x, y, z, _, _, _ = sim.scenicToHabitatMap((self.x, self.y, self.z,0,0,0))
+        # print(f'Moving {(x, y, z)}')
 
         print("current BASE POS:", self.art_agent.base_pos)
-        self.pos_delta = np.array([x, y, z])
-        rel_pose = mn.Vector3(self.art_agent.base_pos + self.pos_delta) 
-        # rel_pose = mn.Vector3(x, y, z)
+        # self.pos_delta = np.array([x, y, z])
+        # rel_pose = mn.Vector3(self.art_agent.base_pos + self.pos_delta) 
+        rel_pose = mn.Vector3(x, y, z)
 
         print('rel_pose', rel_pose)
-        obj._humanoid_controller.reset(obj._articulated_agent.base_transformation)
+        obj._humanoid_controller.reset(obj._articulated_agent.base_transformation) # probelm, likely relative to human frame?
         obj._humanoid_controller.calculate_walk_pose(rel_pose)
 
         print("BASE POS1:", obj._articulated_agent.base_pos)
