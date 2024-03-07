@@ -103,12 +103,14 @@ class HabitatSimulator(Simulator):
                 "set timestep when creating the HabitatSimulator instead"
             )
         self.scenario_number += 1
+
         return HabitatSimulation(
             scene,
             self.client,
             self.render,
             self.record,
             timestep=self.timestep,
+            scenario_number=self.scenario_number,
             **kwargs,
         )
 
@@ -123,13 +125,12 @@ class HabitatSimulation(Simulation):
     gazebo_<xyz>_ground_truth: the offset FROM the Gazebo frame TO the robot frame
     gazebo_yaw_ground_truth: true offset FROM the Gazebo frame TO the robot frame"""
 
-    def __init__(self, scene, client, render, record, timestep=0.1, **kwargs):
+    def __init__(self, scene, client, render, record, timestep=0.1, scenario_number=0, **kwargs):
         print('initializing!')
         self.client = client
         self.render = True
         self.record = record
         self.timestep = timestep
-        self.step_actions = []
         if 'cfg' in kwargs:
             self.cfg = kwargs['cfg']
         self.agent_dict = dict()
@@ -137,6 +138,7 @@ class HabitatSimulation(Simulation):
         self.observations = list()
         self.ego = None
         self.habitat_agents = list()
+        self.scenario_number = scenario_number  # used for naming of videos
         super().__init__(scene, timestep=timestep, **kwargs)
 
     def setup(self):
@@ -200,9 +202,11 @@ class HabitatSimulation(Simulation):
             art_agent = self.sim.agents_mgr[obj._agent_id].articulated_agent # TODO what to do with this line? 
             obj._articulated_agent = art_agent
             if obj._articulated_agent_type == 'KinematicHumanoid':
+                print('data_path:!!!', obj._motion_data_path)
                 art_agent.sim_obj.motion_type = MotionType.KINEMATIC # TODO fixe the physics
                 art_agent._fixed_base = True  # TODO should this be added?
                 obj._humanoid_controller = HumanoidRearrangeController(obj._motion_data_path)
+                # obj._humanoid_controller.reset(art_agent.base_transformation)
                 obj._humanoid_joint_action = HumanoidJointAction(config=HumanoidJointActionConfig(),
                                                                  sim=self.sim, name=f'agent_{obj._agent_id}')
                 # TODO add potential resets
@@ -294,20 +298,20 @@ class HabitatSimulation(Simulation):
             "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_tutorial_video",
             open_vid=False,
         )
-        vut.make_video(
-            self.observations,
-            self.habitat_agents[0].name + "_third_rgb",
-            "color",
-            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/demo_vid",
-            open_vid=False,
-        )
         # vut.make_video(
             # self.observations,
-            # "third_rgb",
+            # self.habitat_agents[0].name + "_third_rgb",
             # "color",
-            # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_robot_gripper",
+            # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/demo_vid",
             # open_vid=False,
         # )
+        vut.make_video(
+            self.observations,
+            "third_rgb",
+            "color",
+            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_humanoid",
+            open_vid=False,
+        )
         super().destroy()
         return
 

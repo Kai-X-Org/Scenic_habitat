@@ -29,18 +29,25 @@ behavior MoveAndBack(x=0, y=0, z=0, num_steps=100):
         do GoRel(x=-x/2, y=-y/2, z=-z/2, num_steps=100)
         terminate
 
-behavior HumanGo(x=0, y=0, z=0):
-    take HumanGoAction(x, y, z)
+behavior HumanGo(x=0, y=0, z=0, num_steps=100):
+    # dx, dy, dz = x/num_steps, y/num_steps, z/num_steps
+    # step_count = 0
+    # while step_count < num_steps:
+        # take HumanGoAction(dx, dy, dz)
+        # step_count += 1
+
+    step_count = 0
+    while step_count < num_steps:
+        take HumanGoAction(x, y, z)
+        step_count += 1
+
+    print('finished walking')
     t0 = time.time()
     t1 = t0
     while t1 - t0 < 3:
         wait
         t1 = time.time()
+    print('finish scene')
     terminate
-# ego = new FetchRobot at (Range(-6.0, -5.5), 0, Range(-1.8, -1.3)), with yaw -35 deg, with behavior MoveAndBack(x=3, z=0, num_steps=100)
-human = new Female_0 at (-1.5, -5.5, 0), with behavior HumanGo(y=0.1)
-# master_chef = new MasterChef at (-3.5, 0, -1.5)
-# tennis_ball = new TennisBall at (-4.5, 0, -1.5)
-# tennis_ball = new TennisBall at (-4.5, 0, Range(-1.5, 2.5))
-# require distance from tennis_ball to ego > 1
-# require distance from human to ego > 1
+
+human = new Female_0 at (-1.5, -5.5, 0), with behavior HumanGo(y=1)
