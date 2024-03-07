@@ -48,6 +48,8 @@ behavior HumanGo(x=0, y=0, z=0, num_steps=100):
         print(f"Scenic position: {self.position}")
         step_count += 1
 
+    take HumanStopAction()
+
     print('finished walking')
     print(f"target: {x, y, z}")
     # print(f"pos_delta: {pos_delta}")

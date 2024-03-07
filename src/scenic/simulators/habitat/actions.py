@@ -59,7 +59,7 @@ class HumanGoAction(Action):
 
     def applyTo(self, obj, sim):
         self.art_agent = obj._articulated_agent
-        x, y, z, _, _, _ = sim.scenicToHabitatMap((self.x, self.y, self.z,0,0,0))
+        x, y, z, _, _, _ = sim.scenicToHabitatMap((self.x, self.y, self.z,0,0,0)) # TODO some sketchy coordinate transfomr here
         # print(f'Moving {(x, y, z)}')
 
         print("current BASE POS:", self.art_agent.base_pos)
@@ -67,69 +67,37 @@ class HumanGoAction(Action):
         # rel_pose = mn.Vector3(self.art_agent.base_pos + self.pos_delta) 
         rel_pose = mn.Vector3(x, y, z)
 
-        print('rel_pose', rel_pose)
+        # print('rel_pose', rel_pose)
         obj._humanoid_controller.reset(obj._articulated_agent.base_transformation) # probelm, likely relative to human frame?
         obj._humanoid_controller.calculate_walk_pose(rel_pose)
 
-        print("BASE POS1:", obj._articulated_agent.base_pos)
-        print("BASE_TRANSFORMATION:", obj._articulated_agent.base_transformation)
+        # print("BASE POS1:", obj._articulated_agent.base_pos)
+        # print("BASE_TRANSFORMATION:", obj._articulated_agent.base_transformation)
 
         human_joints_trans = obj._humanoid_controller.get_pose()
-        print("BASE POS2:", obj._articulated_agent.base_pos)
+        # print("BASE POS2:", obj._articulated_agent.base_pos)
         
         arg_name = obj._humanoid_joint_action._action_arg_prefix + "human_joints_trans"
         arg_dict = {arg_name: human_joints_trans}
         obj._humanoid_joint_action.step(**arg_dict)
 
-        print("NEW BASE POS:", obj._articulated_agent.base_pos)
-        print("BASE_TRANSFORMATION 2:", obj._articulated_agent.base_transformation)
+        # print("NEW BASE POS:", obj._articulated_agent.base_pos)
+        # print("BASE_TRANSFORMATION 2:", obj._articulated_agent.base_transformation)
+        # print("Final BASE POS:", self.art_agent.base_pos)
+        # print("BASE_TRANSFORMATION 3:", obj._articulated_agent.base_transformation)
 
-        base_pos = self.art_agent.base_pos
-        self.art_agent.base_pos = base_pos
+class HumanStopAction(Action):
+    def applyTo(self, obj, sim):
+        self.art_agent = obj._articulated_agent
 
-        print("Final BASE POS:", self.art_agent.base_pos)
-        print("BASE_TRANSFORMATION 3:", obj._articulated_agent.base_transformation)
+        obj._humanoid_controller.reset(obj._articulated_agent.base_transformation) # probelm, likely relative to human frame?
+        obj._humanoid_controller.calculate_stop_pose()
 
-
-        # new_joints = human_joints_trans[:-32]
-        # new_pos_transform_base = human_joints_trans[-16:]
-        # new_pos_transform_offset = human_joints_trans[-32:-16]
-
-        # # When the array is all 0, this indicates we are not setting
-        # # the human joint
-        # if np.array(new_pos_transform_offset).sum() != 0:
-            # print('ENtering if BLOCK!!!')
-            # vecs_base = [
-                # mn.Vector4(new_pos_transform_base[i * 4 : (i + 1) * 4])
-                # for i in range(4)
-            # ]
-            # vecs_offset = [
-                # mn.Vector4(new_pos_transform_offset[i * 4 : (i + 1) * 4])
-                # for i in range(4)
-            # ]
-            # new_transform_offset = mn.Matrix4(*vecs_offset)
-            # new_transform_base = mn.Matrix4(*vecs_base)
-            # if (
-                # new_transform_offset.is_rigid_transformation()
-                # and new_transform_base.is_rigid_transformation()
-            # ):
-                # # TODO: this will cause many sampled actions to be invalid
-                # # Maybe we should update the sampling mechanism
-                # obj._articulated_agent.set_joint_transform(
-                    # new_joints, new_transform_offset, new_transform_base
-                # )
-        # joint_action = obj._humanoid_joint_action
-        # # print('action arg prefix!!!:', joint_action._action_arg_prefix)
-        # key = joint_action._action_arg_prefix + 'human_joints_trans'
-        # # key = f'agent_{obj._agent_id}' + '_human_joint_trans'
-        # # print('KEY:', key)
-        # arg_dict = dict()
-        # arg_dict[key] = new_pose
-        # # print('ARG_DICT', arg_dict)
-        # joint_action.step(**arg_dict)
-
-
+        human_joints_trans = obj._humanoid_controller.get_pose()
         
+        arg_name = obj._humanoid_joint_action._action_arg_prefix + "human_joints_trans"
+        arg_dict = {arg_name: human_joints_trans}
+        obj._humanoid_joint_action.step(**arg_dict)
 
 class OpenGripperAction(Action):
     def applyTo(self, obj, sim):
