@@ -253,6 +253,8 @@ class HabitatSimulation(Simulation):
         execute action for each object. Does not immediately render,
         but instead buffers the object
         """
+
+        # TODO things might be different here with the use of Env
         for agent, actions in allActions.items():
             for action in actions:
                 try:
@@ -264,7 +266,8 @@ class HabitatSimulation(Simulation):
 
     def step(self):
         # print("stepping!")
-        self.sim.step_physics(self.timestep)
+        # self.sim.step_physics(self.timestep)
+        self.env.step() # TODO, what to fill in as argument
         self.observations.append(self.sim.get_sensor_observations())
 
 
