@@ -14,41 +14,47 @@ behavior GoRel(x=0, y=0, z=0, rot=0, num_steps=100):
     dz = z/num_steps
     
     # print('taking action!')
-    for _ in range(num_steps):
-        # print('taking action!')
-        take GoRelDeltaAction(self, dx, dy, dz)
-        
-        print(self.position)
-        # take GoRelDeltaAction()
-    # if self._articulated_agent_type == 'FetchRobot':
-        terminate
-
-behavior MoveAndBack(x=0, y=0, z=0, num_steps=100):
+    waited = False
     try:
-        do GoRel(x=x, y=y, z=z, num_steps=100)
-    interrupt when (self.distanceToClosest(KinematicHumanoid) < 1.5):
-        do GoRel(x=-x/2, y=-y/2, z=-z/2, num_steps=100)
-        terminate
+        for _ in range(num_steps):
+            print('taking action!')
+            take GoRelDeltaAction(self, dx, dy, dz)
+            
+            print(self.position)
+            # take GoRelDeltaAction()
+        # if self._articulated_agent_type == 'FetchRobot':
+        # terminate
+    interrupt when (self.distanceToClosest(KinematicHumanoid) < 1.5 and not waited):
+        waited = True
+        t0 = time.time()
+        t1 = t0
+        while t1 - t0 < 1:
+            wait
+            t1 = time.time()
+        print('finish scene')
+
+
 
 behavior HumanGo(x=0, y=0, z=0, num_steps=100):
-    # dx, dy, dz = x/num_steps, y/num_steps, z/num_steps
-    # step_count = 0
-    # while step_count < num_steps:
-        # take HumanGoAction(dx, dy, dz)
-        # step_count += 1
-
     step_count = 0
-    # pos_delta = Vector(x, y, z)
-    
-    # x, y, z = self.position + pos_delta
     start_position = self.position
-    while step_count < num_steps and \
-            not np.isclose((self.position - start_position).norm(), Vector(x, y, z).norm(), atol=0.1):
-        take HumanGoAction(x, y, z) # TODO temporary implementation
-        print(f"Scenic position: {self.position}")
-        step_count += 1
+    try:
+        while step_count < num_steps and \
+                not np.isclose((self.position - start_position).norm(), Vector(x, y, z).norm(), atol=0.1):
+            take HumanGoAction(x, y, z) # TODO temporary implementation
+            print(f"Scenic position: {self.position}")
+            step_count += 1
 
-    take HumanStopAction()
+        take HumanStopAction()
+
+    interrupt when (self.distanceToClosest(FetchRobot) < 1.5):
+        take HumanStopAction()
+        t0 = time.time()
+        t1 = t0
+        while t1 - t0 < 3:
+            wait
+            t1 = time.time()
+        terminate
 
     print('finished walking')
     print(f"target: {x, y, z}")
@@ -61,4 +67,6 @@ behavior HumanGo(x=0, y=0, z=0, num_steps=100):
     print('finish scene')
     terminate
 
-human = new Female_0 at (-1.5, -5.5, 0), with behavior HumanGo(y=1)
+# human = new Female_0 at (-1.5, -3.5, 0), with yaw -90 deg,  with behavior HumanGo(y=1)
+ego = new FetchRobot at (-1.8, Range(-6.5, -4.5), 0), with behavior GoRel(y=4.0)
+human = new Female_0 at (1.5, -4.5, 0), with yaw 90 deg,  with behavior HumanGo(x=-4)

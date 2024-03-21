@@ -305,20 +305,20 @@ class HabitatSimulation(Simulation):
             "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_tutorial_video",
             open_vid=False,
         )
-        # vut.make_video(
-            # self.observations,
-            # self.habitat_agents[0].name + "_third_rgb",
-            # "color",
-            # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/demo_vid",
-            # open_vid=False,
-        # )
         vut.make_video(
             self.observations,
-            "third_rgb",
+            self.habitat_agents[0].name + "_third_rgb",
             "color",
-            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_spot",
+            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_spot.mp4",
             open_vid=False,
         )
+        # vut.make_video(
+            # self.observations,
+            # "third_rgb",
+            # "color",
+            # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_spot",
+            # open_vid=False,
+        # )
         super().destroy()
         return
 

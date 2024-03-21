@@ -16,6 +16,33 @@ class HabitatAgent():
     _motion_data_path: None
     _articulated_agent: None
 
+    def distanceToClosest(self, type: type) -> Object:
+        """Compute the distance to the closest object of the given type.
+
+        For example, one could write :scenic:`self.distanceToClosest(Car)` in a behavior.
+        """
+        objects = simulation().objects
+        minDist = float('inf')
+        for obj in objects:
+            if not isinstance(obj, type):
+                continue
+            d = distance from self to obj
+            if 0 < d < minDist:
+                minDist = d
+        return minDist
+
+    def getClosest(self, object_class):
+        objects = simulation().objects
+        minDist = float('inf')
+        tgt = None
+        for obj in objects:
+            if not isinstance(obj, object_class):
+                continue
+            d = distance from self to obj
+            if 0 < d < minDist:
+                minDist = d
+                tgt = obj
+        return tgt
 
 
 class Robot(HabitatAgent):
