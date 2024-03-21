@@ -15,6 +15,9 @@ from habitat.config.default_structured_configs import SimulatorConfig, HabitatSi
 from habitat.config.default import get_agent_config
 import habitat
 from habitat_sim.physics import JointMotorSettings, MotionType
+from habitat.config.default_structured_configs import TaskConfig, EnvironmentConfig, DatasetConfig, HabitatConfig
+from habitat.config.default_structured_configs import ArmActionConfig, BaseVelocityActionConfig, OracleNavActionConfig, ActionConfig
+from habitat.core.env import Env
 from omegaconf import OmegaConf
 import os
 
@@ -40,6 +43,29 @@ def make_sim_cfg(agent_dict):
     cfg.agents = agent_dict
     cfg.agents_order = list(cfg.agents.keys())
     return cfg
+
+def make_hab_cfg(agent_dict, action_dict, timesteps=1):
+    """
+    Make the configurations for habitat env
+    """
+    sim_cfg = make_sim_cfg(agent_dict)
+    task_cfg = TaskConfig(type="RearrangeEmptyTask-v0")
+    task_cfg.actions = action_dict
+    env_cfg = EnvironmentConfig()
+    # FIXME line below has hardcoded directory
+    dataset_cfg = DatasetConfig(type="RearrangeDataset-v0", 
+                                data_path="/home/ek65/habitat-lab/data/hab3_bench_assets/episode_datasets/small_large.json.gz") 
+
+    task_cfg.physics_target_sps = 1/timesteps # This communicates the Scenic timestep to habitat
+
+    hab_cfg = HabitatConfig()
+    hab_cfg.environment = env_cfg
+    hab_cfg.task = task_cfg
+    hab_cfg.dataset = dataset_cfg
+    hab_cfg.simulator = sim_cfg
+    hab_cfg.simulator.seed = hab_cfg.seed
+
+    return hab_cfg
 
 def create_agent_config(name, agent_type, urdf_path, motion_data_path=None, sim_sensors=None):
     # TODO add cases for humanoids!!!
@@ -71,6 +97,14 @@ def init_rearrange_sim(agent_dict):
     sim.add_sensor(camera_sensor_spec, 0)
 
     return sim
+
+def init_rearrange_env(agent_dict, action_dict):
+    """
+    Initializes the rearrangement environment
+    """
+    hab_cfg = make_hab_cfg(agent_dict, action_dict)
+    res_cfg = OmegaConf.create(hab_cfg)
+    return Env(res_cfg)
 
 def set_agent_state(agent, position, orientation):
     agent_state = habitat_sim.AgentState()

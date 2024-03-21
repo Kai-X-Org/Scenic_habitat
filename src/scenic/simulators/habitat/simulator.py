@@ -145,6 +145,9 @@ class HabitatSimulation(Simulation):
     def setup(self):
         agent_count = 0
         agent_names = []
+        
+        # getting the agent configs
+        action_dict = dict()
         for obj in self.scene.objects:
             # print("entered loop!")
             if obj.is_agent:
@@ -164,13 +167,15 @@ class HabitatSimulation(Simulation):
                 if obj.name in agent_names:
                     raise HabitatSimCreationError(f"Error: two agents have the same name: {obj.name}")
                 else:
-                    self.agent_dict[obj.name] = agent_config # TODO change this for multi agets
+                    self.agent_dict[obj.name] = agent_config 
 
-            # else: # TODO add code for creating/deleting objects
-                # handle = obj.handle
-            # TODO add in the rest!!!
-        # print(self.agent_dict)
-        self.sim = utils.init_rearrange_sim(self.agent_dict)
+                action_dict.update(obj._action_dict)
+        
+        print(f"Current Action Dict: {action_dict}")
+        self.env = utils.init_rearrange_env(agent_dict, action_dict) 
+        self.sim = self.env.sim
+        # self.sim = utils.init_rearrange_sim(self.agent_dict)
+
         self.obj_attr_mgr = self.sim.get_object_template_manager()
         self.prim_attr_mgr = self.sim.get_asset_template_manager()
         self.stage_attr_mgr = self.sim.get_stage_template_manager()

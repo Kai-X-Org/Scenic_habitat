@@ -2,6 +2,7 @@ import math
 from scenic.core.utils import repairMesh
 from scenic.simulators.habitat.simulator import HabitatSimulation, HabitatSimulator
 import trimesh
+from habitat.config.default_structured_configs import ArmActionConfig, BaseVelocityActionConfig, OracleNavActionConfig, ActionConfig
 
 
 simulator HabitatSimulator()
@@ -15,6 +16,8 @@ class HabitatAgent():
     _articulated_agent_type: None
     _motion_data_path: None
     _articulated_agent: None
+    _action_dic: dict()
+    _policy_path_dict: dict()
 
 
 
@@ -28,7 +31,6 @@ class Robot(HabitatAgent):
     yaw: 0
     roll: 0
     pitch: 0
-    _policy_path_dict: dict()
     _object_template_handle: None
     _has_grasp: True
     _grasp_manager: None
@@ -76,6 +78,8 @@ class SpotRobot(Robot):
     _policy_path_dict: dict(pick='/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/policies/pick_latest.torchscript',
                        place='/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/policies/place_latest_sample.torchscript')
     _policies: dict()
+    _action_dict: {"arm_action": ArmActionConfig(type="MagicGraspAction"),
+                   "base_velocity": BaseVelocityActionConfig()}
     shape: CylinderShape(dimensions=(0.508,0.559,1.096)) # TODO change this. 
 
 class KinematicHumanoid(HabitatAgent):
