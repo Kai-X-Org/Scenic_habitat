@@ -4,7 +4,7 @@ import math
 import os
 import traceback
 import warnings
-
+import torch
 
 import habitat_sim
 import magnum as mn
@@ -139,6 +139,7 @@ class HabitatSimulation(Simulation):
         self.ego = None
         self.habitat_agents = list()
         self.scenario_number = scenario_number  # used for naming of videos
+        self.device = torch.device('cuda') # I think this is right?
         super().__init__(scene, timestep=timestep, **kwargs)
 
     def setup(self):
@@ -215,6 +216,10 @@ class HabitatSimulation(Simulation):
                 art_agent._fixed_base = False
                 if obj._has_grasp:
                     obj._grasp_manager = self.sim.agents_mgr[obj._agent_id].grasp_mgrs[0]
+                
+                extra_files = {"net_meta_dict.pkl": ""} # TODO temporary hardcoding
+                for action, model_dir in obj._policy_path_dict.items():
+                    obj._policies[action] = torch.jit.load(model_dir, _extra_files=extra_files, map_location=self.device)
 
             x, y, z, _, _, _ = self.scenicToHabitatMap((obj.position[0], obj.position[1], obj.position[2],0, 0, 0))
             # print('bot y:', y)
@@ -311,7 +316,7 @@ class HabitatSimulation(Simulation):
             self.observations,
             "third_rgb",
             "color",
-            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_humanoid",
+            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_spot",
             open_vid=False,
         )
         super().destroy()

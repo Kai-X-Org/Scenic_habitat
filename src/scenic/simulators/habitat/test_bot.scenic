@@ -51,5 +51,5 @@ behavior SnapToObject(target_object):
     terminate
 # ego = new FetchRobot at (Range(-6.0, -5.5), 0, Range(-1.8, -1.3)), with yaw -35 deg, with behavior MoveAndBack(x=3, z=0, num_steps=100)
 # tennis_ball = new TennisBall at (-4.5, 0, -1.5)
-ego = new FetchRobot at (-1.5, -5.5, 0), with yaw -35 deg, with behavior OpenGripper()
+ego = new SpotRobot at (-1.5, -5.5, 0), with yaw -35 deg, with behavior OpenGripper()
 # tennis_ball = new TennisBall at (-4.5, 0, -1.5)

@@ -28,20 +28,11 @@ class Robot(HabitatAgent):
     yaw: 0
     roll: 0
     pitch: 0
+    _policy_path_dict: dict()
     _object_template_handle: None
     _has_grasp: True
     _grasp_manager: None
 
-    # def distanceToClosest(self, object_class):
-        # objects = simulation().objects
-        # minDist = float('inf')
-        # for obj in objects:
-            # if not isinstance(obj, object_class):
-                # continue
-            # d = distance from self to obj
-            # if 0 < d < minDist:
-                # minDist = d
-        # return minDist
     def distanceToClosest(self, type: type) -> Object:
         """Compute the distance to the closest object of the given type.
 
@@ -75,8 +66,17 @@ class FetchRobot(Robot):
     object_type: 'FetchRobot'
     _articulated_agent_type: 'FetchRobot'
     urdf_path: data_dir + 'robots/hab_fetch/robots/hab_fetch.urdf'
-    
     shape: CylinderShape(dimensions=(0.508,0.559,1.096))
+
+class SpotRobot(Robot):
+    name: "SpotRobot"
+    object_type: "SpotRobot"
+    _articulated_agent_type: "SpotRobot"
+    urdf_path: data_dir + 'robots/hab_spot_arm/urdf/hab_spot_arm.urdf'
+    _policy_path_dict: dict(pick='/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/policies/pick_latest.torchscript',
+                       place='/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/policies/place_latest_sample.torchscript')
+    _policies: dict()
+    shape: CylinderShape(dimensions=(0.508,0.559,1.096)) # TODO change this. 
 
 class KinematicHumanoid(HabitatAgent):
     name: "Humanoid"
