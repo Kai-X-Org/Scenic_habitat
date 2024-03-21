@@ -31,11 +31,6 @@ behavior MoveAndBack(x=0, y=0, z=0, num_steps=100):
         terminate
 
 behavior HumanGo(x=0, y=0, z=0, num_steps=100):
-    # dx, dy, dz = x/num_steps, y/num_steps, z/num_steps
-    # step_count = 0
-    # while step_count < num_steps:
-        # take HumanGoAction(dx, dy, dz)
-        # step_count += 1
 
     step_count = 0
     # pos_delta = Vector(x, y, z)

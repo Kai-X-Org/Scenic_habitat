@@ -16,7 +16,7 @@ class HabitatAgent():
     _articulated_agent_type: None
     _motion_data_path: None
     _articulated_agent: None
-    _action_dic: dict()
+    _action_dict: dict()
     _policy_path_dict: dict()
 
 
