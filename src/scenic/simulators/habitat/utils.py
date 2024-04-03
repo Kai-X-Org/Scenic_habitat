@@ -1,4 +1,5 @@
 import habitat_sim
+import pdb
 import magnum as mn
 import warnings
 from habitat.tasks.rearrange.rearrange_sim import RearrangeSim
@@ -35,10 +36,12 @@ def make_sim_cfg(agent_dict):
     sim_cfg.scene = os.path.join(data_path, "hab3_bench_assets/hab3-hssd/scenes/103997919_171031233.scene_instance.json")
     sim_cfg.scene_dataset = os.path.join(data_path, "hab3_bench_assets/hab3-hssd/hab3-hssd.scene_dataset_config.json")
     sim_cfg.additional_object_paths = [os.path.join(data_path, 'objects/ycb/configs/')]
-
+    
+    print(sim_cfg.scene)
+    print(sim_cfg.scene_dataset)
     
     cfg = OmegaConf.create(sim_cfg)
-
+    print('finished init configs!!!')
     # Set the scene agents
     cfg.agents = agent_dict
     cfg.agents_order = list(cfg.agents.keys())
@@ -80,6 +83,7 @@ def create_agent_config(name, agent_type, urdf_path, motion_data_path=None, sim_
 def init_rearrange_sim(agent_dict):
     # Start the scene config
     sim_cfg = make_sim_cfg(agent_dict)    
+    print('FINISHED MAKING SIM CFG') 
     cfg = OmegaConf.create(sim_cfg)
     
     # Create the scene
@@ -103,7 +107,15 @@ def init_rearrange_env(agent_dict, action_dict, timestep=1):
     Initializes the rearrangement environment
     """
     hab_cfg = make_hab_cfg(agent_dict, action_dict, timestep=timestep)
+    print('FINISHED MAKING HAB CFG') 
     res_cfg = OmegaConf.create(hab_cfg)
+    print('FINISHED MAKING HAB OMEGA CFG') 
+    print('creating ENV!!!') 
+    # print("res_cfg:\n", res_cfg)
+    # res_cfg.dataset.scenes_dir = '/home/ek65/habitat-lab/data/scene_datasets'
+    # print(res_cfg.dataset.scenes_dir) 
+    # breakpoint()
+    # print(res_cfg.simulator)
     return Env(res_cfg)
 
 def set_agent_state(agent, position, orientation):

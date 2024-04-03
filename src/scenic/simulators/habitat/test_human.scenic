@@ -57,3 +57,4 @@ behavior HumanGo(x=0, y=0, z=0, num_steps=100):
     terminate
 
 human = new Female_0 at (-1.5, -5.5, 0), with behavior HumanGo(y=1)
+spot = new SpotRobot at (-2.5, -5.5, 0)

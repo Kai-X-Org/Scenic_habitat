@@ -1,4 +1,4 @@
-"""Simulator interface for Gazebo."""
+"""Simulator interface for Meta Habitat."""
 import logging
 import math
 import os
@@ -121,9 +121,8 @@ class HabitatSimulator(Simulator):
 
 class HabitatSimulation(Simulation):
     """
-    Simulation class for Gazebo-Scenic
-    gazebo_<xyz>_ground_truth: the offset FROM the Gazebo frame TO the robot frame
-    gazebo_yaw_ground_truth: true offset FROM the Gazebo frame TO the robot frame"""
+    Simulation class for Habitat-Scenic
+    """
 
     def __init__(self, scene, client, render, record, timestep=0.1, scenario_number=0, **kwargs):
         print('initializing!')
@@ -140,7 +139,7 @@ class HabitatSimulation(Simulation):
         self.habitat_agents = list()
         self.scenario_number = scenario_number  # used for naming of videos
         self.device = torch.device('cuda') # I think this is right?\
-        self.action_dict = dict()
+        self.step_action_dict = dict()
         super().__init__(scene, timestep=timestep, **kwargs)
 
     def setup(self):
@@ -173,27 +172,28 @@ class HabitatSimulation(Simulation):
                 action_dict.update(obj._action_dict)
         
         print(f"Current Action Dict: {action_dict}")
-        self.env = utils.init_rearrange_env(agent_dict, action_dict, timestep=self.timestep) 
+        self.env = utils.init_rearrange_env(self.agent_dict, action_dict, timestep=self.timestep) 
+        print("FINISHED INIT ENV!!!")
         self.sim = self.env.sim
-        # self.sim = utils.init_rearrange_sim(self.agent_dict)
+
+        # self.sim = utils.init_rearrange_sim(self.agent_dict) # DO this if we want to use habitat_sim only
 
         self.obj_attr_mgr = self.sim.get_object_template_manager()
         self.prim_attr_mgr = self.sim.get_asset_template_manager()
         self.stage_attr_mgr = self.sim.get_stage_template_manager()
         self.rigid_obj_mgr = self.sim.get_rigid_object_manager()
 
-        # for obj in self.habitat_agents: # TODO set the _articulated_agent field
-            # obj._articulated_agent = self.sim.agents_mgr[obj._agent_id].articulated_agent
 
         super().setup()  # Calls createObjectInSimulator for each object
         self.sim.step({}) # TODO is this needed???
+        # FIXME remove this now that we are on ENV???
         self.observations.append(self.sim.get_sensor_observations())
         print(self.observations[0].keys())
         return
 
     def createObjectInSimulator(self, obj):
         """
-        Spawns the object in the Gazebo simulator.
+        Spawns the object in the habitat simulator.
         If the object has a mesh, adds it to the collision_world
         to enable collision avoidance
         Args:
@@ -205,8 +205,12 @@ class HabitatSimulation(Simulation):
         # TODO add in mechanism to handle different types of agent
         # TODO need someway to pass on the agent_id field
         # Proposal, each agent gets a _agent_id field, that is set in setup() above
+        print(f"CREATING {obj.name}")
         if obj.is_agent:
             art_agent = self.sim.agents_mgr[obj._agent_id].articulated_agent # TODO what to do with this line? 
+
+            print(f"art_agent: {art_agent}") 
+
             obj._articulated_agent = art_agent
             if obj._articulated_agent_type == 'KinematicHumanoid':
                 print('data_path:!!!', obj._motion_data_path)
@@ -216,7 +220,6 @@ class HabitatSimulation(Simulation):
                 # obj._humanoid_controller.reset(art_agent.base_transformation)
                 obj._humanoid_joint_action = HumanoidJointAction(config=HumanoidJointActionConfig(),
                                                                  sim=self.sim, name=f'agent_{obj._agent_id}')
-                # TODO add potential resets
             else:
                 art_agent.sim_obj.motion_type = MotionType.DYNAMIC # TODO fixe the physics
                 art_agent._fixed_base = False
@@ -271,7 +274,7 @@ class HabitatSimulation(Simulation):
         # These are for when we are using purely habitat sim
         # self.sim.step_physics(self.timestep)
         # self.observations.append(self.sim.get_sensor_observations())
-        self.observations.append(env.step(action_dict))
+        self.observations.append(env.step(self.step_action_dict))
 
 
     def getProperties(self, obj, properties):
@@ -293,6 +296,7 @@ class HabitatSimulation(Simulation):
                     angularVelocity=Vector(0, 0, 0),
             )
         else:
+            # still need to get the object informations!!!
             d = dict(
                     position=Vector(0, 0, 0),
                     yaw=0,
@@ -335,15 +339,15 @@ class HabitatSimulation(Simulation):
 
     def habitatToRobotMap(self, pose):
         """
-        Converts from the gazebo map frame to the Robot map frame
+        Converts from the habitat map frame to the Robot map frame
         Args:
         pose = Tuple(x, y, z, yaw)
         """
         pass
 
-    def robotToGazeboMap(self, pose):
+    def robotToHabitatMap(self, pose):
         """
-        Converts from the Robot map frame to the gazebo map frame
+        Converts from the Robot map frame to the habitat map frame
         Args:
         pose: (x, y, z, yaw)
         """
@@ -369,7 +373,7 @@ class HabitatSimulation(Simulation):
 
     def scenicToHabitatMap(self, pose, obj=None):
         """
-        Converts from the Scenic map coordinate to the Gazebo map frame coordinate
+        Converts from the Scenic map coordinate to the habitat map frame coordinate
         Args:
         """
         # assert len(pose) == 4
@@ -391,7 +395,7 @@ class HabitatSimulation(Simulation):
 
     def habitatToScenicMap(self, pose, obj=None):
         """
-        Converts from the Gazebo map frame coordinate to the Scenic map coordinate
+        Converts from the habitat map frame coordinate to the Scenic map coordinate
         Args:
         pose: (x, y, z, yaw)
         """
