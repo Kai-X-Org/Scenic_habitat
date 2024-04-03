@@ -44,7 +44,7 @@ def make_sim_cfg(agent_dict):
     cfg.agents_order = list(cfg.agents.keys())
     return cfg
 
-def make_hab_cfg(agent_dict, action_dict, timesteps=1):
+def make_hab_cfg(agent_dict, action_dict, timestep=1):
     """
     Make the configurations for habitat env
     """
@@ -56,7 +56,7 @@ def make_hab_cfg(agent_dict, action_dict, timesteps=1):
     dataset_cfg = DatasetConfig(type="RearrangeDataset-v0", 
                                 data_path="/home/ek65/habitat-lab/data/hab3_bench_assets/episode_datasets/small_large.json.gz") 
 
-    task_cfg.physics_target_sps = 1/timesteps # This communicates the Scenic timestep to habitat
+    task_cfg.physics_target_sps = 1/timestep # This communicates the Scenic timestep to habitat
 
     hab_cfg = HabitatConfig()
     hab_cfg.environment = env_cfg
@@ -98,11 +98,11 @@ def init_rearrange_sim(agent_dict):
 
     return sim
 
-def init_rearrange_env(agent_dict, action_dict):
+def init_rearrange_env(agent_dict, action_dict, timestep=1):
     """
     Initializes the rearrangement environment
     """
-    hab_cfg = make_hab_cfg(agent_dict, action_dict)
+    hab_cfg = make_hab_cfg(agent_dict, action_dict, timestep=timestep)
     res_cfg = OmegaConf.create(hab_cfg)
     return Env(res_cfg)
 

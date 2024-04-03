@@ -139,7 +139,8 @@ class HabitatSimulation(Simulation):
         self.ego = None
         self.habitat_agents = list()
         self.scenario_number = scenario_number  # used for naming of videos
-        self.device = torch.device('cuda') # I think this is right?
+        self.device = torch.device('cuda') # I think this is right?\
+        self.action_dict = dict()
         super().__init__(scene, timestep=timestep, **kwargs)
 
     def setup(self):
@@ -172,7 +173,7 @@ class HabitatSimulation(Simulation):
                 action_dict.update(obj._action_dict)
         
         print(f"Current Action Dict: {action_dict}")
-        self.env = utils.init_rearrange_env(agent_dict, action_dict) 
+        self.env = utils.init_rearrange_env(agent_dict, action_dict, timestep=self.timestep) 
         self.sim = self.env.sim
         # self.sim = utils.init_rearrange_sim(self.agent_dict)
 
@@ -255,6 +256,8 @@ class HabitatSimulation(Simulation):
         """
 
         # TODO things might be different here with the use of Env
+        # not really, we could return the empty function
+        # or just have the function append to the action dict
         for agent, actions in allActions.items():
             for action in actions:
                 try:
@@ -265,10 +268,10 @@ class HabitatSimulation(Simulation):
         return
 
     def step(self):
-        # print("stepping!")
+        # These are for when we are using purely habitat sim
         # self.sim.step_physics(self.timestep)
-        self.env.step() # TODO, what to fill in as argument
-        self.observations.append(self.sim.get_sensor_observations())
+        # self.observations.append(self.sim.get_sensor_observations())
+        self.observations.append(env.step(action_dict))
 
 
     def getProperties(self, obj, properties):
