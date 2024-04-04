@@ -111,11 +111,6 @@ def init_rearrange_env(agent_dict, action_dict, timestep=1):
     res_cfg = OmegaConf.create(hab_cfg)
     print('FINISHED MAKING HAB OMEGA CFG') 
     print('creating ENV!!!') 
-    # print("res_cfg:\n", res_cfg)
-    # res_cfg.dataset.scenes_dir = '/home/ek65/habitat-lab/data/scene_datasets'
-    # print(res_cfg.dataset.scenes_dir) 
-    # breakpoint()
-    # print(res_cfg.simulator)
     return Env(res_cfg)
 
 def set_agent_state(agent, position, orientation):

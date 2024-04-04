@@ -175,7 +175,7 @@ class HabitatSimulation(Simulation):
         self.env = utils.init_rearrange_env(self.agent_dict, action_dict, timestep=self.timestep) 
         print("FINISHED INIT ENV!!!")
         self.sim = self.env.sim
-
+        self.env.reset()
         # self.sim = utils.init_rearrange_sim(self.agent_dict) # DO this if we want to use habitat_sim only
 
         self.obj_attr_mgr = self.sim.get_object_template_manager()
@@ -183,7 +183,7 @@ class HabitatSimulation(Simulation):
         self.stage_attr_mgr = self.sim.get_stage_template_manager()
         self.rigid_obj_mgr = self.sim.get_rigid_object_manager()
 
-
+        obs = self.env.step({"action": (), "action_args": {}})
         super().setup()  # Calls createObjectInSimulator for each object
         self.sim.step({}) # TODO is this needed???
         # FIXME remove this now that we are on ENV???
@@ -202,14 +202,14 @@ class HabitatSimulation(Simulation):
         Returns:
         Tuple(bool success, status_message)
         """
-        # TODO add in mechanism to handle different types of agent
-        # TODO need someway to pass on the agent_id field
-        # Proposal, each agent gets a _agent_id field, that is set in setup() above
         print(f"CREATING {obj.name}")
+        for action_name, action_space in self.env.action_space.items():
+            print(action_name, action_space)
         if obj.is_agent:
-            art_agent = self.sim.agents_mgr[obj._agent_id].articulated_agent # TODO what to do with this line? 
+            art_agent = self.env.sim.agents_mgr[obj._agent_id].articulated_agent # TODO what to do with this line? 
 
             print(f"art_agent: {art_agent}") 
+            print(f"art_agent base_pos: {art_agent.base_pos}") 
 
             obj._articulated_agent = art_agent
             if obj._articulated_agent_type == 'KinematicHumanoid':
@@ -221,7 +221,7 @@ class HabitatSimulation(Simulation):
                 obj._humanoid_joint_action = HumanoidJointAction(config=HumanoidJointActionConfig(),
                                                                  sim=self.sim, name=f'agent_{obj._agent_id}')
             else:
-                art_agent.sim_obj.motion_type = MotionType.DYNAMIC # TODO fixe the physics
+                # art_agent.sim_obj.motion_type = MotionType.DYNAMIC # TODO fixe the physics
                 art_agent._fixed_base = False
                 if obj._has_grasp:
                     obj._grasp_manager = self.sim.agents_mgr[obj._agent_id].grasp_mgrs[0]
@@ -231,10 +231,8 @@ class HabitatSimulation(Simulation):
                     obj._policies[action] = torch.jit.load(model_dir, _extra_files=extra_files, map_location=self.device)
 
             x, y, z, _, _, _ = self.scenicToHabitatMap((obj.position[0], obj.position[1], obj.position[2],0, 0, 0))
-            # print('bot y:', y)
             art_agent.base_pos = mn.Vector3(x, y, z) # TODO temporary solution
-            # print('here', obj.yaw)
-            art_agent.base_rot = obj.yaw # ROTATION IS just the Yaw angle...can also
+            art_agent.base_rot = obj.yaw # ROTATION IS just the Yaw angle; can also
             # set it directly with art_agent.sim_obj.rotation = <Quaternion>
 
         else:
@@ -310,9 +308,6 @@ class HabitatSimulation(Simulation):
         return d
 
     def destroy(self):
-        # TODO do the rendering here
-        # print('destroying!!!')
-        # print(self.observations)
         vut.make_video(
             self.observations,
             "scene_camera_rgb",
