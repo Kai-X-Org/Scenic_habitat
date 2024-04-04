@@ -1,49 +1,22 @@
-model scenic.simulators.Gazebo_sawyer.model
-from scenic.simulators.Gazebo_sawyer.model import *
-from scenic.core.distributions import distributionFunction, RejectionException
-from scenic.core.vectors import Vector
-import trimesh
+import magnum as mn
+model scenic.simulators.habitat.model
+from scenic.simulators.habitat.actions import *
+from scenic.simulators.habitat.behaviors import *
+from scenic.simulators.habitat.model import *
 import math
 import time
+import numpy as np
+bed_center = Vector(0, -6.0, 0.4)
 
-# @distributionFunction
-# def clutterHelper(origin_pt, clutter) -> Vector:
-    # origin_pt = origin_pt.position
-    # top_surfaces = [c.topSurface.mesh for c in clutter]
-    # concat_surfaces = trimesh.util.concatenate(top_surfaces)
-    # intersection_data, _, _ = concat_surfaces.ray.intersects_location(
-        # ray_origins=[origin_pt],
-        # ray_directions=[[0,0,-1]],
-        # multiple_hits=False,
-    # )
-    
-    # if len(intersection_data) == 0:
-        # raise RejectionException()
-
-    # # TODO UNPACK
-    # x, y, z = intersection_data[0][0], intersection_data[0][1], intersection_data[0][2]
-    # target_pt = Vector(x, y, z)
-    # print(f"target_point: {target_pt}")
-
-    # return target_pt
-
-sampling_height = 3.0
-sampling_radius = 0.5
-# sampling_space = SpheroidRegion(position=Vector(0, 0, sampling_height), 
-                                # dimensions=Vector(sampling_radius, sampling_radius, sampling_radius))
-# sampling_space = CircularRegion(center=Vector(0, 0, sampling_height), radius=sampling_radius)
-sampling_space = BoxRegion(position=Vector(0, 0, sampling_height), 
+bed = RectangularRegion(bed_center, 1.57, 1.0, 1.0)
+sampling_height = 0.7
+sampling_radius = 0.7
+sampling_space = BoxRegion(position=bed_center + Vector(0, 0, sampling_height), 
                            dimensions=Vector(sampling_radius, sampling_radius, sampling_radius))
-ego = new CafeTable on (0, 0, 0)
+ego = new SpotRobot at (-1.5, -5.5, 0), with yaw -35 deg
 # hammer = new Hammer on ego
 clutter_list = list()
-for i in range(10):
+for i in range(15):
     print('Num iter:', i)
     # point = new Point in sampling_space
-    new_cube = new WoodCube5cm in sampling_space #, with yaw Range(0, 360) deg
-    clutter_list.append(new_cube)
-    point = new Point in sampling_space
-    new_cube = new WoodCube10cm in sampling_space # ,with yaw Range(0, 360) deg
-    clutter_list.append(new_cube)
-
-
+    new_cube = new MasterChef in sampling_space #, with yaw Range(0, 360) deg

@@ -302,23 +302,23 @@ class HabitatSimulation(Simulation):
             self.observations,
             "scene_camera_rgb",
             "color",
-            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_tutorial_video",
-            open_vid=False,
-        )
-        vut.make_video(
-            self.observations,
-            self.habitat_agents[0].name + "_third_rgb",
-            "color",
-            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_spot.mp4",
+            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_clutter_scene",
             open_vid=False,
         )
         # vut.make_video(
             # self.observations,
-            # "third_rgb",
+            # self.habitat_agents[0].name + "_third_rgb",
             # "color",
-            # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_spot",
+            # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_spot.mp4",
             # open_vid=False,
         # )
+        vut.make_video(
+            self.observations,
+            "third_rgb",
+            "color",
+            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_clutter",
+            open_vid=False,
+        )
         super().destroy()
         return
 

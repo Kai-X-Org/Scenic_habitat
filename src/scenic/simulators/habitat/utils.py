@@ -66,6 +66,9 @@ def init_rearrange_sim(agent_dict):
     camera_sensor_spec = habitat_sim.CameraSensorSpec()
     camera_sensor_spec.sensor_type = habitat_sim.SensorType.COLOR
     camera_sensor_spec.uuid = "scene_camera_rgb"
+    camera_sensor_spec.position = mn.Vector3(0, 4, 7)
+    camera_sensor_spec.orientation = mn.Vector3(-1.57, 0, 0)
+    camera_sensor_spec.resolution = mn.Vector2i(1024, 1024)
 
     # TODO: this is a bit dirty but I think its nice as it shows how to modify a camera sensor...
     sim.add_sensor(camera_sensor_spec, 0)
