@@ -148,4 +148,4 @@ class GelatinBox(HabitatObject):
     object_type: 'GelatinBox'
     _use_file_handle: True
     _object_file_handle: data_dir + 'objects/ycb/configs/009_gelatin_box.object_config.json'
-    shape: CylinderShape(dimensions=(0.1,0.1,0.5)) # TODO just a dummy dimensions
+    shape: CylinderShape(dimensions=(0.1,0.1,0.1)) # TODO just a dummy dimensions
