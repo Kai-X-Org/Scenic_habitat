@@ -91,7 +91,7 @@ clutter_list = []
 # shape_distribution = Uniform(BoxShape(), CylinderShape())
 # dims_distribution = (Range(1, 2), Range(1, 2), Range(0.15, 0.4))
 # yaw_distribution = Range(0, 360 deg)
-shape_distribution = Uniform(BoxShape(dimensions=(0.1, 0.1, 0.1)))
+shape_distribution = Uniform(BoxShape(dimensions=(0.1, 0.1, 0.1)), GelatinBox.shape)
 dims_distribution = (0.1, 0.1, 0.1)
 yaw_distribution = Range(0, 360 deg)
 
@@ -115,18 +115,4 @@ for _ in range(20):
 
     cm = updateCm(cm, new_clutter.occupiedSpace.mesh)
 
-    out = clutter_helper(bed, toDistribution(tuple(clutter_list)), 
-        (new Point in sample_space).position, 
-        resample(shape_distribution),
-        dims_distribution,
-        resample(yaw_distribution), cm)
-
-    new_obj_info = out[0]
-    cm = out[1]
-
-    new_clutter = new MasterChef at toVector(new_obj_info[0]), with yaw new_obj_info[3]
-
-    clutter_list.append(new_clutter)
-
-    cm = updateCm(cm, new_clutter.occupiedSpace.mesh)
 
