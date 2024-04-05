@@ -15,6 +15,7 @@ class HabitatAgent():
     _articulated_agent_type: None
     _motion_data_path: None
     _articulated_agent: None
+    _spawn: True
 
     def distanceToClosest(self, type: type) -> Object:
         """Compute the distance to the closest object of the given type.
@@ -128,6 +129,7 @@ class HabitatObject:
     _object_file_handle: None
     _object_template_handle: None
     _managed_rigid_object: None
+    _spawn: True # whether this object should be spawned or not
 
 class MasterChef(HabitatObject):
     name: 'MasterChef'
@@ -148,4 +150,10 @@ class GelatinBox(HabitatObject):
     object_type: 'GelatinBox'
     _use_file_handle: True
     _object_file_handle: data_dir + 'objects/ycb/configs/009_gelatin_box.object_config.json'
-    shape: CylinderShape(dimensions=(0.1,0.1,0.1)) # TODO just a dummy dimensions
+    shape: BoxShape(dimensions=(0.1,0.1,0.1)) # TODO just a dummy dimensions
+
+class Surface(HabitatObject):
+    name: 'Surface'
+    _spawn: False
+
+

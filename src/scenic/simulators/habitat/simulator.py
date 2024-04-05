@@ -194,11 +194,15 @@ class HabitatSimulation(Simulation):
         obj: the scenic object, needs to have a name and position field
 
         Returns:
-        Tuple(bool success, status_message)
+        bool success
         """
         # TODO add in mechanism to handle different types of agent
         # TODO need someway to pass on the agent_id field
         # Proposal, each agent gets a _agent_id field, that is set in setup() above
+
+        if not obj._spawn: # i.e. dummy object or Surfaces
+            return True
+
         if obj.is_agent:
             art_agent = self.sim.agents_mgr[obj._agent_id].articulated_agent # TODO what to do with this line? 
             obj._articulated_agent = art_agent
@@ -236,7 +240,8 @@ class HabitatSimulation(Simulation):
 
             x, y, z, _, _, _ = self.scenicToHabitatMap((obj.position[0], obj.position[1], obj.position[2],0, 0, 0))
             obj._managed_rigid_object.translation = np.array([x, y, z])
-            obj._managed_rigid_object.rotation = mn.Quaternion.rotation(mn.Deg(0), [-1.0, 0.0, 0.0]) # TODO temporary solution
+            # obj._managed_rigid_object.rotation = mn.Quaternion.rotation(mn.Deg(0), [0.0, 1.0, 0.0]) # TODO temporary solution
+            obj._managed_rigid_object.rotation = mn.Quaternion.rotation(mn.Rad(obj.yaw), [0.0, 1.0, 0.0]) # TODO temporary solution
             
             # obj._object_id = self.sim.add_object_by_handle(handle)
             # self.sim.set_translation
