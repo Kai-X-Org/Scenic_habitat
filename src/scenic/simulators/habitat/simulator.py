@@ -139,7 +139,10 @@ class HabitatSimulation(Simulation):
         self.habitat_agents = list()
         self.scenario_number = scenario_number  # used for naming of videos
         self.device = torch.device('cuda') # I think this is right?\
-        self.step_action_dict = dict()
+        self.step_action_dict = {
+            "action": tuple(),
+            "action_args": dict()
+        }
         super().__init__(scene, timestep=timestep, **kwargs)
 
     def setup(self):
@@ -177,7 +180,8 @@ class HabitatSimulation(Simulation):
         print("FINISHED INIT ENV!!!")
         self.sim = self.env.sim
         self.env.reset() # need to be called. presumable calls sim.on_new_scene in there
-        utils.add_scene_camera(self.env) # maybe could move it before env.reset()???
+        # utils.add_scene_camera(self.env) # maybe could move it before env.reset()???
+        
         # self.sim = utils.init_rearrange_sim(self.agent_dict) # DO this if we want to use habitat_sim only
 
         self.obj_attr_mgr = self.sim.get_object_template_manager()
@@ -187,10 +191,7 @@ class HabitatSimulation(Simulation):
 
         obs = self.env.step({"action": (), "action_args": {}})
         super().setup()  # Calls createObjectInSimulator for each object
-        self.sim.step({}) # TODO is this needed???
-        # FIXME remove this now that we are on ENV???
-        self.observations.append(self.sim.get_sensor_observations())
-        print(self.observations[0].keys())
+        # self.sim.step({}) # TODO is this needed???
         return
 
     def createObjectInSimulator(self, obj):
@@ -276,6 +277,11 @@ class HabitatSimulation(Simulation):
         # self.observations.append(self.sim.get_sensor_observations())
         self.observations.append(self.env.step(self.step_action_dict))
 
+        self.step_action_dict = {
+            "action": tuple(),
+            "action_args": dict()
+        } # clearing step_action_dict
+
 
     def getProperties(self, obj, properties):
         # print(self.sim.articulated_agent.base_pos)
@@ -324,6 +330,11 @@ class HabitatSimulation(Simulation):
             # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/demo_vid",
             # open_vid=False,
         # )
+        # print(self.observations)
+        # for i, obs in enumerate(self.observations):
+            # print(obs['head_rgb'].shape)
+            # if i >= 100:
+                # break
         vut.make_video(
             self.observations,
             "third_rgb",
