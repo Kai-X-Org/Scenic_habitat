@@ -24,6 +24,11 @@ class HabitatAgent():
     _motion_data_path: None
     _articulated_agent: None
     _policy_path_dict: dict()
+    _sim_sensors = { # TODO temporary
+        "third_rgb": ThirdRGBSensorConfig(width=1024, height=1024),
+        "head_rgb": HeadRGBSensorConfig(),
+    }
+    
 
     @property
     def _action_dict(self):

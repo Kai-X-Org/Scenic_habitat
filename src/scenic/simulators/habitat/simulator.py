@@ -164,10 +164,7 @@ class HabitatSimulation(Simulation):
                 obj.name = 'agent_' + str(agent_count)
                 agent_count += 1
 
-                sim_sensors = { # TODO temporary
-                    "third_rgb": ThirdRGBSensorConfig(width=1024, height=1024),
-                    "head_rgb": HeadRGBSensorConfig(),
-                }
+                sim_sensors = obj._sim_sensors
                 x, y, z = obj.position
                 agent_config = utils.create_agent_config(obj.name, obj._articulated_agent_type, obj.urdf_path, 
                                     motion_data_path=obj._motion_data_path, sim_sensors=sim_sensors)
