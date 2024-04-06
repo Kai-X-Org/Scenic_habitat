@@ -176,7 +176,8 @@ class HabitatSimulation(Simulation):
         self.env = utils.init_rearrange_env(self.agent_dict, action_dict, timestep=self.timestep) 
         print("FINISHED INIT ENV!!!")
         self.sim = self.env.sim
-        self.env.reset()
+        self.env.reset() # need to be called. presumable calls sim.on_new_scene in there
+        utils.add_scene_camera(self.env) # maybe could move it before env.reset()???
         # self.sim = utils.init_rearrange_sim(self.agent_dict) # DO this if we want to use habitat_sim only
 
         self.obj_attr_mgr = self.sim.get_object_template_manager()
@@ -273,7 +274,7 @@ class HabitatSimulation(Simulation):
         # These are for when we are using purely habitat sim
         # self.sim.step_physics(self.timestep)
         # self.observations.append(self.sim.get_sensor_observations())
-        self.observations.append(env.step(self.step_action_dict))
+        self.observations.append(self.env.step(self.step_action_dict))
 
 
     def getProperties(self, obj, properties):
