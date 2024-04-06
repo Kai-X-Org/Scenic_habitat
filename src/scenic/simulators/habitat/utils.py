@@ -114,6 +114,7 @@ def init_rearrange_env(agent_dict, action_dict, timestep=1):
     return Env(res_cfg)
 
 def add_scene_camera(env, name='scene_camera_rgb'):
+    # env.sim.agents_mgr.on_new_scene()
     camera_sensor_spec = habitat_sim.CameraSensorSpec()
     camera_sensor_spec.sensor_type = habitat_sim.SensorType.COLOR
     camera_sensor_spec.uuid = name

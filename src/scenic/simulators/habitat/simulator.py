@@ -176,9 +176,10 @@ class HabitatSimulation(Simulation):
                 action_dict.update(obj._action_dict)
         
         print(f"Current Action Dict: {action_dict}")
+
         self.env = utils.init_rearrange_env(self.agent_dict, action_dict, timestep=self.timestep) 
-        print("FINISHED INIT ENV!!!")
         self.sim = self.env.sim
+        utils.add_scene_camera(self.env) # maybe could move it before env.reset()???
         self.env.reset() # need to be called. presumable calls sim.on_new_scene in there
         # utils.add_scene_camera(self.env) # maybe could move it before env.reset()???
         
@@ -192,6 +193,9 @@ class HabitatSimulation(Simulation):
         obs = self.env.step({"action": (), "action_args": {}})
         super().setup()  # Calls createObjectInSimulator for each object
         # self.sim.step({}) # TODO is this needed???
+        # FIXME remove this now that we are on ENV???
+        # self.observations.append(self.sim.get_sensor_observations())
+        # print(self.observations[0].keys())
         return
 
     def createObjectInSimulator(self, obj):
@@ -316,6 +320,7 @@ class HabitatSimulation(Simulation):
         return d
 
     def destroy(self):
+        print(f"SENSOR KEYS: {self.observations[0].keys()}")
         vut.make_video(
             self.observations,
             "scene_camera_rgb",
