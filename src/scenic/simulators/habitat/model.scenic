@@ -108,7 +108,7 @@ class KinematicHumanoid(HabitatAgent):
 
     @property
     def _action_dict(self):
-        return action_dict = {
+        return {
             self.name + "_humanoid_joint_action": HumanoidJointActionConfig(),
             self.name + "_humanoid_navigate_action": OracleNavActionConfig(type="OracleNavCoordinateAction", 
                                                               motion_control="human_joints",

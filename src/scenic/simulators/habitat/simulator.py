@@ -162,7 +162,7 @@ class HabitatSimulation(Simulation):
                 agent_count += 1
 
                 sim_sensors = { # TODO temporary
-                    "third_rgb": ThirdRGBSensorConfig(),
+                    "third_rgb": ThirdRGBSensorConfig(width=1024, height=1024),
                     "head_rgb": HeadRGBSensorConfig(),
                 }
                 x, y, z = obj.position
@@ -343,7 +343,7 @@ class HabitatSimulation(Simulation):
                 # break
         vut.make_video(
             self.observations,
-            "third_rgb",
+            "agent_0_third_rgb",
             "color",
             "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_spot",
             open_vid=False,
