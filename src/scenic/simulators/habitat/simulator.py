@@ -154,6 +154,7 @@ class HabitatSimulation(Simulation):
                 # self.ego = obj
                 self.habitat_agents.append(obj)
                 obj._agent_id = agent_count
+                obj.name = 'agent_' + str(agent_count)
                 agent_count += 1
 
                 sim_sensors = { # TODO temporary
