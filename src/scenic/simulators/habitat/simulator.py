@@ -277,12 +277,11 @@ class HabitatSimulation(Simulation):
         return
 
     def step(self):
-        # These are for when we are using purely habitat sim
-        # self.sim.step_physics(self.timestep)
-        # self.observations.append(self.sim.get_sensor_observations())
-
+        # appending observations from self.sim.get_sensor_observations() is
+        # necessary since env.step(...) does not return observation
+        # from sensors added after env is created, for some reason
         self.env_observations.append(self.env.step(self.step_action_dict))
-        self.observations.append(self.sim.get_sensor_observations())
+        self.observations.append(self.sim.get_sensor_observations()) 
 
         self.step_action_dict = {
             "action": tuple(),
@@ -323,12 +322,11 @@ class HabitatSimulation(Simulation):
         return d
 
     def destroy(self):
-        print(f"SENSOR KEYS: {self.observations[0].keys()}")
         vut.make_video(
             self.observations,
             "scene_camera_rgb",
             "color",
-            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/robot_tutorial_video",
+            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/scene_overview",
             open_vid=False,
         )
         # vut.make_video(
