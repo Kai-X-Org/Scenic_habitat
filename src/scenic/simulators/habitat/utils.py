@@ -113,13 +113,17 @@ def init_rearrange_env(agent_dict, action_dict, timestep=1):
     print('creating ENV!!!') 
     return Env(res_cfg)
 
-def add_scene_camera(env, name='scene_camera_rgb'):
-    # env.sim.agents_mgr.on_new_scene()
+def add_scene_camera(env, name='scene_camera_rgb', camera_pos: mn.Vector3 = mn.Vector3(0, 4, 7),
+                     orientation: mn.Vector3 = mn.Vector3(-1.57, 0, 0),
+                     resolution: mn.Vector2i = (mn.Vector2i(1024, 1024))):
+
     camera_sensor_spec = habitat_sim.CameraSensorSpec()
     camera_sensor_spec.sensor_type = habitat_sim.SensorType.COLOR
     camera_sensor_spec.uuid = name
+    camera_sensor_spec.position = mn.Vector3(0, 4, 7)
+    camera_sensor_spec.orientation = mn.Vector3(-1.57, 0, 0)
+    camera_sensor_spec.resolution = mn.Vector2i(1024, 1024)
     env.sim.add_sensor(camera_sensor_spec, 0)
-    print('added scene_cam')
 
 
 def set_agent_state(agent, position, orientation):

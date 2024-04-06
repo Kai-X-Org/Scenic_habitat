@@ -78,8 +78,8 @@ class SpotRobot(Robot):
     _policy_path_dict: dict(pick='/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/policies/pick_latest.torchscript',
                        place='/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/policies/place_latest_sample.torchscript')
     _policies: dict()
-    _action_dict: {"arm_action": ArmActionConfig(type="MagicGraspAction"),
-                   "base_velocity": BaseVelocityActionConfig()}
+    _action_dict: {self.name + "_arm_action": ArmActionConfig(type="MagicGraspAction"),
+                   self.name + "_base_velocity": BaseVelocityActionConfig()}
     shape: CylinderShape(dimensions=(0.508,0.559,1.096)) # TODO change this. 
 
 class KinematicHumanoid(HabitatAgent):
