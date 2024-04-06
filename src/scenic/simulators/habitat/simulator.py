@@ -135,6 +135,7 @@ class HabitatSimulation(Simulation):
         self.agent_dict = dict()
         self.sim = None
         self.observations = list()
+        self.env_observations = list()
         self.ego = None
         self.habitat_agents = list()
         self.scenario_number = scenario_number  # used for naming of videos
@@ -179,8 +180,8 @@ class HabitatSimulation(Simulation):
 
         self.env = utils.init_rearrange_env(self.agent_dict, action_dict, timestep=self.timestep) 
         self.sim = self.env.sim
-        utils.add_scene_camera(self.env) # maybe could move it before env.reset()???
         self.env.reset() # need to be called. presumable calls sim.on_new_scene in there
+        utils.add_scene_camera(self.env) # maybe could move it before env.reset()???
         # utils.add_scene_camera(self.env) # maybe could move it before env.reset()???
         
         # self.sim = utils.init_rearrange_sim(self.agent_dict) # DO this if we want to use habitat_sim only
@@ -279,7 +280,9 @@ class HabitatSimulation(Simulation):
         # These are for when we are using purely habitat sim
         # self.sim.step_physics(self.timestep)
         # self.observations.append(self.sim.get_sensor_observations())
-        self.observations.append(self.env.step(self.step_action_dict))
+
+        self.env_observations.append(self.env.step(self.step_action_dict))
+        self.observations.append(self.sim.get_sensor_observations())
 
         self.step_action_dict = {
             "action": tuple(),
