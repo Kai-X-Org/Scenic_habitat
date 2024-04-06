@@ -5,6 +5,7 @@ import os
 import traceback
 import warnings
 import torch
+from pprint import pprint
 
 import habitat_sim
 import magnum as mn
@@ -144,6 +145,8 @@ class HabitatSimulation(Simulation):
             "action": tuple(),
             "action_args": dict()
         }
+        self.object_counter = 0 # needed to keep track of ojbect id's
+
         super().__init__(scene, timestep=timestep, **kwargs)
 
     def setup(self):
@@ -181,17 +184,16 @@ class HabitatSimulation(Simulation):
         self.env = utils.init_rearrange_env(self.agent_dict, action_dict, timestep=self.timestep) 
         self.sim = self.env.sim
         self.env.reset() # need to be called. presumable calls sim.on_new_scene in there
-        utils.add_scene_camera(self.env) # maybe could move it before env.reset()???
-        # utils.add_scene_camera(self.env) # maybe could move it before env.reset()???
-        
-        # self.sim = utils.init_rearrange_sim(self.agent_dict) # DO this if we want to use habitat_sim only
+        utils.add_scene_camera(self.env)        
 
         self.obj_attr_mgr = self.sim.get_object_template_manager()
         self.prim_attr_mgr = self.sim.get_asset_template_manager()
         self.stage_attr_mgr = self.sim.get_stage_template_manager()
         self.rigid_obj_mgr = self.sim.get_rigid_object_manager()
+        print(f"SCENE OBJ IDS: {self.sim.scene_obj_ids}")
 
         obs = self.env.step({"action": (), "action_args": {}})
+        
         super().setup()  # Calls createObjectInSimulator for each object
         # self.sim.step({}) # TODO is this needed???
         # FIXME remove this now that we are on ENV???
@@ -225,7 +227,6 @@ class HabitatSimulation(Simulation):
                 art_agent.sim_obj.motion_type = MotionType.KINEMATIC # TODO fixe the physics
                 art_agent._fixed_base = True  # TODO should this be added?
                 obj._humanoid_controller = HumanoidRearrangeController(obj._motion_data_path)
-                # obj._humanoid_controller.reset(art_agent.base_transformation)
                 obj._humanoid_joint_action = HumanoidJointAction(config=HumanoidJointActionConfig(),
                                                                  sim=self.sim, name=f'agent_{obj._agent_id}')
             else:
@@ -248,15 +249,16 @@ class HabitatSimulation(Simulation):
             self.obj_attr_mgr.load_configs('/home/ek65/habitat-lab/data/objects/ycb/configs/')
             obj_template_handle = self.obj_attr_mgr.get_template_handles(handle)[0]
             obj._managed_rigid_object = self.rigid_obj_mgr.add_object_by_template_handle(obj_template_handle)
+            obj._object_id = obj._managed_rigid_object.object_id
 
             x, y, z, _, _, _ = self.scenicToHabitatMap((obj.position[0], obj.position[1], obj.position[2],0, 0, 0))
             obj._managed_rigid_object.translation = np.array([x, y, z])
             obj._managed_rigid_object.rotation = mn.Quaternion.rotation(mn.Deg(0), [-1.0, 0.0, 0.0]) # TODO temporary solution
             
+            # May or may not ever need this block
             # obj._object_id = self.sim.add_object_by_handle(handle)
             # self.sim.set_translation
             # self.sim.rigid_obj_mgr
-            # TODO add in the rest!!!
 
     def executeActions(self, allActions):
         """

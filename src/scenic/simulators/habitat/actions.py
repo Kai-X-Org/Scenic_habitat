@@ -108,6 +108,14 @@ class HumanReachAction(Action):
         arg_dict = {arg_name: human_joints_trans}
         obj._humanoid_joint_action.step(**arg_dict)
 
+class HumanGoToLookAtAction(Action):
+    def __init__(self, obj_pos):
+        """
+        Vector obj_pos: object position in Scenic coordinates
+        """
+        pass
+    def applyTo(self):
+        pass
 
 class OpenGripperAction(Action):
     def applyTo(self, obj, sim):
