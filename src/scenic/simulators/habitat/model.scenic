@@ -2,8 +2,15 @@ import math
 from scenic.core.utils import repairMesh
 from scenic.simulators.habitat.simulator import HabitatSimulation, HabitatSimulator
 import trimesh
-from habitat.config.default_structured_configs import ArmActionConfig, BaseVelocityActionConfig, OracleNavActionConfig, ActionConfig
-
+from habitat.config.default_structured_configs import (ArmActionConfig, 
+                                                       BaseVelocityActionConfig, 
+                                                       OracleNavActionConfig, 
+                                                       ActionConfig,
+                                                       HumanoidJointActionConfig, 
+                                                       HumanoidPickActionConfig,
+                                                       ThirdRGBSensorConfig, 
+                                                       HeadRGBSensorConfig,
+                                                       HeadPanopticSensorConfig)
 
 simulator HabitatSimulator()
 data_dir = '/home/ek65/habitat-lab/data/'
@@ -98,6 +105,17 @@ class KinematicHumanoid(HabitatAgent):
     _humanoid_controller: None
     urdf_path: None
     shape: CylinderShape(dimensions=(0.508,0.559,1.75))
+
+    @property
+    def _action_dict(self):
+        return action_dict = {
+            self.name + "_humanoid_joint_action": HumanoidJointActionConfig(),
+            self.name + "_humanoid_navigate_action": OracleNavActionConfig(type="OracleNavCoordinateAction", 
+                                                              motion_control="human_joints",
+                                                              spawn_max_dist_to_obj=1.0),
+            self.name + "_humanoid_pick_obj_id_action": HumanoidPickActionConfig(type="HumanoidPickObjIdAction")
+            
+        }
 
 class Female_0(KinematicHumanoid):
     name: "Female_0"

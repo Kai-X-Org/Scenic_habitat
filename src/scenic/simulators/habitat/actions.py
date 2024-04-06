@@ -85,6 +85,30 @@ class HumanStopAction(Action):
         arg_dict = {arg_name: human_joints_trans}
         obj._humanoid_joint_action.step(**arg_dict)
 
+
+class HumanReachAction(Action):
+    """
+    Still in the works
+    """
+    def __init__(self, obj_pos: mn.Vector3, index_hand=0):
+        self.obj_pos = obj_pos
+        self.index_hand = index_hand
+
+    def applyTo(self, obj, sim):
+        self.art_agent = obj._articulated_agent
+        x, y, z, _, _, _ = sim.scenicToHabitatMap((self.obj_pos[0], self.obj_pos[1], self.obj_pos[2],0,0,0)) 
+        obj_pose = mn.Vector3(x, y, z)
+
+        obj._humanoid_controller.reset(obj._articulated_agent.base_transformation) # probelm, likely relative to human frame?
+        obj._humanoid_controller.calculate_reach_pose(rel_pose)
+
+        human_joints_trans = obj._humanoid_controller.get_pose()
+        
+        arg_name = obj._humanoid_joint_action._action_arg_prefix + "human_joints_trans"
+        arg_dict = {arg_name: human_joints_trans}
+        obj._humanoid_joint_action.step(**arg_dict)
+
+
 class OpenGripperAction(Action):
     def applyTo(self, obj, sim):
         obj._articulated_agent.open_gripper()
