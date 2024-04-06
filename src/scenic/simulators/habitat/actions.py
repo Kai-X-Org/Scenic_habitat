@@ -60,31 +60,17 @@ class HumanGoAction(Action):
     def applyTo(self, obj, sim):
         self.art_agent = obj._articulated_agent
         x, y, z, _, _, _ = sim.scenicToHabitatMap((self.x, self.y, self.z,0,0,0)) # TODO some sketchy coordinate transfomr here
-        # print(f'Moving {(x, y, z)}')
 
-        print("current BASE POS:", self.art_agent.base_pos)
-        # self.pos_delta = np.array([x, y, z])
-        # rel_pose = mn.Vector3(self.art_agent.base_pos + self.pos_delta) 
         rel_pose = mn.Vector3(x, y, z)
 
-        # print('rel_pose', rel_pose)
         obj._humanoid_controller.reset(obj._articulated_agent.base_transformation) # probelm, likely relative to human frame?
         obj._humanoid_controller.calculate_walk_pose(rel_pose)
 
-        # print("BASE POS1:", obj._articulated_agent.base_pos)
-        # print("BASE_TRANSFORMATION:", obj._articulated_agent.base_transformation)
-
         human_joints_trans = obj._humanoid_controller.get_pose()
-        # print("BASE POS2:", obj._articulated_agent.base_pos)
         
         arg_name = obj._humanoid_joint_action._action_arg_prefix + "human_joints_trans"
         arg_dict = {arg_name: human_joints_trans}
         obj._humanoid_joint_action.step(**arg_dict)
-
-        # print("NEW BASE POS:", obj._articulated_agent.base_pos)
-        # print("BASE_TRANSFORMATION 2:", obj._articulated_agent.base_transformation)
-        # print("Final BASE POS:", self.art_agent.base_pos)
-        # print("BASE_TRANSFORMATION 3:", obj._articulated_agent.base_transformation)
 
 class HumanStopAction(Action):
     def applyTo(self, obj, sim):
