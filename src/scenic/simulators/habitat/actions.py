@@ -119,12 +119,10 @@ class HumanoidNavLookAtAction(Action):
         self.object_trans = object_trans
 
     def applyTo(self, obj, sim):
-        def f():
-            sim.step_action_dict["action"] += ("humanoid_navigate_action")
-            sim.step_action_dict["action_args"]["oracle_nav_lookat_action"] = self.object_trans
-            sim.step_action_dict["action_args"]["mode"] = 1  # not quite sure what this means, but it is done in the tutorial
+        sim.step_action_dict["action"] += tuple([obj.name + "_humanoid_navigate_action"])
+        sim.step_action_dict["action_args"]["oracle_nav_lookat_action"] = self.object_trans
+        sim.step_action_dict["action_args"]["mode"] = 1  # not quite sure what this means, but it is done in the tutorial
 
-        return f
 
 class OpenGripperAction(Action):
     def applyTo(self, obj, sim):
