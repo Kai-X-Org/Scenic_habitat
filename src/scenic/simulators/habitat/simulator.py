@@ -281,6 +281,7 @@ class HabitatSimulation(Simulation):
         # appending observations from self.sim.get_sensor_observations() is
         # necessary since env.step(...) does not return observation
         # from sensors added after env is created, for some reason
+        # breakpoint()
         self.env_observations.append(self.env.step(self.step_action_dict))
         self.observations.append(self.sim.get_sensor_observations()) 
 

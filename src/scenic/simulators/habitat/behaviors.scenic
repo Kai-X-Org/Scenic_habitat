@@ -5,8 +5,7 @@ from scenic.simulators.habitat.actions import *
 
 behavior GoToLookAt(obj):
     obj_id = obj._object_id
-    object_trans = simulation().rigid_obj_mgr.get_object_by_id(obj_id).translation
-    delta = 2.0
+    object_trans = obj._managed_rigid_object.translation
 
     object_agent_vec = self._articulated_agent.base_pos - object_trans
     object_agent_vec.y = 0
@@ -14,10 +13,9 @@ behavior GoToLookAt(obj):
 
     agent_displ = np.inf
     agent_rot = np.inf
-    prev_rot = self._articulated_agent.base_rot
-    prev_pos = self._articulated_agent.base_pos
     
     while agent_displ > 1e-9 or agent_rot > 1e-9:
+        print("WALKING")
         prev_rot = self._articulated_agent.base_rot
         prev_pos = self._articulated_agent.base_pos
 
