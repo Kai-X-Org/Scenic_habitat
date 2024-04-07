@@ -165,6 +165,7 @@ class HabitatSimulation(Simulation):
                 agent_count += 1
 
                 sim_sensors = obj._sim_sensors
+
                 x, y, z = obj.position
                 agent_config = utils.create_agent_config(obj.name, obj._articulated_agent_type, obj.urdf_path, 
                                     motion_data_path=obj._motion_data_path, sim_sensors=sim_sensors)

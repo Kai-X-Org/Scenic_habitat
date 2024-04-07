@@ -28,7 +28,6 @@ class HabitatAgent():
         "third_rgb": ThirdRGBSensorConfig(width=1024, height=1024),
         "head_rgb": HeadRGBSensorConfig(),
     }
-    
 
     @property
     def _action_dict(self):

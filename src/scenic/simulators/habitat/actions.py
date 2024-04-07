@@ -108,14 +108,23 @@ class HumanReachAction(Action):
         arg_dict = {arg_name: human_joints_trans}
         obj._humanoid_joint_action.step(**arg_dict)
 
-class HumanGoToLookAtAction(Action):
-    def __init__(self, obj_pos):
+class HumanoidNavLookAtAction(Action):
+    """
+    Carry out navigating to an object for one timestep
+    """
+    def __init__(self, object_trans):
         """
-        Vector obj_pos: object position in Scenic coordinates
+        Vector obj_pos: object position in Habitat coordinates
         """
-        pass
-    def applyTo(self):
-        pass
+        self.object_trans = object_trans
+
+    def applyTo(self, obj, sim):
+        def f():
+            sim.step_action_dict["action"] += ("humanoid_navigate_action")
+            sim.step_action_dict["action_args"]["oracle_nav_lookat_action"] = self.object_trans
+            sim.step_action_dict["action_args"]["mode"] = 1  # not quite sure what this means, but it is done in the tutorial
+
+        return f
 
 class OpenGripperAction(Action):
     def applyTo(self, obj, sim):
