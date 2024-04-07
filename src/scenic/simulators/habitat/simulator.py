@@ -251,8 +251,9 @@ class HabitatSimulation(Simulation):
 
             x, y, z, _, _, _ = self.scenicToHabitatMap((obj.position[0], obj.position[1], obj.position[2],0, 0, 0))
             obj._managed_rigid_object.translation = np.array([x, y, z])
-            obj._managed_rigid_object.rotation = mn.Quaternion.rotation(mn.Deg(0), [-1.0, 0.0, 0.0]) # TODO temporary solution
+            obj._managed_rigid_object.rotation = mn.Quaternion.rotation(mn.Rad(obj.yaw), [0.0, 1.0, 0.0]) 
             
+            print(f"OBJECT LOCATION IN HABITAT: {obj._managed_rigid_object.translation}")
             # May or may not ever need this block
             # obj._object_id = self.sim.add_object_by_handle(handle)
             # self.sim.set_translation
@@ -309,8 +310,13 @@ class HabitatSimulation(Simulation):
             )
         else:
             # still need to get the object informations!!!
+            x, y, z = obj._managed_rigid_object.translation
+            rotation = obj._managed_rigid_object.rotation 
+            # FIXME do the quaternion to Euler conversion
+            x, y, z, _, _, _ = self.habitatToScenicMap((x, y, z, 0, 0, 0))
+
             d = dict(
-                    position=Vector(0, 0, 0),
+                    position=Vector(x, y, z),
                     yaw=0,
                     pitch=0,
                     roll=0,
@@ -319,6 +325,7 @@ class HabitatSimulation(Simulation):
                     angularSpeed=0,
                     angularVelocity=Vector(0, 0, 0),
             )
+
         return d
 
     def destroy(self):
@@ -411,7 +418,7 @@ class HabitatSimulation(Simulation):
         """
         Converts from the habitat map frame coordinate to the Scenic map coordinate
         Args:
-        pose: (x, y, z, yaw)
+        pose: (x, y, z, roll, pitch, yaw)
         """
         # assert len(pose) == 4
         # return self.RobotToScenicMap(self.HabitatToRobotMap(pose), obj=obj)
