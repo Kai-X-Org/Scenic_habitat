@@ -56,6 +56,6 @@ behavior HumanGo(x=0, y=0, z=0, num_steps=100):
     print('finish scene')
     terminate
 
-human = new Female_0 at (-1.5, -5.5, 0), with behavior HumanGo(y=1)
 spot = new SpotRobot at (-1.5, -6.5, 0)
-box = new GelatinBox at (-1.5, -3.5, 0)
+box = new GelatinBox at (-1.5, 1, 0)
+human = new Female_0 at (-1.5, -5.5, 0), with behavior GoToLookAt(box)

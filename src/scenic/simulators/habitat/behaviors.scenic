@@ -5,7 +5,7 @@ from scenic.simulators.habitat.actions import *
 
 behavior GoToLookAt(obj):
     obj_id = obj._object_id
-    object_trans = simulation().rigid_obj_mgr.get_object_by_id(obj_id)
+    object_trans = simulation().rigid_obj_mgr.get_object_by_id(obj_id).translation
     delta = 2.0
 
     object_agent_vec = self._articulated_agent.base_pos - object_trans
@@ -23,8 +23,8 @@ behavior GoToLookAt(obj):
 
         take HumanoidNavLookAtAction(object_trans)
 
-        cur_rot = env.sim.articulated_agent.base_rot
-        cur_pos = env.sim.articulated_agent.base_pos
+        cur_rot = self._articulated_agent.base_rot
+        cur_pos = self._articulated_agent.base_pos
         agent_displ = (cur_pos - prev_pos).length()
         agent_rot = np.abs(cur_rot - prev_rot)
 
