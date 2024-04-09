@@ -156,9 +156,7 @@ class HabitatSimulation(Simulation):
         # getting the agent configs
         action_dict = dict()
         for obj in self.scene.objects:
-            # print("entered loop!")
             if obj.is_agent:
-                # self.ego = obj
                 self.habitat_agents.append(obj)
                 obj._agent_id = agent_count
                 obj.name = 'agent_' + str(agent_count)
@@ -193,10 +191,6 @@ class HabitatSimulation(Simulation):
         obs = self.env.step({"action": (), "action_args": {}})
         
         super().setup()  # Calls createObjectInSimulator for each object
-        # self.sim.step({}) # TODO is this needed???
-        # FIXME remove this now that we are on ENV???
-        # self.observations.append(self.sim.get_sensor_observations())
-        # print(self.observations[0].keys())
         return
 
     def createObjectInSimulator(self, obj):
@@ -240,7 +234,6 @@ class HabitatSimulation(Simulation):
             x, y, z, _, _, _ = self.scenicToHabitatMap((obj.position[0], obj.position[1], obj.position[2],0, 0, 0))
             art_agent.base_pos = mn.Vector3(x, y, z) # TODO temporary solution
             art_agent.base_rot = obj.yaw # ROTATION IS just the Yaw angle; can also
-            # set it directly with art_agent.sim_obj.rotation = <Quaternion>
 
         else:
             handle = obj._object_file_handle
@@ -253,21 +246,12 @@ class HabitatSimulation(Simulation):
             obj._managed_rigid_object.translation = np.array([x, y, z])
             obj._managed_rigid_object.rotation = mn.Quaternion.rotation(mn.Rad(obj.yaw), [0.0, 1.0, 0.0]) 
             
-            print(f"OBJECT LOCATION IN HABITAT: {obj._managed_rigid_object.translation}")
-            # May or may not ever need this block
-            # obj._object_id = self.sim.add_object_by_handle(handle)
-            # self.sim.set_translation
-            # self.sim.rigid_obj_mgr
 
     def executeActions(self, allActions):
         """
         execute action for each object. Does not immediately render,
         but instead buffers the object
         """
-
-        # TODO things might be different here with the use of Env
-        # not really, we could return the empty function
-        # or just have the function append to the action dict
         for agent, actions in allActions.items():
             for action in actions:
                 try:
