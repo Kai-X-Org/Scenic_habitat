@@ -31,8 +31,6 @@ behavior MoveAndBack(x=0, y=0, z=0, num_steps=100):
 
 ego = new FetchRobot at (Range(-6.0, -5.5), 0, Range(-1.8, -1.3)), with yaw -35 deg, with behavior MoveAndBack(x=3, z=0, num_steps=100)
 human = new Female_0 at (Range(-4.5, -2.5), 0, Range(0,1.5)), with yaw Range(90, 180) deg
-# master_chef = new MasterChef at (-3.5, 0, -1.5)
-# tennis_ball = new TennisBall at (-4.5, 0, -1.5)
 tennis_ball = new TennisBall at (-4.5, 0, Range(-1.5, 2.5))
 require distance from tennis_ball to ego > 1
 require distance from human to ego > 1

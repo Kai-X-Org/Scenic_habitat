@@ -140,7 +140,7 @@ class HabitatSimulation(Simulation):
         self.ego = None
         self.habitat_agents = list()
         self.scenario_number = scenario_number  # used for naming of videos
-        self.device = torch.device('cuda') # I think this is right?\
+        self.device = torch.device('cuda') 
         self.step_action_dict = {
             "action": tuple(),
             "action_args": dict()
@@ -179,14 +179,13 @@ class HabitatSimulation(Simulation):
 
         self.env = utils.init_rearrange_env(self.agent_dict, action_dict, timestep=self.timestep) 
         self.sim = self.env.sim
-        self.env.reset() # need to be called. presumable calls sim.on_new_scene in there
+        self.env.reset() 
         utils.add_scene_camera(self.env)        
 
         self.obj_attr_mgr = self.sim.get_object_template_manager()
         self.prim_attr_mgr = self.sim.get_asset_template_manager()
         self.stage_attr_mgr = self.sim.get_stage_template_manager()
         self.rigid_obj_mgr = self.sim.get_rigid_object_manager()
-        print(f"SCENE OBJ IDS: {self.sim.scene_obj_ids}")
 
         obs = self.env.step({"action": (), "action_args": {}})
         
@@ -208,21 +207,17 @@ class HabitatSimulation(Simulation):
         for action_name, action_space in self.env.action_space.items():
             print(action_name, action_space)
         if obj.is_agent:
-            art_agent = self.env.sim.agents_mgr[obj._agent_id].articulated_agent # TODO what to do with this line? 
-
-            print(f"art_agent: {art_agent}") 
-            print(f"art_agent base_pos: {art_agent.base_pos}") 
+            art_agent = self.env.sim.agents_mgr[obj._agent_id].articulated_agent  
 
             obj._articulated_agent = art_agent
             if obj._articulated_agent_type == 'KinematicHumanoid':
                 print('data_path:!!!', obj._motion_data_path)
-                art_agent.sim_obj.motion_type = MotionType.KINEMATIC # TODO fixe the physics
-                art_agent._fixed_base = True  # TODO should this be added?
+                art_agent.sim_obj.motion_type = MotionType.KINEMATIC 
+                art_agent._fixed_base = True  
                 obj._humanoid_controller = HumanoidRearrangeController(obj._motion_data_path)
                 obj._humanoid_joint_action = HumanoidJointAction(config=HumanoidJointActionConfig(),
                                                                  sim=self.sim, name=f'agent_{obj._agent_id}')
             else:
-                # art_agent.sim_obj.motion_type = MotionType.DYNAMIC # TODO fixe the physics
                 art_agent._fixed_base = False
                 if obj._has_grasp:
                     obj._grasp_manager = self.sim.agents_mgr[obj._agent_id].grasp_mgrs[0]
@@ -232,8 +227,8 @@ class HabitatSimulation(Simulation):
                     obj._policies[action] = torch.jit.load(model_dir, _extra_files=extra_files, map_location=self.device)
 
             x, y, z, _, _, _ = self.scenicToHabitatMap((obj.position[0], obj.position[1], obj.position[2],0, 0, 0))
-            art_agent.base_pos = mn.Vector3(x, y, z) # TODO temporary solution
-            art_agent.base_rot = obj.yaw # ROTATION IS just the Yaw angle; can also
+            art_agent.base_pos = mn.Vector3(x, y, z) 
+            art_agent.base_rot = obj.yaw 
 
         else:
             handle = obj._object_file_handle
@@ -294,10 +289,8 @@ class HabitatSimulation(Simulation):
                     angularVelocity=Vector(0, 0, 0),
             )
         else:
-            # still need to get the object informations!!!
             x, y, z = obj._managed_rigid_object.translation
             rotation = obj._managed_rigid_object.rotation 
-            # FIXME do the quaternion to Euler conversion
             x, y, z, _, _, _ = self.habitatToScenicMap((x, y, z, 0, 0, 0))
 
             d = dict(
@@ -321,18 +314,6 @@ class HabitatSimulation(Simulation):
             "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/scene_overview",
             open_vid=False,
         )
-        # vut.make_video(
-            # self.observations,
-            # self.habitat_agents[0].name + "_third_rgb",
-            # "color",
-            # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/demo_vid",
-            # open_vid=False,
-        # )
-        # print(self.observations)
-        # for i, obs in enumerate(self.observations):
-            # print(obs['head_rgb'].shape)
-            # if i >= 100:
-                # break
         vut.make_video(
             self.observations,
             "agent_0_third_rgb",
