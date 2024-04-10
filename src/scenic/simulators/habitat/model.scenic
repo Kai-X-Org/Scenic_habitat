@@ -2,15 +2,7 @@ import math
 from scenic.core.utils import repairMesh
 from scenic.simulators.habitat.simulator import HabitatSimulation, HabitatSimulator
 import trimesh
-from habitat.config.default_structured_configs import (ArmActionConfig, 
-                                                       BaseVelocityActionConfig, 
-                                                       OracleNavActionConfig, 
-                                                       ActionConfig,
-                                                       HumanoidJointActionConfig, 
-                                                       HumanoidPickActionConfig,
-                                                       ThirdRGBSensorConfig, 
-                                                       HeadRGBSensorConfig,
-                                                       HeadPanopticSensorConfig)
+import habitat.config.default_structured_configs as cfg
 
 simulator HabitatSimulator()
 data_dir = '/home/ek65/habitat-lab/data/'
@@ -24,10 +16,11 @@ class HabitatAgent():
     _motion_data_path: None
     _articulated_agent: None
     _policy_path_dict: dict()
-    _sim_sensors = { # TODO temporary
-        "third_rgb": ThirdRGBSensorConfig(width=1024, height=1024),
-        "head_rgb": HeadRGBSensorConfig(),
+    _sim_sensors: { # TODO temporary
+        "third_rgb": cfg.ThirdRGBSensorConfig(width=1024, height=1024),
+        "head_rgb": cfg.HeadRGBSensorConfig(),
     }
+    _lab_sensors: dict()
 
     @property
     def _action_dict(self):
@@ -92,14 +85,25 @@ class SpotRobot(Robot):
     _policy_path_dict: dict(pick='/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/policies/pick_latest.torchscript',
                        place='/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/policies/place_latest_sample.torchscript')
     _policies: dict()
-    # _action_dict: {self.name + "_arm_action": ArmActionConfig(type="MagicGraspAction"),
-                   # self.name + "_base_velocity": BaseVelocityActionConfig()}
     shape: CylinderShape(dimensions=(0.508,0.559,1.096)) # TODO change this. 
+
+    _sim_sensors: { # TODO temporary
+                "third_rgb": cfg.ThirdRGBSensorConfig(width=1024, height=1024),
+                "head_rgb": cfg.HeadRGBSensorConfig(),
+    }
+    _lab_sensors: {
+                "obj_goal_sensor": cfg.ObjectGoalSensorConfig(),
+                "relative_initial_ee_orientation": cfg.RelativeInitialEEOrientationSensorConfig(),
+                "relative_target_object_orientation": cfg.RelativeTargetObjectOrientationSensorConfig(),
+                "articulated_agent_jaw_depth": cfg.JawDepthSensorConfig(),
+                "joint": cfg.JointSensorConfig(),
+               "is_holding": cfg.IsHoldingSensorConfig()
+    }
 
     @property
     def _action_dict(self):
-        return  {self.name + "_arm_action": ArmActionConfig(type="MagicGraspAction"),
-                       self.name + "_base_velocity": BaseVelocityActionConfig()}
+        return  {self.name + "_arm_action": cfg.ArmActionConfig(type="MagicGraspAction"),
+                       self.name + "_base_velocity": cfg.BaseVelocityActionConfig()}
 
 
 class KinematicHumanoid(HabitatAgent):
@@ -113,11 +117,11 @@ class KinematicHumanoid(HabitatAgent):
     @property
     def _action_dict(self):
         return {
-            self.name + "_humanoid_joint_action": HumanoidJointActionConfig(),
-            self.name + "_humanoid_navigate_action": OracleNavActionConfig(type="OracleNavCoordinateAction", 
+            self.name + "_humanoid_joint_action": cfg.HumanoidJointActionConfig(),
+            self.name + "_humanoid_navigate_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
                                                               motion_control="human_joints",
                                                               spawn_max_dist_to_obj=1.0),
-            self.name + "_humanoid_pick_obj_id_action": HumanoidPickActionConfig(type="HumanoidPickObjIdAction")
+            self.name + "_humanoid_pick_obj_id_action": cfg.HumanoidPickActionConfig(type="HumanoidPickObjIdAction")
             
         }
 

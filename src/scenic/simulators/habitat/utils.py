@@ -47,13 +47,14 @@ def make_sim_cfg(agent_dict):
     cfg.agents_order = list(cfg.agents.keys())
     return cfg
 
-def make_hab_cfg(agent_dict, action_dict, timestep=1):
+def make_hab_cfg(agent_dict, action_dict, lab_sensor_dict=None, timestep=1):
     """
     Make the configurations for habitat env
     """
     sim_cfg = make_sim_cfg(agent_dict)
     task_cfg = TaskConfig(type="RearrangeEmptyTask-v0")
     task_cfg.actions = action_dict
+    task_cfg.lab_sensors = lab_sensor_dict
     env_cfg = EnvironmentConfig()
     # FIXME line below has hardcoded directory
     dataset_cfg = DatasetConfig(type="RearrangeDataset-v0", 
@@ -102,15 +103,12 @@ def init_rearrange_sim(agent_dict):
 
     return sim
 
-def init_rearrange_env(agent_dict, action_dict, timestep=1):
+def init_rearrange_env(agent_dict, action_dict, lab_sensor_dict=None, timestep=1):
     """
     Initializes the rearrangement environment
     """
-    hab_cfg = make_hab_cfg(agent_dict, action_dict, timestep=timestep)
-    print('FINISHED MAKING HAB CFG') 
+    hab_cfg = make_hab_cfg(agent_dict, action_dict, lab_sensor_dict=lab_sensor_dict, timestep=timestep)
     res_cfg = OmegaConf.create(hab_cfg)
-    print('FINISHED MAKING HAB OMEGA CFG') 
-    print('creating ENV!!!') 
     return Env(res_cfg)
 
 def add_scene_camera(env, name='scene_camera_rgb', camera_pos: mn.Vector3 = mn.Vector3(0, 4, 7),

@@ -225,6 +225,7 @@ class HabitatSimulation(Simulation):
                 extra_files = {"net_meta_dict.pkl": ""} # TODO temporary hardcoding
                 for action, model_dir in obj._policy_path_dict.items():
                     obj._policies[action] = torch.jit.load(model_dir, _extra_files=extra_files, map_location=self.device)
+                    # TODO for SPOT pick/place only
 
             x, y, z, _, _, _ = self.scenicToHabitatMap((obj.position[0], obj.position[1], obj.position[2],0, 0, 0))
             art_agent.base_pos = mn.Vector3(x, y, z) 
@@ -268,6 +269,9 @@ class HabitatSimulation(Simulation):
             "action": tuple(),
             "action_args": dict()
         } # clearing step_action_dict
+
+        print(self.env_observations[-1].keys())
+        print(self.env_observations[-1])
 
 
     def getProperties(self, obj, properties):
