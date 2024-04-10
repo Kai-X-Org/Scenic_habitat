@@ -53,12 +53,15 @@ def make_hab_cfg(agent_dict, action_dict, lab_sensor_dict, timestep=1):
     """
     sim_cfg = make_sim_cfg(agent_dict)
     task_cfg = TaskConfig(type="RearrangeEmptyTask-v0")
+    # task_cfg = TaskConfig()
     task_cfg.actions = action_dict
     task_cfg.lab_sensors = lab_sensor_dict
     env_cfg = EnvironmentConfig()
     # FIXME line below has hardcoded directory
     dataset_cfg = DatasetConfig(type="RearrangeDataset-v0", 
                                 data_path="/home/ek65/habitat-lab/data/hab3_bench_assets/episode_datasets/small_large.json.gz") 
+    # dataset_cfg = DatasetConfig(type="RearrangeDataset-v0") 
+    # dataset_cfg = DatasetConfig() 
 
     task_cfg.physics_target_sps = 1/timestep # This communicates the Scenic timestep to habitat
 
