@@ -47,7 +47,7 @@ def make_sim_cfg(agent_dict):
     cfg.agents_order = list(cfg.agents.keys())
     return cfg
 
-def make_hab_cfg(agent_dict, action_dict, lab_sensor_dict=None, timestep=1):
+def make_hab_cfg(agent_dict, action_dict, lab_sensor_dict, timestep=1):
     """
     Make the configurations for habitat env
     """
@@ -103,11 +103,11 @@ def init_rearrange_sim(agent_dict):
 
     return sim
 
-def init_rearrange_env(agent_dict, action_dict, lab_sensor_dict=None, timestep=1):
+def init_rearrange_env(agent_dict, action_dict, lab_sensor_dict, timestep=1):
     """
     Initializes the rearrangement environment
     """
-    hab_cfg = make_hab_cfg(agent_dict, action_dict, lab_sensor_dict=lab_sensor_dict, timestep=timestep)
+    hab_cfg = make_hab_cfg(agent_dict, action_dict, lab_sensor_dict, timestep=timestep)
     res_cfg = OmegaConf.create(hab_cfg)
     return Env(res_cfg)
 

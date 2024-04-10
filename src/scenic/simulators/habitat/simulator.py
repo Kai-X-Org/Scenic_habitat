@@ -155,6 +155,7 @@ class HabitatSimulation(Simulation):
         
         # getting the agent configs
         action_dict = dict()
+        lab_sensor_dict = dict()
         for obj in self.scene.objects:
             if obj.is_agent:
                 self.habitat_agents.append(obj)
@@ -174,10 +175,13 @@ class HabitatSimulation(Simulation):
                     self.agent_dict[obj.name] = agent_config 
 
                 action_dict.update(obj._action_dict)
+                lab_sensor_dict.update(obj._lab_sensors)
         
-        print(f"Current Action Dict: {action_dict}")
-
-        self.env = utils.init_rearrange_env(self.agent_dict, action_dict, timestep=self.timestep) 
+        # print(f"Current Action Dict: {action_dict}")
+        
+        # FIXME line below may cause problem. Defaulting dicts to dict(), but that might not be the default
+        # of all the Configs???
+        self.env = utils.init_rearrange_env(self.agent_dict, action_dict, lab_sensor_dict, timestep=self.timestep) 
         self.sim = self.env.sim
         self.env.reset() 
         utils.add_scene_camera(self.env)        
