@@ -1,0 +1,6 @@
+{'PointNav-v1': <class 'habitat.datasets.pointnav.pointnav_dataset.PointNavDatasetV1'>, 
+'ObjectNav-v1': <class 'habitat.datasets.object_nav.object_nav_dataset.ObjectNavDatasetV1'>, 
+'InstanceImageNav-v1': <class 'habitat.datasets.image_nav.instance_image_nav_dataset.InstanceImageNavDatasetV1'>, 
+'MP3DEQA-v1': <class 'habitat.datasets.eqa.mp3d_eqa_dataset.Matterport3dDatasetV1'>, 
+'R2RVLN-v1': <class 'habitat.datasets.vln.r2r_vln_dataset.VLNDatasetV1'>, 
+'RearrangeDataset-v0': <class 'habitat.datasets.rearrange.rearrange_dataset.RearrangeDatasetV0'>}

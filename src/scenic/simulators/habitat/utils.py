@@ -58,8 +58,25 @@ def make_hab_cfg(agent_dict, action_dict, lab_sensor_dict, timestep=1):
     task_cfg.lab_sensors = lab_sensor_dict
     env_cfg = EnvironmentConfig()
     # FIXME line below has hardcoded directory
-    dataset_cfg = DatasetConfig(type="RearrangeDataset-v0", 
-                                data_path="/home/ek65/habitat-lab/data/hab3_bench_assets/episode_datasets/small_large.json.gz") 
+    # RearrageDataset no good. AttributeError
+    # dataset_cfg = DatasetConfig(type="RearrangeDataset-v0", 
+                                # data_path="/home/ek65/habitat-lab/data/hab3_bench_assets/episode_datasets/small_large.json.gz") 
+    # dataset_cfg = DatasetConfig(type="R2RVLN-v1", 
+                                # data_path="data/datasets/rearrange_pick/replica_cad/v0" + \
+                                # "/rearrange_pick_replica_cad_v0/pick.json.gz") 
+    # dataset_cfg = DatasetConfig(type="PointNav-v1", 
+                                # data_path="data/datasets/pointnav/habitat-test-scenes/v1/train/train.json.gz") 
+    dataset_cfg = DatasetConfig(type="ObjectNav-v1", 
+                                data_path="data/datasets/rearrange_pick/replica_cad/v0" + \
+                                "/rearrange_pick_replica_cad_v0/pick.json.gz") # ObjectNav no good. attribute error
+    # dataset_cfg = DatasetConfig(type="ObjectNav-v1", 
+                                # data_path="data/datasets/pointnav/habitat-test-scenes/v1/train/train.json.gz") # ObjectNav no good. attribute error
+    # dataset_cfg = DatasetConfig(type="InstanceImageNav-v1", 
+                                # data_path="data/datasets/rearrange_pick/replica_cad/v0" + \
+                                # "/rearrange_pick_replica_cad_v0/pick.json.gz") 
+    # dataset_cfg = DatasetConfig(type="MP3DEQA-v1", 
+                                # data_path="data/datasets/rearrange_pick/replica_cad/v0" + \
+                                # "/rearrange_pick_replica_cad_v0/pick.json.gz") 
     # dataset_cfg = DatasetConfig(type="RearrangeDataset-v0") 
     # dataset_cfg = DatasetConfig() 
 
@@ -112,6 +129,8 @@ def init_rearrange_env(agent_dict, action_dict, lab_sensor_dict, timestep=1):
     """
     hab_cfg = make_hab_cfg(agent_dict, action_dict, lab_sensor_dict, timestep=timestep)
     res_cfg = OmegaConf.create(hab_cfg)
+    # breakpoint()
+
     return Env(res_cfg)
 
 def add_scene_camera(env, name='scene_camera_rgb', camera_pos: mn.Vector3 = mn.Vector3(0, 4, 7),
