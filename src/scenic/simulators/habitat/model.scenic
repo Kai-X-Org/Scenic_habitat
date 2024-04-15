@@ -114,16 +114,16 @@ class KinematicHumanoid(HabitatAgent):
     urdf_path: None
     shape: CylinderShape(dimensions=(0.508,0.559,1.75))
 
-    @property
-    def _action_dict(self):
-        return {
-            self.name + "_humanoid_joint_action": cfg.HumanoidJointActionConfig(),
-            self.name + "_humanoid_navigate_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
-                                                              motion_control="human_joints",
-                                                              spawn_max_dist_to_obj=1.0),
-            self.name + "_humanoid_pick_obj_id_action": cfg.HumanoidPickActionConfig(type="HumanoidPickObjIdAction")
+    # @property
+    # def _action_dict(self):
+        # return {
+            # self.name + "_humanoid_joint_action": cfg.HumanoidJointActionConfig(),
+            # self.name + "_humanoid_navigate_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
+                                                              # motion_control="human_joints",
+                                                              # spawn_max_dist_to_obj=1.0),
+            # self.name + "_humanoid_pick_obj_id_action": cfg.HumanoidPickActionConfig(type="HumanoidPickObjIdAction")
             
-        }
+        # }
 
 class Female_0(KinematicHumanoid):
     name: "Female_0"

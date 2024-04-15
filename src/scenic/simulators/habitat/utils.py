@@ -52,17 +52,16 @@ def make_hab_cfg(agent_dict, action_dict, lab_sensor_dict, timestep=1):
     Make the configurations for habitat env
     """
     sim_cfg = make_sim_cfg(agent_dict)
-    # task_cfg = TaskConfig(type="RearrangeEmptyTask-v0")
-    # task_cfg = TaskConfig(type="RearrangeEmptyTask-v0")
-    task_cfg = TaskConfig(type="ObjectNav-v1")
+    task_cfg = TaskConfig(type="RearrangeEmptyTask-v0")
+    # task_cfg = TaskConfig(type="ObjectNav-v1")
     # task_cfg = TaskConfig()
     task_cfg.actions = action_dict
     task_cfg.lab_sensors = lab_sensor_dict
     env_cfg = EnvironmentConfig()
     # FIXME line below has hardcoded directory
     # RearrageDataset no good. AttributeError
-    # dataset_cfg = DatasetConfig(type="RearrangeDataset-v0", 
-                                # data_path="/home/ek65/habitat-lab/data/hab3_bench_assets/episode_datasets/small_large.json.gz") 
+    dataset_cfg = DatasetConfig(type="RearrangeDataset-v0", 
+                                data_path="/home/ek65/habitat-lab/data/hab3_bench_assets/episode_datasets/small_large.json.gz") 
     # dataset_cfg = DatasetConfig(type="R2RVLN-v1", 
                                 # data_path="data/datasets/rearrange_pick/replica_cad/v0" + \
                                 # "/rearrange_pick_replica_cad_v0/pick.json.gz") 
@@ -71,8 +70,8 @@ def make_hab_cfg(agent_dict, action_dict, lab_sensor_dict, timestep=1):
     # dataset_cfg = DatasetConfig(type="ObjectNav-v1", 
                                 # data_path="data/datasets/rearrange_pick/replica_cad/v0" + \
                                 # "/rearrange_pick_replica_cad_v0/pick.json.gz") # ObjectNav no good. attribute error
-    dataset_cfg = DatasetConfig(type="ObjectNav-v1", 
-                                data_path="data/datasets/pointnav/habitat-test-scenes/v1/train/train.json.gz") # ObjectNav no good. attribute error
+    # dataset_cfg = DatasetConfig(type="ObjectNav-v1", 
+                                # data_path="data/datasets/pointnav/habitat-test-scenes/v1/train/train.json.gz") 
     # dataset_cfg = DatasetConfig(type="InstanceImageNav-v1", 
                                 # data_path="data/datasets/rearrange_pick/replica_cad/v0" + \
                                 # "/rearrange_pick_replica_cad_v0/pick.json.gz") 
