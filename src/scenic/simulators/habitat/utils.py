@@ -112,6 +112,7 @@ def init_rearrange_env(agent_dict, action_dict, lab_sensor_dict, timestep=1):
     """
     hab_cfg = make_hab_cfg(agent_dict, action_dict, lab_sensor_dict, timestep=timestep)
     res_cfg = OmegaConf.create(hab_cfg)
+    breakpoint()
     return Env(res_cfg)
 
 def add_scene_camera(env, name='scene_camera_rgb', camera_pos: mn.Vector3 = mn.Vector3(0, 4, 7),
