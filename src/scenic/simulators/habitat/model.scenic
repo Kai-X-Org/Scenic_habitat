@@ -89,16 +89,16 @@ class SpotRobot(Robot):
 
     _sim_sensors: { # TODO temporary
                 "third_rgb": cfg.ThirdRGBSensorConfig(width=1024, height=1024),
-                "head_rgb": cfg.HeadRGBSensorConfig(),
-                "articulated_agent_jaw_depth": cfg.JawDepthSensorConfig()
+                "head_rgb": cfg.HeadRGBSensorConfig()
+                # "articulated_agent_jaw_depth": cfg.JawDepthSensorConfig()
     }
-    _lab_sensors: {
-                "obj_goal_sensor": cfg.ObjectGoalSensorConfig(),
-                "relative_initial_ee_orientation": cfg.RelativeInitialEEOrientationSensorConfig(),
-                "relative_target_object_orientation": cfg.RelativeTargetObjectOrientationSensorConfig(),
-                "joint": cfg.JointSensorConfig(),
-               "is_holding": cfg.IsHoldingSensorConfig()
-    }
+    # _lab_sensors: {
+                # "obj_goal_sensor": cfg.ObjectGoalSensorConfig(),
+                # "relative_initial_ee_orientation": cfg.RelativeInitialEEOrientationSensorConfig(),
+                # "relative_target_object_orientation": cfg.RelativeTargetObjectOrientationSensorConfig(),
+                # "joint": cfg.JointSensorConfig(),
+               # "is_holding": cfg.IsHoldingSensorConfig()
+    # }
 
     @property
     def _action_dict(self):

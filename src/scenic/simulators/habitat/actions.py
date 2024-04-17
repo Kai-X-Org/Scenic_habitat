@@ -140,3 +140,13 @@ class SnapToObjectAction(Action):
         obj._grasp_manager.snap_to_obj((self.target_obj_id))
 
 
+class SpotMoveArmAction(Action):
+    def __init__(self, arm_ctrl_angles=[0.0, -3.14, 0.0, 3.0, 0.0, 0.0, 0.0]):
+        self.arm_ctrl_angles = arm_ctrl_angles
+    def applyTo(self, obj, sim):
+
+        # arm_ctrl = [0.0, 0.0, 0.0, 3.0, 0.0, 0.0, 0.0]
+        obj._articulated_agent.arm_joint_pos = self.arm_ctrl_angles
+
+
+

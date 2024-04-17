@@ -268,14 +268,14 @@ class HabitatSimulation(Simulation):
         # breakpoint()
         self.env_observations.append(self.env.step(self.step_action_dict))
         self.observations.append(self.sim.get_sensor_observations()) 
-
+        # TODO call articulated_agent.update to update camera angles
         self.step_action_dict = {
             "action": tuple(),
             "action_args": dict()
         } # clearing step_action_dict
 
-        print(self.env_observations[-1].keys())
-        print(self.env_observations[-1])
+        # print(self.env_observations[-1].keys())
+        # print(self.env_observations[-1])
 
 
     def getProperties(self, obj, properties):
