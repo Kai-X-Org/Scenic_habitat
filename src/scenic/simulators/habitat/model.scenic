@@ -12,6 +12,7 @@ class HabitatAgent():
     object_type: 'agent'
     is_agent: True
     _agent_id: None
+    #_object_id: self._articulated_agent.sim_obj.object_id
     _articulated_agent_type: None
     _motion_data_path: None
     _articulated_agent: None
@@ -41,6 +42,7 @@ class Robot(HabitatAgent):
     _object_template_handle: None
     _has_grasp: True
     _grasp_manager: None
+    _ik_arm_urdf: ""
 
     def distanceToClosest(self, type: type) -> Object:
         """Compute the distance to the closest object of the given type.
@@ -74,8 +76,19 @@ class FetchRobot(Robot):
     name: "FetchRobot"
     object_type: 'FetchRobot'
     _articulated_agent_type: 'FetchRobot'
+    _ik_arm_urdf: "~/habitat-lab/examples/"
     urdf_path: data_dir + 'robots/hab_fetch/robots/hab_fetch.urdf'
     shape: CylinderShape(dimensions=(0.508,0.559,1.096))
+    @property
+    def _action_dict(self):
+        # return  {self.name + "_arm_action": cfg.ArmActionConfig(type="MagicGraspAction"),
+                       # self.name + "_base_velocity": cfg.BaseVelocityActionConfig()},
+                # self.name + "_oracle_coord_action"
+        return {
+            self.name + "_oracle_magic_grasp_action": cfg.ArmActionConfig(type="MagicGraspAction"),
+            self.name + "_base_velocity_action": cfg.BaseVelocityActionConfig(),
+            self.name + "_oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", spawn_max_dist_to_obj=1.0)
+        }
 
 class SpotRobot(Robot):
     name: "SpotRobot"
@@ -86,10 +99,11 @@ class SpotRobot(Robot):
                        place='/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/policies/place_latest_sample.torchscript')
     _policies: dict()
     shape: CylinderShape(dimensions=(0.508,0.559,1.096)) # TODO change this. 
-
+    _ik_arm_urdf: 
     _sim_sensors: { # TODO temporary
                 "third_rgb": cfg.ThirdRGBSensorConfig(width=1024, height=1024),
                 "head_rgb": cfg.HeadRGBSensorConfig()
+                # "arm_rgb": cfg.ArmRGBSensorConfig()
                 # "articulated_agent_jaw_depth": cfg.JawDepthSensorConfig()
     }
     # _lab_sensors: {

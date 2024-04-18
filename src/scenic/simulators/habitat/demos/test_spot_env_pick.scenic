@@ -72,7 +72,6 @@ behavior GoAndReach(reach_x=0, reach_y=0, reach_z=0, move_x=0, move_y=0, move_z=
 behavior RobotNav(x=0, y=0, z=0):
     for _ in range(100):
         take OracleCoordAction(x, y, z)
-    terminate
 
 behavior RobotPick(grip_action=0):
     take OracleMagicGraspAction(grip_action=grip_action)
@@ -91,11 +90,31 @@ behavior MoveSpotArm():
 behavior HumanNav(x=0, y=0, z=0):
     for _ in range(100):
         take HumanoidNavAction(x, y, z)
+    # terminate
+
+behavior RobotNavPick(target_obj):
+    target_pos = target_obj.position
+    x = target_pos[0]
+    y = target_pos[1]
+    z = target_pos[2]
+    for _ in range(100):
+        target_pos = target_obj.position
+        x = target_pos[0]
+        y = target_pos[1]
+        z = target_pos[2]
+        take OracleCoordAction(x, y, z)
+
+    do RobotPick()
     terminate
+    
 # human = new Female_0 at (-1.5, -5.5, 0), with behavior HumanGo(y=1)
 # human = new Female_0 at (-1.5, -5.5, 0), with behavior GoAndReach(reach_x=1.0, reach_y=1.0, 
                                                                   # reach_z=-0.1, move_y=1, index_hand=0)
+bed = RectangularRegion((0, -6.0, 0.4), 1.57, 1.0, 1.0)
+master_chef = new MasterChef on bed
 
 human = new Female_0 at (-1.5, -5.5, 0), with behavior HumanNav(x=-1.5, y=-4.0, z=0)
 # spot = new SpotRobot at (-1.5, -6.5, 0), with behavior MoveSpotArm()
-spot = new SpotRobot at (-1.5, -6.5, 0), with behavior RobotNav(x=-1.5, y=-3.7, z=0)
+# spot = new SpotRobot at (-1.5, -6.5, 0), with behavior RobotNav(x=-1.5, y=-3.7, z=0)
+# spot = new SpotRobot at (-1.5, -6.5, 0), with behavior RobotPick(grip_action=-1)
+spot = new SpotRobot at (-1.5, -6.5, 0), with behavior RobotNavPick(master_chef)

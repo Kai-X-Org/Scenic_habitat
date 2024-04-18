@@ -174,7 +174,9 @@ class OracleMagicGraspAction(Action):
 
     def applyTo(self, obj, sim):
         sim.step_action_dict["action"] += tuple([obj.name + "_oracle_magic_grasp_action"])
-        sim.step_action_dict["action_args"][obj.name + "_oracle_magic_grasp_action"] = self.grip_action
+        # sim.step_action_dict["action_args"][obj.name + "_oracle_magic_grasp_action"] = self.grip_action
+        # sim.step_action_dict["action_args"][obj.name + "_grip_action"] = self.grip_action
+        sim.step_action_dict["action_args"]["grip_action"] = self.grip_action
 
 
 class OpenGripperAction(Action):

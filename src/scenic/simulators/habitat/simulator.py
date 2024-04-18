@@ -166,8 +166,12 @@ class HabitatSimulation(Simulation):
                 sim_sensors = obj._sim_sensors
 
                 x, y, z = obj.position
+                ik_arm_urdf = ""
+                if hasattr(obj, '_ik_arm_urdf'):
+                    ik_arm_urdf = obj._ik_arm_urdf
+
                 agent_config = utils.create_agent_config(obj.name, obj._articulated_agent_type, obj.urdf_path, 
-                                    motion_data_path=obj._motion_data_path, sim_sensors=sim_sensors)
+                                    motion_data_path=obj._motion_data_path, sim_sensors=sim_sensors, ik_arm_urdf=ik_arm_urdf)
 
                 if obj.name in agent_names:
                     raise HabitatSimCreationError(f"Error: two agents have the same name: {obj.name}")
@@ -383,8 +387,6 @@ class HabitatSimulation(Simulation):
         new_pitch = yaw
         new_yaw = roll
         return (x, y, z, new_roll, new_pitch, new_yaw)
-
-
 
     def habitatToScenicMap(self, pose, obj=None):
         """

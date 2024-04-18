@@ -72,7 +72,7 @@ def make_hab_cfg(agent_dict, action_dict, lab_sensor_dict, timestep=1):
 
     return hab_cfg
 
-def create_agent_config(name, agent_type, urdf_path, motion_data_path=None, sim_sensors=None):
+def create_agent_config(name, agent_type, urdf_path, motion_data_path=None, sim_sensors=None, ik_arm_urdf=""):
     # TODO add cases for humanoids!!!
     main_agent_config = AgentConfig()
     main_agent_config.articulated_agent_urdf = urdf_path
@@ -80,6 +80,8 @@ def create_agent_config(name, agent_type, urdf_path, motion_data_path=None, sim_
     main_agent_config.sim_sensors = sim_sensors
     if motion_data_path:
         main_agent_config.motion_data_path = motion_data_path
+    if ik_arm_urdf != "":
+        main_agent_config.ik_arm_urdf = ik_arm_urdf
     return main_agent_config
 
 def init_rearrange_sim(agent_dict):
