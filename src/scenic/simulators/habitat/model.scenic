@@ -102,8 +102,14 @@ class SpotRobot(Robot):
 
     @property
     def _action_dict(self):
-        return  {self.name + "_arm_action": cfg.ArmActionConfig(type="MagicGraspAction"),
-                       self.name + "_base_velocity": cfg.BaseVelocityActionConfig()}
+        # return  {self.name + "_arm_action": cfg.ArmActionConfig(type="MagicGraspAction"),
+                       # self.name + "_base_velocity": cfg.BaseVelocityActionConfig()},
+                # self.name + "_oracle_coord_action"
+        return {
+            self.name + "_oracle_magic_grasp_action": cfg.ArmActionConfig(type="MagicGraspAction"),
+            self.name + "_base_velocity_action": cfg.BaseVelocityActionConfig(),
+            self.name + "_oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", spawn_max_dist_to_obj=1.0)
+        }
 
 
 class KinematicHumanoid(HabitatAgent):
