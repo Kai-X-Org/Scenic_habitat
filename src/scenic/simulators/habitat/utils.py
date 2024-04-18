@@ -139,3 +139,21 @@ def get_agent_state(agent):
 def remove_all_objects(sim):
     for id in sim.get_existing_object_ids():
         sim.remove_object(id)
+
+
+def scenic_to_habitat_map(pose, obj=None):
+    """
+    Converts from the Scenic map coordinate to the habitat map frame coordinate
+    Args:
+    """
+    g = np.array([[0, 1, 0, 0], 
+                  [0, 0, 1, 0], 
+                  [1, 0, 0, 0], 
+                  [0, 0, 0, 1]])
+    x, y, z, roll, pitch, yaw = pose
+    x, y, z, _ = g @ np.array([x, y, z, 1])
+
+    new_roll = pitch
+    new_pitch = yaw
+    new_yaw = roll
+    return (x, y, z, new_roll, new_pitch, new_yaw)

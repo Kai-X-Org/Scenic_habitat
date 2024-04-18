@@ -19,6 +19,7 @@ from habitat_sim.physics import JointMotorSettings, MotionType
 from omegaconf import OmegaConf
 
 from scenic.core.simulators import *
+from scenic.simulators.habitat.utils import scenic_to_habitat_map
 
 
 class GoRelDeltaAction(Action):
@@ -134,21 +135,38 @@ class HumanReachAction(Action):
         sim.step_action_dict["action_args"][obj.name + "_human_joints_trans"] = new_pose
         
 
-class HumanoidNavLookAtAction(Action):
+class HumanoidNavAction(Action):
     """
     Carry out navigating to an object for one timestep
     """
-    def __init__(self, object_trans):
+    def __init__(self, x=0, y=0, z=0):
         """
         Vector obj_pos: object position in Habitat coordinates
         """
-        self.object_trans = object_trans
+        self.x = x
+        self.y = y
+        self.z = z
 
     def applyTo(self, obj, sim):
+        x, y, z, _, _, _ = scenic_to_habitat_map((self.x, self.y, self.z, 0, 0, 0))
+        object_trans = mn.Vector3(x, y, z)
         sim.step_action_dict["action"] += tuple([obj.name + "_humanoid_navigate_action"])
-        sim.step_action_dict["action_args"][obj.name + "_oracle_nav_lookat_action"] = self.object_trans
-        sim.step_action_dict["action_args"][obj.name + "_mode"] = 1  # not quite sure what this means, but it is done in the tutorial
+        sim.step_action_dict["action_args"][obj.name + "_oracle_nav_lookat_action"] = object_trans
+        sim.step_action_dict["action_args"][obj.name + "_mode"] = 1  # not sure what this means, but it is done in the tutorial
+        # sim.step_action_dict["action_args"]["mode"] = 1  # not sure what this means, but it is done in the tutorial
 
+class OracleCoordAction(Action):
+
+    def __init__(self, x=0, y=0, z=0):
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def applyTo(self, obj, sim):
+        x, y, z, _, _, _ = scenic_to_habitat_map((self.x, self.y, self.z, 0, 0, 0))
+        object_trans = mn.Vector3(x, y, z)
+        sim.step_action_dict["action"] += tuple([obj.name + "_oracle_coord_action"])
+        sim.step_action_dict["action_args"][obj.name + "_oracle_nav_lookat_action"] = object_trans
 
 class OpenGripperAction(Action):
     def applyTo(self, obj, sim):
