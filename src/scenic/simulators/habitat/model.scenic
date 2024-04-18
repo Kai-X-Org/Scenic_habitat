@@ -76,18 +76,17 @@ class FetchRobot(Robot):
     name: "FetchRobot"
     object_type: 'FetchRobot'
     _articulated_agent_type: 'FetchRobot'
-    _ik_arm_urdf: "~/habitat-lab/examples/"
+    _ik_arm_urdf: "/home/ek65/habitat-lab/data/robots/hab_fetch/robots/fetch_arm.urdf"
     urdf_path: data_dir + 'robots/hab_fetch/robots/hab_fetch.urdf'
     shape: CylinderShape(dimensions=(0.508,0.559,1.096))
     @property
     def _action_dict(self):
-        # return  {self.name + "_arm_action": cfg.ArmActionConfig(type="MagicGraspAction"),
-                       # self.name + "_base_velocity": cfg.BaseVelocityActionConfig()},
-                # self.name + "_oracle_coord_action"
         return {
             self.name + "_oracle_magic_grasp_action": cfg.ArmActionConfig(type="MagicGraspAction"),
             self.name + "_base_velocity_action": cfg.BaseVelocityActionConfig(),
-            self.name + "_oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", spawn_max_dist_to_obj=1.0)
+            self.name + "_oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
+                                                                          spawn_max_dist_to_obj=1.0),
+            self.name + "_joint_action": cfg.ArmActionConfig(type="ArmEEAction") # TODO maybe a little more in the setup
         }
 
 class SpotRobot(Robot):
@@ -99,7 +98,7 @@ class SpotRobot(Robot):
                        place='/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/policies/place_latest_sample.torchscript')
     _policies: dict()
     shape: CylinderShape(dimensions=(0.508,0.559,1.096)) # TODO change this. 
-    _ik_arm_urdf: 
+    _ik_arm_urdf: ""
     _sim_sensors: { # TODO temporary
                 "third_rgb": cfg.ThirdRGBSensorConfig(width=1024, height=1024),
                 "head_rgb": cfg.HeadRGBSensorConfig()
@@ -122,7 +121,8 @@ class SpotRobot(Robot):
         return {
             self.name + "_oracle_magic_grasp_action": cfg.ArmActionConfig(type="MagicGraspAction"),
             self.name + "_base_velocity_action": cfg.BaseVelocityActionConfig(),
-            self.name + "_oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", spawn_max_dist_to_obj=1.0)
+            self.name + "_oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
+                                                                          spawn_max_dist_to_obj=1.0)
         }
 
 
