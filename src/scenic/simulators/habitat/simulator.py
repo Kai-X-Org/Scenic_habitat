@@ -195,7 +195,7 @@ class HabitatSimulation(Simulation):
         self.stage_attr_mgr = self.sim.get_stage_template_manager()
         self.rigid_obj_mgr = self.sim.get_rigid_object_manager()
         self.agents_mgr = self.sim.agents_mgr
-        print("IK HELPER:", self.agents_mgr.ik_helper)
+        print("IK HELPER:", self.agents_mgr[1].ik_helper)
 
         obs = self.env.step({"action": (), "action_args": {}})
         
