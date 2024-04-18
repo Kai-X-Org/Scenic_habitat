@@ -72,6 +72,29 @@ class HumanGoAction(Action):
         arg_dict = {arg_name: human_joints_trans}
         obj._humanoid_joint_action.step(**arg_dict)
 
+class HumanGoEnvAction(Action):
+    """
+    This works, yay!
+    """
+    def __init__(self, x=0, y=0, z=0):
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def applyTo(self, obj, sim):
+        self.art_agent = obj._articulated_agent
+        x, y, z, _, _, _ = sim.scenicToHabitatMap((self.x, self.y, self.z,0,0,0)) # TODO some sketchy coordinate transfomr here
+
+        rel_pose = mn.Vector3(x, y, z)
+
+        obj._humanoid_controller.reset(obj._articulated_agent.base_transformation) # probelm, likely relative to human frame?
+        obj._humanoid_controller.calculate_walk_pose(rel_pose)
+
+        human_joints_trans = obj._humanoid_controller.get_pose()
+        
+        sim.step_action_dict["action"] += tuple([obj.name + "_humanoid_joint_action"])
+        sim.step_action_dict["action_args"][obj.name + "_human_joints_trans"] = human_joints_trans
+
 class HumanStopAction(Action):
     def applyTo(self, obj, sim):
         self.art_agent = obj._articulated_agent
@@ -89,24 +112,27 @@ class HumanStopAction(Action):
 class HumanReachAction(Action):
     """
     Still in the works
+    target_pos is the relative position
     """
-    def __init__(self, obj_pos: mn.Vector3, index_hand=0):
-        self.obj_pos = obj_pos
+    def __init__(self, x=0, y=0, z=0, index_hand=0):
+        self.x = x
+        self.y = y
+        self.z = z
         self.index_hand = index_hand
 
     def applyTo(self, obj, sim):
-        self.art_agent = obj._articulated_agent
-        x, y, z, _, _, _ = sim.scenicToHabitatMap((self.obj_pos[0], self.obj_pos[1], self.obj_pos[2],0,0,0)) 
-        obj_pose = mn.Vector3(x, y, z)
-
         obj._humanoid_controller.reset(obj._articulated_agent.base_transformation) # probelm, likely relative to human frame?
-        obj._humanoid_controller.calculate_reach_pose(rel_pose)
+        offset = obj._articulated_agent.base_transformation.transform_vector(mn.Vector3(0, 0.3, 0)) # offset for hand
+        hand_pose = obj._articulated_agent.ee_transform(self.index_hand).translation + offset
+        x, y, z, _, _, _ = sim.scenicToHabitatMap((self.x, self.y, self.z, 0, 0, 0))
+        hand_pose = hand_pose + mn.Vector3(x, y, z)
+        obj._humanoid_controller.calculate_reach_pose(hand_pose)
 
-        human_joints_trans = obj._humanoid_controller.get_pose()
+        new_pose = obj._humanoid_controller.get_pose()
         
-        arg_name = obj._humanoid_joint_action._action_arg_prefix + "human_joints_trans"
-        arg_dict = {arg_name: human_joints_trans}
-        obj._humanoid_joint_action.step(**arg_dict)
+        sim.step_action_dict["action"] += tuple([obj.name + "_humanoid_joint_action"])
+        sim.step_action_dict["action_args"][obj.name + "_human_joints_trans"] = new_pose
+        
 
 class HumanoidNavLookAtAction(Action):
     """

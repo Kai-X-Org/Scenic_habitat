@@ -39,7 +39,7 @@ behavior HumanGo(x=0, y=0, z=0, num_steps=100):
     start_position = self.position
     while step_count < num_steps and \
             not np.isclose((self.position - start_position).norm(), Vector(x, y, z).norm(), atol=0.1):
-        take HumanGoAction(x, y, z) # TODO temporary implementation
+        take HumanGoEnvAction(x, y, z) # TODO temporary implementation
         print(f"Scenic position: {self.position}")
         step_count += 1
 
@@ -56,6 +56,13 @@ behavior HumanGo(x=0, y=0, z=0, num_steps=100):
     print('finish scene')
     terminate
 
+behavior HumanReach(x=0, y=0, z=0, index_hand=0):
+    for _ in range(100):
+        take HumanReachAction(x=x, y=y, z=z, index_hand=index_hand)
+
+behavior GoAndReach(reach_x=0, reach_y=0, reach_z=0, move_x=0, move_y=0, move_z=0, index_hand=0):
+    do HumanReach(x=reach_x, y=reach_y, z=reach_z, index_hand=index_hand)
+    do HumanGo(x=move_x, y=move_y, z=move_z)
 
 behavior MoveSpotArm():
     take SpotMoveArmAction(arm_ctrl_angles=[1.57, -1.57, 0.0, 1.57, 0.0, 0.0, 0.0])
@@ -69,5 +76,6 @@ behavior MoveSpotArm():
     take SpotMoveArmAction()
 
 
-human = new Female_0 at (-1.5, -5.5, 0), with behavior HumanGo(y=1)
+# human = new Female_0 at (-1.5, -5.5, 0), with behavior HumanGo(y=1)
+human = new Female_0 at (-1.5, -5.5, 0), with behavior GoAndReach(reach_x=0.3, reach_y=0.3, reach_z=0.3, move_y=1)
 spot = new SpotRobot at (-1.5, -6.5, 0), with behavior MoveSpotArm()

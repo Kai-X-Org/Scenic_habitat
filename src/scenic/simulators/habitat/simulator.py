@@ -223,6 +223,7 @@ class HabitatSimulation(Simulation):
                                                                  sim=self.sim, name=f'agent_{obj._agent_id}')
             else:
                 art_agent._fixed_base = False
+                art_agent.sim_obj.motion_type = MotionType.DYNAMIC
                 if obj._has_grasp:
                     obj._grasp_manager = self.sim.agents_mgr[obj._agent_id].grasp_mgrs[0]
                 
@@ -268,7 +269,7 @@ class HabitatSimulation(Simulation):
         # breakpoint()
         self.env_observations.append(self.env.step(self.step_action_dict))
         self.observations.append(self.sim.get_sensor_observations()) 
-        # TODO call articulated_agent.update to update camera angles
+        # TODO call articulated_agent.update to update camera angles...wait, might not need it
         self.step_action_dict = {
             "action": tuple(),
             "action_args": dict()
@@ -324,7 +325,7 @@ class HabitatSimulation(Simulation):
         )
         vut.make_video(
             self.observations,
-            "agent_0_third_rgb",
+            "agent_1_third_rgb",
             "color",
             "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_spot",
             open_vid=False,
@@ -371,9 +372,6 @@ class HabitatSimulation(Simulation):
         Converts from the Scenic map coordinate to the habitat map frame coordinate
         Args:
         """
-        # assert len(pose) == 4
-        # return self.RobotToHabitatMap(self.ScenicToRobotMap(pose, obj=obj))
-        # g = mn.Matrix4.from_()
         g = np.array([[0, 1, 0, 0], 
                       [0, 0, 1, 0], 
                       [1, 0, 0, 0], 

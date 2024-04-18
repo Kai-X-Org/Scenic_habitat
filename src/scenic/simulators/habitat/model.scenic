@@ -119,7 +119,7 @@ class KinematicHumanoid(HabitatAgent):
         return {
             self.name + "_humanoid_joint_action": cfg.HumanoidJointActionConfig(),
             self.name + "_humanoid_navigate_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
-                                                              motion_control="human_joints",
+                                                              motion_control="human_joints", # name + "_human_joints"???
                                                               spawn_max_dist_to_obj=1.0),
             self.name + "_humanoid_pick_obj_id_action": cfg.HumanoidPickActionConfig(type="HumanoidPickObjIdAction")
             
