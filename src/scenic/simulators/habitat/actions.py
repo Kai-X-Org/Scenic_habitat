@@ -168,6 +168,15 @@ class OracleCoordAction(Action):
         sim.step_action_dict["action"] += tuple([obj.name + "_oracle_coord_action"])
         sim.step_action_dict["action_args"][obj.name + "_oracle_nav_lookat_action"] = object_trans
 
+class OracleMagicGraspAction(Action):
+    def __init__(self, grip_action=0):
+        self.grip_action = grip_action
+
+    def applyTo(self, obj, sim):
+        sim.step_action_dict["action"] += tuple([obj.name + "_oracle_magic_grasp_action"])
+        sim.step_action_dict["action_args"][obj.name + "_oracle_magic_grasp_action"] = self.grip_action
+
+
 class OpenGripperAction(Action):
     def applyTo(self, obj, sim):
         obj._articulated_agent.open_gripper()
