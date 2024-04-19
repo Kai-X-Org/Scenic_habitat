@@ -86,7 +86,7 @@ class FetchRobot(Robot):
             self.name + "_base_velocity_action": cfg.BaseVelocityActionConfig(),
             self.name + "_oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
                                                                           spawn_max_dist_to_obj=1.0),
-            self.name + "_joint_action": cfg.ArmActionConfig(type="ArmEEAction") # TODO maybe a little more in the setup
+            self.name + "_reach_action": cfg.ArmActionConfig(type="ArmEEAction") # TODO maybe a little more in the setup
         }
 
 class SpotRobot(Robot):
