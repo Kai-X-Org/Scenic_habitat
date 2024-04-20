@@ -289,6 +289,14 @@ class HabitatSimulation(Simulation):
         # print(self.sim.articulated_agent.base_pos)
         if obj.is_agent:
             # agent_state = self.sim.agents_mgr[obj._agent_id].get_state()
+            if obj.object_type == 'FetchRobot':
+                transform = obj._articulated_agent.ee_transform()
+                pos = obj._articulated_agent.calculate_ee_forward_kinematics(obj._articulated_agent.arm_joint_pos) 
+                print(f"JOINT POS {obj._articulated_agent.arm_joint_pos}")
+                print(f"EE transform {obj._articulated_agent.ee_transform()}")
+                print(f"EE pos {obj._articulated_agent.calculate_ee_forward_kinematics(obj._articulated_agent.arm_joint_pos)}")
+                print(f"EE transformed pos: {transform.transform_vector(pos)}")
+
             x, y, z = obj._articulated_agent.base_pos
             x, y, z, _, _, _ = self.habitatToScenicMap((x, y, z, 0, 0, 0))
             rotation = obj._articulated_agent.base_rot
