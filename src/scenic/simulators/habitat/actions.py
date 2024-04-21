@@ -235,17 +235,10 @@ class FetchSetJointIKAction(Action):
 
     def applyTo(self, obj, sim):
         x, y, z, _, _, _ = scenic_to_habitat_map((self.x, self.y, self.z, 0, 0, 0))
-        print(f"TARGET EE POINT WORLD FRAME: {x, y, z}")
+        # print(f"TARGET EE POINT WORLD FRAME: {x, y, z}")
         transformation = obj._articulated_agent.sim_obj.transformation
         transformation_inv = transformation.inverted()
         ee_pos = transformation_inv.transform_point(mn.Vector3(x, y, z))
-        # ee_pos = transformation.transform_point(mn.Vector3(x, y, z))
-        print(f"TRANSFORMED EE POINT BASE FRAME: {ee_pos}")
-        # TODO can reference the steps done for the HumanReachAction
-        # transform = obj._articulated_agent.ee_transform()
-        # ee_pos = mn.Vector3(x, y, z)
-        # print(f"TARGET EE POS: {ee_pos}")
-        # ee_pos = transform.transform_vector(ee_pos)
+        joint_pos = obj._ik_helper.calc_ik(np.array([x, y, z]))
+        obj._articulated_agent.arm_joint_pos = joint_pos
 
-        sim.step_action_dict["action"] += tuple([obj.name + "_reach_action"])
-        sim.step_action_dict["action_args"]["ee_pos"] = ee_pos

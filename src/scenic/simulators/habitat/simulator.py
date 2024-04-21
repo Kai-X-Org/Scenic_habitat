@@ -221,6 +221,9 @@ class HabitatSimulation(Simulation):
         if obj.is_agent:
             art_agent = self.env.sim.agents_mgr[obj._agent_id].articulated_agent  
 
+            if obj.object_type == 'FetchRobot': # TODO temporary solution
+                obj._ik_helper = self.ik_helper
+
             obj._articulated_agent = art_agent
             if obj._articulated_agent_type == 'KinematicHumanoid':
                 print('data_path:!!!', obj._motion_data_path)
@@ -302,8 +305,13 @@ class HabitatSimulation(Simulation):
                 # print(f"JOINT POS {obj._articulated_agent.arm_joint_pos}")
                 print(f"EE JOINT POSITIONS: {obj._articulated_agent.sim_obj.joint_positions}")
                 print(f"EE POS: {transform.translation}")
+                ik_helper_pose = self.ik_helper.calc_fk(joint_pos_arr)
+                ik_helper_transformed = obj._articulated_agent.sim_obj.transformation.transform_point(ik_helper_pose)
                 print(f"EE Pos according to IK helper \
                       {self.ik_helper.calc_fk(joint_pos_arr)}\n\n\n")
+                print(f"EE Pos according to IK helper in world frame? \
+                      {ik_helper_transformed}\n\n\n")
+
                 # print(f"EE transform {obj._articulated_agent.ee_transform()}")
                 # print(f"EE pos {obj._articulated_agent.calculate_ee_forward_kinematics(obj._articulated_agent.arm_joint_pos)}")
                 # print(f"EE transformed pos: {transform.transform_vector(pos)}")
