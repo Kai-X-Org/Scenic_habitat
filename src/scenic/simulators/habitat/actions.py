@@ -239,6 +239,16 @@ class FetchSetJointIKAction(Action):
         transformation = obj._articulated_agent.sim_obj.transformation
         transformation_inv = transformation.inverted()
         ee_pos = transformation_inv.transform_point(mn.Vector3(x, y, z))
-        joint_pos = obj._ik_helper.calc_ik(np.array([x, y, z]))
-        obj._articulated_agent.arm_joint_pos = joint_pos
+        joint_pos = obj._ik_helper.calc_ik(np.array([x,y,z]))
+        # obj._articulated_agent.arm_joint_pos = joint_pos
+        # est_pos = obj._ik_helper.calc_fk(np.array(joint_pos))
+        # print(f"Joint Pos resulting pos{est_pos}")
+        obj._articulated_agent.arm_motor_pos = list(joint_pos)
+
+class FetchSetJointAction(Action):
+    def __init__(self, joint_state):
+        self.joint_state = joint_state
+
+    def applyTo(self, obj, sim):
+        obj._articulated_agent.arm_joint_pos = self.joint_state
 

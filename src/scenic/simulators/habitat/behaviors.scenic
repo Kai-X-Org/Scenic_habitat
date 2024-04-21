@@ -1,7 +1,8 @@
 model scenic.simulators.habitat.model
 from scenic.simulators.habitat.model import *
 from scenic.simulators.habitat.actions import *
-
+from scenic.simulators.habitat.utils import scenic_to_habitat_map
+import magnum as mn
 
 behavior GoToLookAt(obj):
     obj_id = obj._object_id
@@ -116,5 +117,19 @@ behavior FetchReach(x=0, y=0, z=0, frame='world'):
     # take FetchReachAction(x=x, y=y, z=z)
     for _ in range(100):
         take FetchReachAction(x=x, y=y, z=z, frame='world')
-        wait
 
+
+behavior FetchDumReach(x=0, y=0, z=0, frame='world'):
+    x, y, z, _, _, _ = scenic_to_habitat_map((self.x, self.y, self.z, 0, 0, 0))
+    
+    # des_ee_pos = Vector
+
+    des_joint_pos = self._ik_helper.calc_ik(np.array([x, y, z]))
+    current_joint_pos = self._articulated_agent.arm_joint_pos
+    joint_pos_diff = np.array(des_joint_pos) - np.array(current_joint_pos)
+    joint_pos_delta = joint_pos_diff/100
+    for _ in range(100):
+        new_joint_pos = list(current_joint_pos + joint_pos_delta)
+        take FetchSetJointAction(new_joint_pos)
+        current_joint_pos = self._articulated_agent.arm_joint_pos
+    
