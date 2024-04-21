@@ -112,7 +112,9 @@ behavior HumanNav(x=0, y=0, z=0):
         take HumanoidNavAction(x, y, z)
     terminate
 
-behavior FetchReach(x=0, y=0, z=0):
+behavior FetchReach(x=0, y=0, z=0, frame='world'):
+    # take FetchReachAction(x=x, y=y, z=z)
     for _ in range(100):
-        take FetchReachAction(x=x, y=y, z=z)
+        take FetchReachAction(x=x, y=y, z=z, frame='world')
+        wait
 

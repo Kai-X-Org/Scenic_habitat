@@ -195,7 +195,9 @@ class HabitatSimulation(Simulation):
         self.stage_attr_mgr = self.sim.get_stage_template_manager()
         self.rigid_obj_mgr = self.sim.get_rigid_object_manager()
         self.agents_mgr = self.sim.agents_mgr
+        # self.ik_helper = print("IK HELPER:", self.agents_mgr[1].ik_helper)
         print("IK HELPER:", self.agents_mgr[1].ik_helper)
+        self.ik_helper = self.agents_mgr[1].ik_helper
 
         obs = self.env.step({"action": (), "action_args": {}})
         
@@ -291,11 +293,20 @@ class HabitatSimulation(Simulation):
             # agent_state = self.sim.agents_mgr[obj._agent_id].get_state()
             if obj.object_type == 'FetchRobot':
                 transform = obj._articulated_agent.ee_transform()
-                pos = obj._articulated_agent.calculate_ee_forward_kinematics(obj._articulated_agent.arm_joint_pos) 
-                print(f"JOINT POS {obj._articulated_agent.arm_joint_pos}")
-                print(f"EE transform {obj._articulated_agent.ee_transform()}")
-                print(f"EE pos {obj._articulated_agent.calculate_ee_forward_kinematics(obj._articulated_agent.arm_joint_pos)}")
-                print(f"EE transformed pos: {transform.transform_vector(pos)}")
+                joint_pos_arr = np.array(obj._articulated_agent.arm_joint_pos)
+                sim_obj = obj._articulated_agent.sim_obj
+                print(f"SIM OBJ: {sim_obj}")
+                print(f"SIM OBJ TRANS: {sim_obj.transformation}")
+                print(f"JOINT POS ARR {joint_pos_arr}")
+                # pos = obj._articulated_agent.calculate_ee_forward_kinematics(obj._articulated_agent.arm_joint_pos) 
+                # print(f"JOINT POS {obj._articulated_agent.arm_joint_pos}")
+                print(f"EE JOINT POSITIONS: {obj._articulated_agent.sim_obj.joint_positions}")
+                print(f"EE POS: {transform.translation}")
+                print(f"EE Pos according to IK helper \
+                      {self.ik_helper.calc_fk(joint_pos_arr)}\n\n\n")
+                # print(f"EE transform {obj._articulated_agent.ee_transform()}")
+                # print(f"EE pos {obj._articulated_agent.calculate_ee_forward_kinematics(obj._articulated_agent.arm_joint_pos)}")
+                # print(f"EE transformed pos: {transform.transform_vector(pos)}")
 
             x, y, z = obj._articulated_agent.base_pos
             x, y, z, _, _, _ = self.habitatToScenicMap((x, y, z, 0, 0, 0))

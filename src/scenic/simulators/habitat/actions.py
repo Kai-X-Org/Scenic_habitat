@@ -205,16 +205,47 @@ class SpotMoveArmAction(Action):
         obj._articulated_agent.arm_joint_pos = self.arm_ctrl_angles
 
 class FetchReachAction(Action):
-    def __init__(self, x=0, y=0, z=0):
+    def __init__(self, x=0, y=0, z=0, frame='world'):
         self.x = x
         self.y = y
         self.z = z
 
     def applyTo(self, obj, sim):
         x, y, z, _, _, _ = scenic_to_habitat_map((self.x, self.y, self.z, 0, 0, 0))
-        ee_pos = mn.Vector3(x, y, z)
+        print(f"TARGET EE POINT WORLD FRAME: {x, y, z}")
+        transformation = obj._articulated_agent.sim_obj.transformation
+        transformation_inv = transformation.inverted()
+        ee_pos = transformation_inv.transform_point(mn.Vector3(x, y, z))
+        # ee_pos = transformation.transform_point(mn.Vector3(x, y, z))
+        print(f"TRANSFORMED EE POINT BASE FRAME: {ee_pos}")
+        # TODO can reference the steps done for the HumanReachAction
+        # transform = obj._articulated_agent.ee_transform()
+        # ee_pos = mn.Vector3(x, y, z)
+        # print(f"TARGET EE POS: {ee_pos}")
+        # ee_pos = transform.transform_vector(ee_pos)
+
         sim.step_action_dict["action"] += tuple([obj.name + "_reach_action"])
-        # sim.step_action_dict["action_args"][obj.name + "_oracle_magic_grasp_action"] = self.grip_action
-        # sim.step_action_dict["action_args"][obj.name + "_grip_action"] = self.grip_action
         sim.step_action_dict["action_args"]["ee_pos"] = ee_pos
 
+class FetchSetJointIKAction(Action):
+    def __init__(self, x=0, y=0, z=0, frame='world'):
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def applyTo(self, obj, sim):
+        x, y, z, _, _, _ = scenic_to_habitat_map((self.x, self.y, self.z, 0, 0, 0))
+        print(f"TARGET EE POINT WORLD FRAME: {x, y, z}")
+        transformation = obj._articulated_agent.sim_obj.transformation
+        transformation_inv = transformation.inverted()
+        ee_pos = transformation_inv.transform_point(mn.Vector3(x, y, z))
+        # ee_pos = transformation.transform_point(mn.Vector3(x, y, z))
+        print(f"TRANSFORMED EE POINT BASE FRAME: {ee_pos}")
+        # TODO can reference the steps done for the HumanReachAction
+        # transform = obj._articulated_agent.ee_transform()
+        # ee_pos = mn.Vector3(x, y, z)
+        # print(f"TARGET EE POS: {ee_pos}")
+        # ee_pos = transform.transform_vector(ee_pos)
+
+        sim.step_action_dict["action"] += tuple([obj.name + "_reach_action"])
+        sim.step_action_dict["action_args"]["ee_pos"] = ee_pos
