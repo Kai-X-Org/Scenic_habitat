@@ -3,6 +3,7 @@ from scenic.simulators.habitat.model import *
 from scenic.simulators.habitat.actions import *
 from scenic.simulators.habitat.utils import scenic_to_habitat_map
 import magnum as mn
+import numpy as np
 
 behavior GoToLookAt(obj):
     obj_id = obj._object_id
@@ -120,16 +121,32 @@ behavior FetchReach(x=0, y=0, z=0, frame='world'):
 
 
 behavior FetchDumReach(x=0, y=0, z=0, frame='world'):
-    x, y, z, _, _, _ = scenic_to_habitat_map((self.x, self.y, self.z, 0, 0, 0))
-    
-    # des_ee_pos = Vector
-
-    des_joint_pos = self._ik_helper.calc_ik(np.array([x, y, z]))
+    x, y, z, _, _, _ = scenic_to_habitat_map((x, y, z, 0, 0, 0))
+    # z -= 100
+    base_transform = self._articulated_agent.base_transformation 
+    des_ee_pos = base_transform.inverted().transform_point(mn.Vector3(x, y, z))
+    # print(f"base_transform: {np.array(base_transform)}")
+    # print(f"inv_base_transform: {np.array(base_transform.inverted())}")
+    # print(f"pdt of mat {np.array(base_transform) @ np.array(base_transform.inverted())}")
+    # print(f"desired ee pos: {des_ee_pos}")
+    # print(f"ee_transform:{self._articulated_agent.ee_transform()}")
+    # des_joint_pos = self._ik_helper.calc_ik(np.array([x, y, z]))
     current_joint_pos = self._articulated_agent.arm_joint_pos
+    self._ik_helper.set_arm_state(current_joint_pos)
+    des_joint_pos = self._ik_helper.calc_ik(np.array(des_ee_pos))
+    # print(f"desired joint pos : {des_joint_pos}")
+
+    # print("current joint pos: ",np.array(current_joint_pos))
     joint_pos_diff = np.array(des_joint_pos) - np.array(current_joint_pos)
+    # print("joint_pos_diff = ", joint_pos_diff)
     joint_pos_delta = joint_pos_diff/100
     for _ in range(100):
         new_joint_pos = list(current_joint_pos + joint_pos_delta)
+        # print("new joint pos: ", new_joint_pos)
+        # print("des joint pos:", des_joint_pos)
         take FetchSetJointAction(new_joint_pos)
         current_joint_pos = self._articulated_agent.arm_joint_pos
+        # print("current_joint_position: ", current_joint_pos)
+        joint_pos_diff = np.array(des_joint_pos) - np.array(current_joint_pos)
+        # print("current_joint_pos_diff = ", joint_pos_diff)
     

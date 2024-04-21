@@ -294,8 +294,8 @@ class HabitatSimulation(Simulation):
         # print(self.sim.articulated_agent.base_pos)
         if obj.is_agent:
             if obj.object_type == 'FetchRobot':
-                joint_pos = obj._articulated_agent.ee_transform().translation
-                print(f"EE joint_pos{joint_pos}")
+                ee_pos = obj._articulated_agent.ee_transform().translation
+                print(f"EE pos{ee_pos}")
 
             x, y, z = obj._articulated_agent.base_pos
             x, y, z, _, _, _ = self.habitatToScenicMap((x, y, z, 0, 0, 0))

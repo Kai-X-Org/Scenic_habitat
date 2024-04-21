@@ -110,6 +110,7 @@ human = new Female_0 at (-1.5, -5.5, 0), with behavior NavAndWait(x=-1.5, y=-3.0
 # fetch = new FetchRobot at (-1.5, -6.5, 0), with behavior FetchReach(x=-1.0, y=-6.0, z=0.5)
 # fetch = new FetchRobot at (-1.5, -6.5, 0), with behavior IKSetJoint(x=-1.5, y=-5.8, z=1.2)
 fetch = new FetchRobot at (-1.5, -6.5, 0), with behavior FetchDumReach(x=-1.0, y=-5.8, z=0.3)
-# fetch = new FetchRobot at (-1.5, -6.5, 0) 
+# fetch = new FetchRobot at (-1.5, -6.5, 0)
+# fetch = new FetchRobot at (-1.5, -6.5, 0), with behavior RobotNav(x=0.0, y=-2.0, z=0)
 # fetch = new FetchRobot at (-1.5, -6.5, 0), with behavior TwoReaches(x=-1.5, y=-6.0, z=0.5)
 
