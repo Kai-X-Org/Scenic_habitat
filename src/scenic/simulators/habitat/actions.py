@@ -164,7 +164,8 @@ class OracleCoordAction(Action):
 
     def applyTo(self, obj, sim):
         x, y, z, _, _, _ = scenic_to_habitat_map((self.x, self.y, self.z, 0, 0, 0))
-        object_trans = mn.Vector3(x, y, z)
+        # object_trans = mn.Vector3(x, y, z)
+        object_trans = np.array([x, y, z])
         sim.step_action_dict["action"] += tuple([obj.name + "_oracle_coord_action"])
         sim.step_action_dict["action_args"][obj.name + "_oracle_nav_lookat_action"] = object_trans
 

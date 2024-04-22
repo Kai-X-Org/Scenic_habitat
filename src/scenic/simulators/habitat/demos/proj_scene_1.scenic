@@ -23,8 +23,8 @@ box = new GelatinBox on bed
 # master_chef = new MasterChef on (0.0, -6.0, 0.63)
 # master_chef = new MasterChef on (-0.2, -6.0, 0.63)
 human = new Female_0 at (-1.5, -5.5, 0), with yaw 90 deg,with behavior HumanNav(x=-1.5, y=-3.0, z=0)
-# ego = new SpotRobot at (-5.0, -3.0, 0), with yaw 90 deg, with behavior RobotNav(x=-1.5, y=-3.7, z=0)
-ego = new SpotRobot at (-5.0, -3.0, 0), with yaw 90 deg, with behavior RobotNav(box)
+ego = new SpotRobot at (-5.0, -3.0, 0), with yaw 90 deg, with behavior RobotNav(x=-1.5, y=-3.7, z=0)
+# ego = new SpotRobot at (-5.0, -3.0, 0), with yaw 90 deg, with behavior RobotNav(box)
 human_2 = new Female_0 at (Range(0, 0.8), -7.5, 0), with yaw 90 deg
 
 require distance from box to human_2 < 2.0

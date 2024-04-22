@@ -348,6 +348,20 @@ class HabitatSimulation(Simulation):
             f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}test_spot_{self.scenario_number}",
             open_vid=False,
         )
+        vut.make_video(
+            self.observations,
+            "agent_1_third_rgb",
+            "color",
+            f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}test_human_1_{self.scenario_number}",
+            open_vid=False,
+        )
+        vut.make_video(
+            self.observations,
+            "agent_1_third_rgb",
+            "color",
+            f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}test_human_2_{self.scenario_number}",
+            open_vid=False,
+        )
         super().destroy()
         return
 
