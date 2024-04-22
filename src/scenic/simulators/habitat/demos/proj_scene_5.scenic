@@ -49,6 +49,9 @@ behavior SpotPickUp(box=None):
     if diff_norm < 0.25:
         take SnapToObjectAction(box)
 
+    raise_pos = np.array([0.0, -3.14, 0.00, 3.14, 0.0, 0.0, 0.0]) # forarm raise
+    do MoveToJointAngles(raise_pos, steps=50)
+
     terminate
 
 behavior MoveToJointAngles(joint_angles, steps=50):
