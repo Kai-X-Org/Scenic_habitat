@@ -114,6 +114,7 @@ class HumanReachAction(Action):
     """
     Still in the works
     target_pos is the relative position
+    seems like z is actually up
     """
     def __init__(self, x=0, y=0, z=0, index_hand=0):
         self.x = x
@@ -127,7 +128,7 @@ class HumanReachAction(Action):
         hand_pose = obj._articulated_agent.ee_transform(self.index_hand).translation + offset
         x, y, z, _, _, _ = sim.scenicToHabitatMap((self.x, self.y, self.z, 0, 0, 0))
         hand_pose = hand_pose + mn.Vector3(x, y, z)
-        obj._humanoid_controller.calculate_reach_pose(hand_pose)
+        obj._humanoid_controller.calculate_reach_pose(hand_pose, index_hand=self.index_hand)
 
         new_pose = obj._humanoid_controller.get_pose()
         

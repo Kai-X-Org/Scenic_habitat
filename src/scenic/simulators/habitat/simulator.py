@@ -189,12 +189,12 @@ class HabitatSimulation(Simulation):
         self.sim = self.env.sim
         self.env.reset() 
         utils.add_scene_camera(self.env, agent_id=0)        
-        # utils.add_scene_camera(self.env, name='scene_camera_rgb_2', 
-                               # camera_pos=mn.Vector3(0, 0.5, 6.5),
-                               # orientation=mn.Vector3(mn.Vector3(0, -1.57, 0)), agent_id=None)
         utils.add_scene_camera(self.env, name='scene_camera_rgb_2', 
                                camera_pos=mn.Vector3(2.0, 0.5, 6.5),
                                orientation=mn.Vector3(mn.Vector3(0, +1.57, 0)), agent_id=None)
+        utils.add_scene_camera(self.env, name='scene_camera_rgb_3', 
+                               camera_pos=mn.Vector3(0, 0.5, 6.5),
+                               orientation=mn.Vector3(mn.Vector3(0, -1.57, 0)), agent_id=None)
 
         self.obj_attr_mgr = self.sim.get_object_template_manager()
         self.prim_attr_mgr = self.sim.get_asset_template_manager()
@@ -340,6 +340,7 @@ class HabitatSimulation(Simulation):
     def destroy(self):
         # folder_name = "scene_" + str(self.scenario_number) + "/"
         folder_name = "test_run_vids/"
+
         vut.make_video(
             self.observations,
             "scene_camera_rgb",
@@ -348,6 +349,7 @@ class HabitatSimulation(Simulation):
             f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_{self.scenario_number}",
             open_vid=False,
         )
+
         vut.make_video(
             self.observations,
             "scene_camera_rgb_2",
@@ -355,6 +357,15 @@ class HabitatSimulation(Simulation):
             f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_2_{self.scenario_number}",
             open_vid=False,
         )
+
+        vut.make_video(
+            self.observations,
+            "scene_camera_rgb_3",
+            "color",
+            f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_3_{self.scenario_number}",
+            open_vid=False,
+        )
+
         vut.make_video(
             self.observations,
             "agent_0_third_rgb",
@@ -363,6 +374,7 @@ class HabitatSimulation(Simulation):
             f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}test_spot_{self.scenario_number}",
             open_vid=False,
         )
+
         vut.make_video(
             self.observations,
             "agent_1_third_rgb",
@@ -370,13 +382,15 @@ class HabitatSimulation(Simulation):
             f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}test_human_1_{self.scenario_number}",
             open_vid=False,
         )
+
         vut.make_video(
             self.observations,
-            "agent_1_third_rgb",
+            "agent_2_third_rgb",
             "color",
             f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}test_human_2_{self.scenario_number}",
             open_vid=False,
         )
+
         super().destroy()
         return
 

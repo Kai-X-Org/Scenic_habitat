@@ -82,11 +82,11 @@ behavior HumanGo(x=0, y=0, z=0, num_steps=100):
     print('finish scene')
     terminate
 
-behavior HumanReach(x=0, y=0, z=0, index_hand=0):
+behavior HumanReach(x=0, y=0, z=0, index_hand=0, timesteps=250):
     arr = np.array([x, y, z])
     arr = (arr - 0.5) * 0.1
     
-    for _ in range(100):
+    for _ in range(timesteps):
         take HumanReachAction(x=arr[0], y=arr[1], z=arr[2], index_hand=index_hand)
 
 behavior GoAndReach(reach_x=0, reach_y=0, reach_z=0, move_x=0, move_y=0, move_z=0, index_hand=0):
