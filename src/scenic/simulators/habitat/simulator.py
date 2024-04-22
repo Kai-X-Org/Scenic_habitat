@@ -188,7 +188,13 @@ class HabitatSimulation(Simulation):
         self.env = utils.init_rearrange_env(self.agent_dict, action_dict, lab_sensor_dict, timestep=self.timestep) 
         self.sim = self.env.sim
         self.env.reset() 
-        utils.add_scene_camera(self.env)        
+        utils.add_scene_camera(self.env, agent_id=0)        
+        # utils.add_scene_camera(self.env, name='scene_camera_rgb_2', 
+                               # camera_pos=mn.Vector3(0, 0.5, 6.5),
+                               # orientation=mn.Vector3(mn.Vector3(0, -1.57, 0)), agent_id=None)
+        utils.add_scene_camera(self.env, name='scene_camera_rgb_2', 
+                               camera_pos=mn.Vector3(2.0, 0.5, 6.5),
+                               orientation=mn.Vector3(mn.Vector3(0, +1.57, 0)), agent_id=None)
 
         self.obj_attr_mgr = self.sim.get_object_template_manager()
         self.prim_attr_mgr = self.sim.get_asset_template_manager()
@@ -293,9 +299,11 @@ class HabitatSimulation(Simulation):
     def getProperties(self, obj, properties):
         # print(self.sim.articulated_agent.base_pos)
         if obj.is_agent:
-            if obj.object_type == 'FetchRobot':
+            if obj.object_type == 'SpotRobot':
                 ee_pos = obj._articulated_agent.ee_transform().translation
-                print(f"EE pos{ee_pos}")
+                x, y, z, _, _, _ = self.habitatToScenicMap((ee_pos[0], ee_pos[1], ee_pos[2], 0, 0, 0))
+                # print(f"EE pos{x, y, z}")
+                obj.ee_pos = Vector(x, y, z)
 
             x, y, z = obj._articulated_agent.base_pos
             x, y, z, _, _, _ = self.habitatToScenicMap((x, y, z, 0, 0, 0))
@@ -315,7 +323,7 @@ class HabitatSimulation(Simulation):
             x, y, z = obj._managed_rigid_object.translation
             rotation = obj._managed_rigid_object.rotation 
             x, y, z, _, _, _ = self.habitatToScenicMap((x, y, z, 0, 0, 0))
-            print(f"Obj pos: {x, y, z}")
+            # print(f"Obj pos: {x, y, z}")
             d = dict(
                     position=Vector(x, y, z),
                     yaw=0,
@@ -338,6 +346,13 @@ class HabitatSimulation(Simulation):
             "color",
             # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/scene_overview",
             f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_{self.scenario_number}",
+            open_vid=False,
+        )
+        vut.make_video(
+            self.observations,
+            "scene_camera_rgb_2",
+            "color",
+            f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_2_{self.scenario_number}",
             open_vid=False,
         )
         vut.make_video(
