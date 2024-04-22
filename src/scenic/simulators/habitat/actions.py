@@ -193,7 +193,7 @@ class SnapToObjectAction(Action):
         self.target_obj_id = target_obj._object_id
 
     def applyTo(self, obj, sim):
-        obj._grasp_manager.snap_to_obj((self.target_obj_id))
+        obj._grasp_manager.snap_to_obj(self.target_obj_id)
 
 
 class SpotMoveArmAction(Action):
