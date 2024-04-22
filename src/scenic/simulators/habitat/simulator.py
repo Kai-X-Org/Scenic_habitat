@@ -245,7 +245,7 @@ class HabitatSimulation(Simulation):
 
             x, y, z, _, _, _ = self.scenicToHabitatMap((obj.position[0], obj.position[1], obj.position[2],0, 0, 0))
             art_agent.base_pos = mn.Vector3(x, y, z) 
-            art_agent.base_rot = obj.yaw 
+            art_agent.base_rot = obj.yaw - 1.57
 
         else:
             handle = obj._object_file_handle
@@ -315,7 +315,7 @@ class HabitatSimulation(Simulation):
             x, y, z = obj._managed_rigid_object.translation
             rotation = obj._managed_rigid_object.rotation 
             x, y, z, _, _, _ = self.habitatToScenicMap((x, y, z, 0, 0, 0))
-
+            print(f"Obj pos: {x, y, z}")
             d = dict(
                     position=Vector(x, y, z),
                     yaw=0,
@@ -330,18 +330,22 @@ class HabitatSimulation(Simulation):
         return d
 
     def destroy(self):
+        # folder_name = "scene_" + str(self.scenario_number) + "/"
+        folder_name = "test_run_vids/"
         vut.make_video(
             self.observations,
             "scene_camera_rgb",
             "color",
-            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/scene_overview",
+            # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/scene_overview",
+            f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_{self.scenario_number}",
             open_vid=False,
         )
         vut.make_video(
             self.observations,
-            "agent_1_third_rgb",
+            "agent_0_third_rgb",
             "color",
-            "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_spot",
+            # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_spot",
+            f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}test_spot_{self.scenario_number}",
             open_vid=False,
         )
         super().destroy()

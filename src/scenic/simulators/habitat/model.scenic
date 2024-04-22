@@ -98,7 +98,7 @@ class SpotRobot(Robot):
     _policy_path_dict: dict(pick='/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/policies/pick_latest.torchscript',
                        place='/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/policies/place_latest_sample.torchscript')
     _policies: dict()
-    shape: CylinderShape(dimensions=(0.508,0.559,1.096)) # TODO change this. 
+    shape: BoxShape(dimensions=(1.1, 0.5, 0.7))
     _ik_arm_urdf: ""
     _sim_sensors: { # TODO temporary
                 "third_rgb": cfg.ThirdRGBSensorConfig(width=1024, height=1024),
