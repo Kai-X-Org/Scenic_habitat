@@ -52,7 +52,16 @@ behavior SpotPickUp(box=None):
     raise_pos = np.array([0.0, -3.14, 0.00, 3.14, 0.0, 0.0, 0.0]) # forarm raise
     do MoveToJointAngles(raise_pos, steps=50)
 
-    terminate
+
+
+behavior NavToHuman(human):
+    position = human.position
+    x, y, z = position[0], position[1], position[2]
+    do RobotNav(x, y, z)
+
+behavior GrabAndNav(box, human):
+    do SpotPickUp(box=box)
+    do NavToHuman(human)
 
 behavior MoveToJointAngles(joint_angles, steps=50):
     start_pos = np.array(self._articulated_agent.arm_joint_pos)
@@ -67,9 +76,10 @@ behavior ReachHand():
     do HumanReach(x=-0.5, y=-0.5, z=0.5, index_hand=0)
     # do HumanReach(x=1, y=0, z=0.5, index_hand=1)
 
+
 bed = RectangularRegion((0.3, -6.0, 0.63), 0, 1.0, 1.0) # final defined bed width
 box = new GelatinBox on (0.12, -5.5, 0.61)
-human = new Female_0 at (-5.0, -3.0, 0), with yaw 90 deg
+human = new Female_0 at (-5.0, -3.0, 0)
 ego = new SpotRobot at (-0.9, -5.5, 0), with behavior SpotPickUp(box=box)
 # human_2 = new Female_0 at (Range(-0.5, 5), -4.5, 0), with yaw -90 deg, with behavior ReachHand()
 human_2 = new Female_0 at (-0.5, -4.8, 0), with yaw -90 deg, with behavior ReachHand()
