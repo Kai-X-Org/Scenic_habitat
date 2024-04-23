@@ -81,6 +81,10 @@ behavior ReachHandAndWalk(walk_position, reach_position):
         reach_x = reach_position[0]
         reach_y = reach_position[1]
         reach_z = reach_position[2]
+        do HumanReach(x=x, y=y, z=z, index_hand=0)
+        while True:
+            wait
+    interrupt when ego 
 
 bed = RectangularRegion((0.3, -6.0, 0.63), 0, 1.0, 1.0) # final defined bed width
 box = new GelatinBox on (0.12, -5.5, 0.61)
