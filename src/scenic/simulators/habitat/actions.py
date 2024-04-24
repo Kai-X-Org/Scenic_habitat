@@ -153,6 +153,7 @@ class HumanoidNavAction(Action):
         object_trans = mn.Vector3(x, y, z)
         print("Target POs: ", object_trans)
         print("OBJ NAME: ", obj.name)
+        print("SIM ACTION DICT: ", sim.action_dict)
         sim.step_action_dict["action"] += tuple([obj.name + "_humanoid_navigate_action"])
         sim.step_action_dict["action_args"][obj.name + "_oracle_nav_lookat_action"] = object_trans
         sim.step_action_dict["action_args"][obj.name + "_mode"] = 1  # not sure what this means, but it is done in the tutorial
@@ -166,8 +167,11 @@ class DummyHumanNav(Action):
 
     def applyTo(self, obj, sim):
         object_trans = mn.Vector3(self.x, self.y, self.z)
+        # object_trans = np.array([self.x, self.y, self.z])
         print("Target POS: ", object_trans)
         print("OBJ NAME: ", obj.name)
+        print("SIM ACTION DICT: ", sim.action_dict)
+        print("SIM ACTION ENTRY: ", obj.name + "_humanoid_navigate_action")
         sim.step_action_dict["action"] += tuple([obj.name + "_humanoid_navigate_action"])
         sim.step_action_dict["action_args"][obj.name + "_oracle_nav_lookat_action"] = object_trans
         sim.step_action_dict["action_args"][obj.name + "_mode"] = 1  # not sure what this means, but it is done in the tutorial

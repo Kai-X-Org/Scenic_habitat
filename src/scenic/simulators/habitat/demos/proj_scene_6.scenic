@@ -91,8 +91,7 @@ behavior ReachHandAndWalk(walk_position, reach_position):
         walk_y = walk_position[1]
         walk_z = walk_position[2]
 
-        # do HumanNav(x=walk_x, y=walk_y, z=walk_z)
-        do WhateverNav()
+        do HumanNav(x=walk_x, y=walk_y, z=walk_z)
         # TODO add turning motion
         while True:
             wait
@@ -111,7 +110,9 @@ box = new GelatinBox on (0.12, -5.5, 0.61)
 # human = new Female_0 at (-5.0, -3.0, 0)
 # human = new Female_0 at (-0.5, -4.8, 0), with yaw -90 deg,
                                 # with behavior ReachHandAndWalk((-5.0, -2.0, 0), (-0.5, -0.5, 0.5))
-human = new Female_0 at (-0.5, -4.8, 0), with yaw 0 deg,
-                                with behavior ReachHandAndWalk((-1.0, -3.0, 0), (-0.5, -0.5, 0.5))
+# human = new Female_0 at (-0.5, -4.8, 0), with yaw -90 deg,
+                                # with behavior ReachHandAndWalk((-1.5, -3.5, 0), (-0.5, -0.5, 0.5))
+human = new Female_0 at (-0.5, -4.8, 0), with yaw -90 deg,
+                                with behavior HumanNav(x=-1.5, y=-3.5, z=0 )
 ego = new SpotRobot at (-0.9, -5.5, 0), with behavior SpotPickUp(box=box)
 
