@@ -151,10 +151,28 @@ class HumanoidNavAction(Action):
     def applyTo(self, obj, sim):
         x, y, z, _, _, _ = scenic_to_habitat_map((self.x, self.y, self.z, 0, 0, 0))
         object_trans = mn.Vector3(x, y, z)
+        print("Target POs: ", object_trans)
+        print("OBJ NAME: ", obj.name)
         sim.step_action_dict["action"] += tuple([obj.name + "_humanoid_navigate_action"])
         sim.step_action_dict["action_args"][obj.name + "_oracle_nav_lookat_action"] = object_trans
         sim.step_action_dict["action_args"][obj.name + "_mode"] = 1  # not sure what this means, but it is done in the tutorial
         # sim.step_action_dict["action_args"]["mode"] = 1  # not sure what this means, but it is done in the tutorial
+
+class DummyHumanNav(Action):
+    def __init__(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def applyTo(self, obj, sim):
+        object_trans = mn.Vector3(self.x, self.y, self.z)
+        print("Target POS: ", object_trans)
+        print("OBJ NAME: ", obj.name)
+        sim.step_action_dict["action"] += tuple([obj.name + "_humanoid_navigate_action"])
+        sim.step_action_dict["action_args"][obj.name + "_oracle_nav_lookat_action"] = object_trans
+        sim.step_action_dict["action_args"][obj.name + "_mode"] = 1  # not sure what this means, but it is done in the tutorial
+        
+        
 
 class OracleCoordAction(Action):
 
@@ -195,6 +213,7 @@ class SnapToObjectAction(Action):
 
     def applyTo(self, obj, sim):
         obj._grasp_manager.snap_to_obj(self.target_obj_id)
+        obj._holding_object = True
 
 
 class SpotMoveArmAction(Action):

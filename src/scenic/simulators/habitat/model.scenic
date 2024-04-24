@@ -45,6 +45,7 @@ class Robot(HabitatAgent):
     _grasp_manager: None
     _ik_arm_urdf: ""
     _ik_helper: None
+    _holding_object: False
 
     def distanceToClosest(self, type: type) -> Object:
         """Compute the distance to the closest object of the given type.

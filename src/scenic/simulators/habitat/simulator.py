@@ -185,6 +185,7 @@ class HabitatSimulation(Simulation):
         
         # FIXME line below may cause problem. Defaulting dicts to dict(), but that might not be the default
         # of all the Configs???
+        self.action_dict = action_dict
         self.env = utils.init_rearrange_env(self.agent_dict, action_dict, lab_sensor_dict, timestep=self.timestep) 
         self.sim = self.env.sim
         self.env.reset() 
@@ -383,13 +384,13 @@ class HabitatSimulation(Simulation):
             open_vid=False,
         )
 
-        vut.make_video(
-            self.observations,
-            "agent_2_third_rgb",
-            "color",
-            f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}test_human_2_{self.scenario_number}",
-            open_vid=False,
-        )
+        # vut.make_video(
+            # self.observations,
+            # "agent_2_third_rgb",
+            # "color",
+            # f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}test_human_2_{self.scenario_number}",
+            # open_vid=False,
+        # )
 
         super().destroy()
         return

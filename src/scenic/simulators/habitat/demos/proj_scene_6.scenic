@@ -81,14 +81,37 @@ behavior ReachHandAndWalk(walk_position, reach_position):
         reach_x = reach_position[0]
         reach_y = reach_position[1]
         reach_z = reach_position[2]
-        do HumanReach(x=x, y=y, z=z, index_hand=0)
+        do HumanReach(x=reach_x, y=reach_y, z=reach_z, index_hand=0)
         while True:
             wait
-    interrupt when ego 
+
+    interrupt when ego._holding_object:
+        take HumanStopAction()
+        walk_x = walk_position[0]
+        walk_y = walk_position[1]
+        walk_z = walk_position[2]
+
+        # do HumanNav(x=walk_x, y=walk_y, z=walk_z)
+        do WhateverNav()
+        # TODO add turning motion
+        while True:
+            wait
+
+behavior WhateverNav():
+    point = simulation().sim.pathfinder.get_random_navigable_point()
+    point[1] = 0
+    print("navable point:", point)
+    for _ in range(100):
+        print('Naving')
+        take DummyHumanNav(point[0], point[1],point[2])
+    
 
 bed = RectangularRegion((0.3, -6.0, 0.63), 0, 1.0, 1.0) # final defined bed width
 box = new GelatinBox on (0.12, -5.5, 0.61)
 # human = new Female_0 at (-5.0, -3.0, 0)
-human = new Female_0 at (-0.5, -4.8, 0), with yaw -90 deg, with behavior ReachHandAndWalk()
+# human = new Female_0 at (-0.5, -4.8, 0), with yaw -90 deg,
+                                # with behavior ReachHandAndWalk((-5.0, -2.0, 0), (-0.5, -0.5, 0.5))
+human = new Female_0 at (-0.5, -4.8, 0), with yaw 0 deg,
+                                with behavior ReachHandAndWalk((-1.0, -3.0, 0), (-0.5, -0.5, 0.5))
 ego = new SpotRobot at (-0.9, -5.5, 0), with behavior SpotPickUp(box=box)
 

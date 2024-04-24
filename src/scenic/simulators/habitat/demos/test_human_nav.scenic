@@ -89,4 +89,5 @@ behavior HumanNav(x=0, y=0, z=0):
                                                                   # reach_z=-0.1, move_y=1, index_hand=0)
 
 human = new Female_0 at (-1.5, -5.5, 0), with behavior HumanNav(x=-1.5, y=-3.5, z=0)
+# human = new Female_0 at (-1.5, -5.5, 0), with behavior HumanNav(x=-5.0, y=-3.0, z=0)
 spot = new SpotRobot at (-1.5, -6.5, 0), with behavior MoveSpotArm()
