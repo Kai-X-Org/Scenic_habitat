@@ -26,15 +26,20 @@ def make_sim_cfg(agent_dict):
     # Start the scene config
     sim_cfg = SimulatorConfig(type="RearrangeSim-v0") # TODO change this for general sim in the future
     
-    data_path = '/home/ek65/habitat-lab/data/'
+    # data_path = '/home/ek65/habitat-lab/data/'
+    data_path = '/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/data/'
     # This is for better graphics
     sim_cfg.habitat_sim_v0.enable_hbao = True
     sim_cfg.habitat_sim_v0.enable_physics = True
 
     
     # Set up an example scene
-    sim_cfg.scene = os.path.join(data_path, "hab3_bench_assets/hab3-hssd/scenes/103997919_171031233.scene_instance.json")
-    sim_cfg.scene_dataset = os.path.join(data_path, "hab3_bench_assets/hab3-hssd/hab3-hssd.scene_dataset_config.json")
+    # sim_cfg.scene = os.path.join(data_path, "hab3_bench_assets/hab3-hssd/scenes/103997919_171031233.scene_instance.json")
+    # sim_cfg.scene_dataset = os.path.join(data_path, "hab3_bench_assets/hab3-hssd/hab3-hssd.scene_dataset_config.json")
+
+    # changes corresponding to new hssd-hab dataset requirement
+    sim_cfg.scene = os.path.join(data_path, "hab3_bench_assets/hssd-hab/scenes/103997919_171031233.scene_instance.json")
+    sim_cfg.scene_dataset = os.path.join(data_path, "hab3_bench_assets/hssd-hab/hssd-hab.scene_dataset_config.json")
     sim_cfg.additional_object_paths = [os.path.join(data_path, 'objects/ycb/configs/')]
     
     print(sim_cfg.scene)
@@ -58,9 +63,12 @@ def make_hab_cfg(agent_dict, action_dict, lab_sensor_dict, timestep=1):
     # task_cfg.lab_sensors = lab_sensor_dict
     env_cfg = EnvironmentConfig()
     # FIXME line below has hardcoded directory
-    dataset_cfg = DatasetConfig(type="RearrangeDataset-v0", 
-                                data_path="/home/ek65/habitat-lab/data/hab3_bench_assets/episode_datasets/small_large.json.gz") 
+    # dataset_cfg = DatasetConfig(type="RearrangeDataset-v0", 
+                                # data_path="/home/ek65/habitat-lab/data/hab3_bench_assets/episode_datasets/small_large.json.gz") 
 
+    dataset_cfg = DatasetConfig(type="RearrangeDataset-v0", 
+                                data_path="/home/ek65/Scenic-habitat/src/scenic/" + \
+                                "simulators/habitat/data/hab3_bench_assets/episode_datasets/small_large.json.gz") 
     task_cfg.physics_target_sps = 1/timestep # This communicates the Scenic timestep to habitat
 
     hab_cfg = HabitatConfig()

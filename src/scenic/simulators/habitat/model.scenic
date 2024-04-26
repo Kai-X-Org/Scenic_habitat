@@ -5,7 +5,8 @@ import trimesh
 import habitat.config.default_structured_configs as cfg
 
 simulator HabitatSimulator()
-data_dir = '/home/ek65/habitat-lab/data/'
+# data_dir = '/home/ek65/habitat-lab/data/'
+data_dir = '/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/data/'
 
 class HabitatAgent():
     name: 'agent'
