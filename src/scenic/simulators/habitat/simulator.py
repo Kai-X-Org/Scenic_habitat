@@ -37,7 +37,7 @@ import scenic.simulators.habitat.utils as utils
 
 if errors.verbosityLevel == 0:  # suppress pygame advertisement at zero verbosity
     os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
-import pygame
+# import pygame
 
 from scenic.core.simulators import SimulationCreationError
 from scenic.syntax.veneer import verbosePrint
