@@ -50,9 +50,9 @@ class scenic_spec(specification_monitor):
 falsifier = generic_falsifier(
         sampler=scenic_sampler,
         monitor=scenic_spec(),
-        falsifier_params=DotMap(n_iters=2),
+        falsifier_params=DotMap(n_iters=5),
         server_class=ScenicServer
 )
-print("RUNNING FALSIFIER")
+# print("RUNNING FALSIFIER")
 falsifier.run_falsifier()
-
+print("FALSIFICACTION COMPLETE")
