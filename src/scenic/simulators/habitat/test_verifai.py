@@ -2,6 +2,7 @@ from verifai.samplers import ScenicSampler
 from verifai.monitor import specification_monitor
 from verifai.falsifier import mtl_falsifier
 from verifai.falsifier import generic_falsifier
+from verifai.scenic_server import ScenicServer
 from dotmap import DotMap
 
 # path = '/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/demos/test_verifai.scenic'

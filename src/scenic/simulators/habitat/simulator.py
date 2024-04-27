@@ -137,7 +137,7 @@ class HabitatSimulation(Simulation):
         self.sim = None
         self.observations = list()
         self.env_observations = list()
-        self.ego = None
+        # self.ego = None
         self.habitat_agents = list()
         self.scenario_number = scenario_number  # used for naming of videos
         self.device = torch.device('cuda') 
