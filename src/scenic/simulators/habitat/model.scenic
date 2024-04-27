@@ -93,7 +93,8 @@ class FetchRobot(Robot):
         }
 
 class SpotRobot(Robot):
-    name: "SpotRobot"
+    # name: "SpotRobot"
+    name: "agent_1"
     object_type: "SpotRobot"
     _articulated_agent_type: "SpotRobot"
     urdf_path: data_dir + 'robots/hab_spot_arm/urdf/hab_spot_arm.urdf'

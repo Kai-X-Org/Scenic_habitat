@@ -158,9 +158,11 @@ class HabitatSimulation(Simulation):
         lab_sensor_dict = dict()
         for obj in self.scene.objects:
             if obj.is_agent:
+                print("Setting up agent: ", obj.name)
                 self.habitat_agents.append(obj)
                 obj._agent_id = agent_count
                 obj.name = 'agent_' + str(agent_count)
+                print("Object name:", obj.name)
                 agent_count += 1
 
                 sim_sensors = obj._sim_sensors
@@ -343,61 +345,57 @@ class HabitatSimulation(Simulation):
         return d
 
     def destroy(self):
-        # folder_name = "scene_" + str(self.scenario_number) + "/"
-        folder_name = "test_run_vids/"
-
-        vut.make_video(
-            self.observations,
-            "scene_camera_rgb",
-            "color",
-            # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/scene_overview",
-            f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_{self.scenario_number}",
-            open_vid=False,
-        )
-
-        vut.make_video(
-            self.observations,
-            "scene_camera_rgb_2",
-            "color",
-            f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_2_{self.scenario_number}",
-            open_vid=False,
-        )
-
-        vut.make_video(
-            self.observations,
-            "scene_camera_rgb_3",
-            "color",
-            f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_3_{self.scenario_number}",
-            open_vid=False,
-        )
-
-        vut.make_video(
-            self.observations,
-            "agent_0_third_rgb",
-            "color",
-            # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_spot",
-            f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_spot_{self.scenario_number}",
-            open_vid=False,
-        )
-
-        vut.make_video(
-            self.observations,
-            "agent_1_third_rgb",
-            "color",
-            f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_human_1_{self.scenario_number}",
-            open_vid=False,
-        )
+        print("FINISH SCENE, DESTROYING...")
+        self.env.reset()
+        self.env.close()
+        print("closed env")
+        # self.env.reset()
+        super().destroy()
+        return
+        # folder_name = "test_run_vids/"
 
         # vut.make_video(
             # self.observations,
-            # "agent_2_third_rgb",
+            # "scene_camera_rgb",
             # "color",
-            # f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}test_human_2_{self.scenario_number}",
+            # f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_{self.scenario_number}",
             # open_vid=False,
         # )
 
-        super().destroy()
-        return
+        # vut.make_video(
+            # self.observations,
+            # "scene_camera_rgb_2",
+            # "color",
+            # f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_2_{self.scenario_number}",
+            # open_vid=False,
+        # )
+
+        # vut.make_video(
+            # self.observations,
+            # "scene_camera_rgb_3",
+            # "color",
+            # f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_3_{self.scenario_number}",
+            # open_vid=False,
+        # )
+
+        # vut.make_video(
+            # self.observations,
+            # "agent_0_third_rgb",
+            # "color",
+            # f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_spot_{self.scenario_number}",
+            # open_vid=False,
+        # )
+
+        # vut.make_video(
+            # self.observations,
+            # "agent_1_third_rgb",
+            # "color",
+            # f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_human_1_{self.scenario_number}",
+            # open_vid=False,
+        # )
+
+        # super().destroy()
+        # return
 
     def habitatToRobotMap(self, pose):
         """

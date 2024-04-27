@@ -43,7 +43,7 @@ server_options = DotMap(port=PORT, bufsize=BUFSIZE, maxreqs=MAXREQS)
 class scenic_spec(specification_monitor):
         def __init__(self):
                 def specification(simulation):
-                    print(simulation.result.records['dist'])
+                    # print(simulation.result.records['dist'])
                     return all([i[1] > 1 for i in simulation.result.records['dist']])
                 super().__init__(specification)
 
@@ -53,5 +53,6 @@ falsifier = generic_falsifier(
         falsifier_params=DotMap(n_iters=2),
         server_class=ScenicServer
 )
+print("RUNNING FALSIFIER")
 falsifier.run_falsifier()
 
