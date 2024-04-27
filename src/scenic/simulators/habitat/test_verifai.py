@@ -6,7 +6,7 @@ from verifai.scenic_server import ScenicServer
 from dotmap import DotMap
 
 # path = '/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/demos/test_verifai.scenic'
-path = './demos/test_verifai.scenic'
+path = './demos/test_verifai_ego.scenic'
 scenic_sampler = ScenicSampler.fromScenario(path)
 # specification = ["G(collisioncone0 & collisioncone1 & collisioncone2)"]
 

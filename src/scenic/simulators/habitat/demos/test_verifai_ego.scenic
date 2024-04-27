@@ -63,11 +63,10 @@ behavior HumanNav(x=0, y=0, z=0):
     terminate
 
 
-# human = new Female_0 at (-1.5, -5.5, 0), with behavior HumanNav(x=-1.5, y=-3.5, z=0)
-ego = new Female_0 at (-1.5, -5.5, 0), with behavior HumanNav(x=-1.5, y=-3.5, z=0)
+# spot = new SpotRobot at (-1.5, -6.5, 0), with behavior MoveSpotArm()
+human = new Female_0 at (-1.5, -5.5, 0), with behavior HumanNav(x=-1.5, y=-3.5, z=0)
 spot = new SpotRobot at (-1.5, -6.5, 0), with behavior MoveSpotArm()
-# ego = new SpotRobot at (-1.5, -6.5, 0), with behavior MoveSpotArm()
+# spot = new SpotRobot at (-1.5, -6.5, 0), with behavior MoveSpotArm()
 
-# record (distance from human to ego) as dist
+record (distance from human to spot) as dist
 # record (distance from human to spot) as dist
-record (distance from ego to spot) as dist
