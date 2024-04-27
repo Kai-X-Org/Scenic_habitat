@@ -276,8 +276,8 @@ class HabitatSimulation(Simulation):
         for agent, actions in allActions.items():
             for action in actions:
                 try:
-                    print("OBJECT TYPE:",agent.object_type)
-                    print("OBJECT ACTIon:", action)
+                    # print("OBJECT TYPE:",agent.object_type)
+                    # print("OBJECT ACTIon:", action)
                     a = action.applyTo(agent, self)
                 except Exception as e:
                     print(f"Failed to execute action, exception:\n{str(e)}")

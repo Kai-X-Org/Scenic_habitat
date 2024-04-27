@@ -6,7 +6,7 @@ from verifai.scenic_server import ScenicServer
 from dotmap import DotMap
 
 # path = '/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/demos/test_verifai.scenic'
-path = './demos/test_verifai_ego.scenic'
+path = './demos/test_verifai.scenic'
 scenic_sampler = ScenicSampler.fromScenario(path)
 # specification = ["G(collisioncone0 & collisioncone1 & collisioncone2)"]
 
@@ -43,7 +43,8 @@ server_options = DotMap(port=PORT, bufsize=BUFSIZE, maxreqs=MAXREQS)
 class scenic_spec(specification_monitor):
         def __init__(self):
                 def specification(simulation):
-                        return simulation.result.records['dist'] > 1
+                    print(simulation.result.records['dist'])
+                    return all([i[1] > 1 for i in simulation.result.records['dist']])
                 super().__init__(specification)
 
 falsifier = generic_falsifier(
