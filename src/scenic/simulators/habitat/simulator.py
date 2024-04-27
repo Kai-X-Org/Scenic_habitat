@@ -246,9 +246,11 @@ class HabitatSimulation(Simulation):
                     obj._grasp_manager = self.sim.agents_mgr[obj._agent_id].grasp_mgrs[0]
                 
                 extra_files = {"net_meta_dict.pkl": ""} # TODO temporary hardcoding
-                for action, model_dir in obj._policy_path_dict.items():
-                    obj._policies[action] = torch.jit.load(model_dir, _extra_files=extra_files, map_location=self.device)
-                    # TODO for SPOT pick/place only
+
+
+                # for action, model_dir in obj._policy_path_dict.items():
+                    # obj._policies[action] = torch.jit.load(model_dir, _extra_files=extra_files, map_location=self.device)
+                    # not loading policies just yet
 
             x, y, z, _, _, _ = self.scenicToHabitatMap((obj.position[0], obj.position[1], obj.position[2],0, 0, 0))
             art_agent.base_pos = mn.Vector3(x, y, z) 
@@ -256,7 +258,7 @@ class HabitatSimulation(Simulation):
 
         else:
             handle = obj._object_file_handle
-            self.obj_attr_mgr.load_configs('/home/ek65/habitat-lab/data/objects/ycb/configs/')
+            self.obj_attr_mgr.load_configs('/home/kxu/habitat-lab/data/objects/ycb/configs/')
             obj_template_handle = self.obj_attr_mgr.get_template_handles(handle)[0]
             obj._managed_rigid_object = self.rigid_obj_mgr.add_object_by_template_handle(obj_template_handle)
             obj._object_id = obj._managed_rigid_object.object_id
@@ -347,7 +349,7 @@ class HabitatSimulation(Simulation):
             "scene_camera_rgb",
             "color",
             # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/scene_overview",
-            f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_{self.scenario_number}",
+            f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_{self.scenario_number}",
             open_vid=False,
         )
 
@@ -355,7 +357,7 @@ class HabitatSimulation(Simulation):
             self.observations,
             "scene_camera_rgb_2",
             "color",
-            f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_2_{self.scenario_number}",
+            f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_2_{self.scenario_number}",
             open_vid=False,
         )
 
@@ -363,7 +365,7 @@ class HabitatSimulation(Simulation):
             self.observations,
             "scene_camera_rgb_3",
             "color",
-            f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_3_{self.scenario_number}",
+            f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_3_{self.scenario_number}",
             open_vid=False,
         )
 
@@ -372,7 +374,7 @@ class HabitatSimulation(Simulation):
             "agent_0_third_rgb",
             "color",
             # "/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/test_spot",
-            f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}test_spot_{self.scenario_number}",
+            f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_spot_{self.scenario_number}",
             open_vid=False,
         )
 
@@ -380,7 +382,7 @@ class HabitatSimulation(Simulation):
             self.observations,
             "agent_1_third_rgb",
             "color",
-            f"/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/{folder_name}test_human_1_{self.scenario_number}",
+            f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_human_1_{self.scenario_number}",
             open_vid=False,
         )
 

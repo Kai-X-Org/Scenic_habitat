@@ -5,7 +5,7 @@ import trimesh
 import habitat.config.default_structured_configs as cfg
 
 simulator HabitatSimulator()
-data_dir = '/home/ek65/habitat-lab/data/'
+data_dir = '/home/kxu/habitat-lab/data/'
 
 class HabitatAgent():
     name: 'agent'
@@ -79,7 +79,7 @@ class FetchRobot(Robot):
     name: "FetchRobot"
     object_type: 'FetchRobot'
     _articulated_agent_type: 'FetchRobot'
-    _ik_arm_urdf: "/home/ek65/habitat-lab/data/robots/hab_fetch/robots/fetch_arm.urdf"
+    _ik_arm_urdf: "/home/kxu/habitat-lab/data/robots/hab_fetch/robots/fetch_arm.urdf"
     urdf_path: data_dir + 'robots/hab_fetch/robots/hab_fetch.urdf'
     shape: CylinderShape(dimensions=(0.508,0.559,1.096))
     @property
@@ -97,8 +97,8 @@ class SpotRobot(Robot):
     object_type: "SpotRobot"
     _articulated_agent_type: "SpotRobot"
     urdf_path: data_dir + 'robots/hab_spot_arm/urdf/hab_spot_arm.urdf'
-    _policy_path_dict: dict(pick='/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/policies/pick_latest.torchscript',
-                       place='/home/ek65/Scenic-habitat/src/scenic/simulators/habitat/policies/place_latest_sample.torchscript')
+    _policy_path_dict: dict(pick='/home/kxu/Scenic-habitat/src/scenic/simulators/habitat/policies/pick_latest.torchscript',
+                       place='/home/kxu/Scenic-habitat/src/scenic/simulators/habitat/policies/place_latest_sample.torchscript')
     _policies: dict()
     shape: BoxShape(dimensions=(1.1, 0.5, 0.7))
     _ik_arm_urdf: ""
