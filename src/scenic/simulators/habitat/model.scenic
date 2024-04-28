@@ -80,7 +80,7 @@ class FetchRobot(Robot):
     name: "FetchRobot"
     object_type: 'FetchRobot'
     _articulated_agent_type: 'FetchRobot'
-    _ik_arm_urdf: "/home/kxu/habitat-lab/data/robots/hab_fetch/robots/fetch_arm.urdf"
+    # _ik_arm_urdf: "/home/kxu/habitat-lab/data/robots/hab_fetch/robots/fetch_arm.urdf"
     urdf_path: data_dir + 'robots/hab_fetch/robots/hab_fetch.urdf'
     shape: CylinderShape(dimensions=(0.508,0.559,1.096))
     @property
@@ -91,7 +91,7 @@ class FetchRobot(Robot):
                 self.name + "base_velocity_action": cfg.BaseVelocityActionConfig(),
                 self.name + "oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
                                                                               spawn_max_dist_to_obj=1.0),
-                self.name + "reach_action": cfg.ArmActionConfig(type="ArmEEAction") # TODO maybe a little more in the setup
+                # self.name + "reach_action": cfg.ArmActionConfig(type="ArmEEAction") # TODO maybe a little more in the setup
             }
 
         return {
@@ -99,7 +99,7 @@ class FetchRobot(Robot):
             self.name + "_base_velocity_action": cfg.BaseVelocityActionConfig(),
             self.name + "_oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
                                                                           spawn_max_dist_to_obj=1.0),
-            self.name + "_reach_action": cfg.ArmActionConfig(type="ArmEEAction") # TODO maybe a little more in the setup
+            # self.name + "_reach_action": cfg.ArmActionConfig(type="ArmEEAction") # TODO maybe a little more in the setup
         }
 
 class SpotRobot(Robot):

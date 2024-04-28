@@ -24,33 +24,25 @@ from scenic.simulators.habitat.utils import scenic_to_habitat_map
 
 class GoRelDeltaAction(Action):
 
-    def __init__(self, obj, dx=0, dy=0, dz=0, rot=0):
+    def __init__(self, dx=0, dy=0, dz=0, rot=0):
         self.pos_delta = mn.Vector3(dx, dy, dz)
-        self.art_agent = obj._articulated_agent
+        # self.art_agent = obj._articulated_agent
         #TODO add rotation delta
     
     def applyTo(self, obj, sim):
-        # art_agent = sim.sim.articulated_agent
+        self.art_agent = obj._articulated_agent
         x, y, z = self.pos_delta
         x, y, z, _, _, _ = sim.scenicToHabitatMap((x, y, z,0,0,0))
         self.pos_delta = np.array([x, y, z])
-        if obj._articulated_agent_type == 'KinematicHumanoid':
-            rel_pose = self.art_agent.base_pos + self.pos_delta
-            obj._humanoid_controller.calculate_walk_pose(rel_pose)
-            new_pose = obj._humanoid_controller.get_pose()
-            joint_action = obj._humanoid_joint_action
-            # print('action arg prefix!!!:', joint_action._action_arg_prefix)
-            key = joint_action._action_arg_prefix + 'human_joints_trans'
-            # key = f'agent_{obj._agent_id}' + '_human_joint_trans'
-            # print('KEY:', key)
-            arg_dict = dict()
-            arg_dict[key] = new_pose
-            # print('ARG_DICT', arg_dict)
-            joint_action.step(**arg_dict)
-
-        else:
-            self.art_agent.base_pos = self.art_agent.base_pos + self.pos_delta
+        self.art_agent.base_pos = self.art_agent.base_pos + self.pos_delta
         return
+
+class RotDeltaAction(Action):
+    def __init__(self, rot_delta):
+        self.rot_delta = rot_delta
+
+    def applyTo(self, obj, sim):
+        obj._articulated_agent.base_rot += self.rot_delta
 
 class HumanGoAction(Action):
     def __init__(self, x=0, y=0, z=0):
@@ -174,6 +166,7 @@ class HumanoidNavAction(Action):
         self.z = z
 
     def applyTo(self, obj, sim):
+        print(f"HUMANOID NAVING")
 
         obj._humanoid_controller.reset(obj._articulated_agent.base_transformation) # probelm, likely relative to human frame?
         x, y, z, _, _, _ = scenic_to_habitat_map((self.x, self.y, self.z, 0, 0, 0))
@@ -214,6 +207,7 @@ class OracleCoordAction(Action):
         x, y, z, _, _, _ = scenic_to_habitat_map((self.x, self.y, self.z, 0, 0, 0))
         # object_trans = mn.Vector3(x, y, z)
         object_trans = np.array([x, y, z])
+        print(f"OBJ NAME: {obj.object_type}")
         sim.step_action_dict["action"] += tuple([obj.name + "_oracle_coord_action"])
         sim.step_action_dict["action_args"][obj.name + "_oracle_nav_lookat_action"] = object_trans
 

@@ -396,7 +396,15 @@ class HabitatSimulation(Simulation):
                 self.observations,
                 "agent_1_third_rgb",
                 "color",
-                f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_human_1_{self.scenario_number}",
+                f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_spot_1_{self.scenario_number}",
+                open_vid=False,
+            )
+
+            vut.make_video(
+                self.observations,
+                "agent_2_third_rgb",
+                "color",
+                f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_fetch_1_{self.scenario_number}",
                 open_vid=False,
             )
 

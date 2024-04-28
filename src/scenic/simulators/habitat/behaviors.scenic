@@ -48,6 +48,12 @@ behavior GoRel(x=0, y=0, z=0, rot=0, num_steps=100):
         # take GoRelDeltaAction()
     # if self._articulated_agent_type == 'FetchRobot':
         # terminate
+# behavior Rotate(rot_angle, num_steps=20):
+    # delta_angle = self.yaw - rot_angle
+behavior TurnAround(num_steps=30):
+    rot_delta = 3.14/num_steps
+    for _ range(num_steps):
+        take RotDeltaAction(rot_delta)
 
 behavior MoveAndBack(x=0, y=0, z=0, num_steps=100):
     try:
@@ -95,7 +101,7 @@ behavior GoAndReach(reach_x=0, reach_y=0, reach_z=0, move_x=0, move_y=0, move_z=
 
 behavior RobotNav(x=0, y=0, z=0):
     for _ in range(100):
-        print('ROBOT NAVING')
+        print(f'{self.object_type} ROBOT NAVING')
         take OracleCoordAction(x, y, z)
     # terminate
 
