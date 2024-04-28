@@ -10,6 +10,16 @@ import math
 import time
 
 
+behavior SpotHandOver():
+    # raise_pos = np.array([0.0, -3.14, 0.00, 3.14, 0.0, 0.0, 0.0]) # initial pos
+    raise_pos = np.array([0.0, -3.14, 0.00, 1.57, 0.0, 0.0, 0.0]) # forarm raise
+    do MoveToJointAngles(raise_pos)
+
+    raise_pos = [0.0, -1.3, 0.0, 1.8, 0.0, 0.0, 0.0] # shoulder raise
+    do MoveToJointAngles(raise_pos)
+    
+
+
 behavior SpotPickUp():
     raise_pos = np.array([0.0, -3.14, 0.00, 1.57, 0.0, 0.0, 0.0]) # forarm raise
     do MoveToJointAngles(raise_pos)
@@ -25,7 +35,7 @@ behavior SpotPickUp():
     if diff_norm < 0.25:
         take SnapToObjectAction(box)
 
-    raise_pos = np.array([0.0, -3.14, 0.00, 3.14, 0.0, 0.0, 0.0]) # forarm raise
+    raise_pos = np.array([0.0, -3.14, 0.00, 3.14, 0.0, 0.0, 0.0]) # retract_arm
     do MoveToJointAngles(raise_pos, steps=50)
 
 
@@ -40,6 +50,7 @@ behavior GrabAndNav():
     for _ in range(50):
         wait
     do NavToHuman()
+    do SpotHandOver()
     terminate
 
 behavior MoveToJointAngles(joint_angles, steps=50):
@@ -74,7 +85,8 @@ behavior ReachHandAndWalk(walk_position, reach_position):
 
 ego = new Female_0 at (-0.5, -4.8, 0), with yaw -90 deg,
                                 with behavior ReachHandAndWalk((-4.5, -3.0, 0), (-0.5, -0.5, 0.5))
-bed = RectangularRegion((0.3, -6.0, 0.63), 0, 1.0, 1.0) # final defined bed width
+
+# bed = RectangularRegion((0.3, -6.0, 0.63), 0, 1.0, 1.0) # final defined bed width
 box = new GelatinBox on (0.12, -5.5, 0.61)
 # spot = new SpotRobot at (-0.9, -5.5, 0), with behavior SpotPickUp(box=box)
 # spot = new SpotRobot at (-0.9, -5.5, 0), with behavior SpotPickUp()
