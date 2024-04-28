@@ -34,6 +34,8 @@ behavior SpotPickUp():
     print(f"pos_difference norm: {diff_norm}")
     if diff_norm < 0.25:
         take SnapToObjectAction(box)
+    else:
+        terminate
 
     raise_pos = np.array([0.0, -3.14, 0.00, 3.14, 0.0, 0.0, 0.0]) # retract_arm
     do MoveToJointAngles(raise_pos, steps=50)
@@ -104,11 +106,12 @@ ego = new Female_0 at (-0.5, -4.8, 0), with yaw -90 deg,
 
 # bed = RectangularRegion((0.3, -6.0, 0.63), 0, 1.0, 1.0) # final defined bed width
 
-box_region = RectangularRegion((0.12, -5.5, 0.61), 0, 0.5, 0.5)
+box_region = RectangularRegion((0.12, -5.5, 0.61), 0, 0.2, 0.2)
 # box = new GelatinBox on (0.12, -5.5, 0.61)
 box = new GelatinBox on box_region
 spot = new SpotRobot at (-0.9, -5.5, 0), with behavior GrabAndNav()
 fetch = new FetchRobot at (-3.7, Range(-2.5, -5.0), 0), with yaw 90 deg, with behavior Traverse()
 
-
+record distance from spot to fetch as bot_dist
+record (ego.ee_pos - spot.ee_pos).norm as ee_dist
 

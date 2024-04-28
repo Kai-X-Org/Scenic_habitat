@@ -159,3 +159,26 @@ def scenic_to_habitat_map(pose, obj=None):
     new_pitch = yaw
     new_yaw = roll
     return (x, y, z, new_roll, new_pitch, new_yaw)
+
+
+
+def habitat_to_scenic_map(pose, obj=None):
+    """
+    Converts from the habitat map frame coordinate to the Scenic map coordinate
+    Args:
+    pose: (x, y, z, roll, pitch, yaw)
+    """
+    # assert len(pose) == 4
+    # return self.RobotToScenicMap(self.HabitatToRobotMap(pose), obj=obj)
+    g = np.array([[0, 1, 0, 0], 
+                  [0, 0, 1, 0], 
+                  [1, 0, 0, 0], 
+                  [0, 0, 0, 1]])
+    g = np.linalg.inv(g)
+    x, y, z, roll, pitch, yaw = pose
+    x, y, z, _ = g @ np.array([x, y, z, 1])
+    new_roll = yaw
+    new_pitch = roll
+    new_yaw = pitch
+    return (x, y, z, new_roll, new_pitch, new_yaw)
+

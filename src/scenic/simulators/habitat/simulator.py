@@ -310,11 +310,16 @@ class HabitatSimulation(Simulation):
     def getProperties(self, obj, properties):
         # print(self.sim.articulated_agent.base_pos)
         if obj.is_agent:
-            if obj.object_type == 'SpotRobot':
-                ee_pos = obj._articulated_agent.ee_transform().translation
-                x, y, z, _, _, _ = self.habitatToScenicMap((ee_pos[0], ee_pos[1], ee_pos[2], 0, 0, 0))
-                # print(f"EE pos{x, y, z}")
-                obj.ee_pos = Vector(x, y, z)
+            # if obj.object_type == 'SpotRobot':
+                # ee_pos = obj._articulated_agent.ee_transform().translation
+                # x, y, z, _, _, _ = self.habitatToScenicMap((ee_pos[0], ee_pos[1], ee_pos[2], 0, 0, 0))
+                # # print(f"EE pos{x, y, z}")
+                # obj.ee_pos = Vector(x, y, z)
+
+            # if obj.object_type == 'KinematicHumanoid':
+                # offset =  obj._articulated_agent.base_transformation.transform_vector(mn.Vector3(0, 0.3, 0))
+                # hand_pos = obj._articulated_agent.ee_transform(0).translation + offset
+                # obj.ee_pos = hand_pos
 
             x, y, z = obj._articulated_agent.base_pos
             x, y, z, _, _, _ = self.habitatToScenicMap((x, y, z, 0, 0, 0))

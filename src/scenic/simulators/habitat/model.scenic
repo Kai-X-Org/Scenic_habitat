@@ -3,6 +3,7 @@ from scenic.core.utils import repairMesh
 from scenic.simulators.habitat.simulator import HabitatSimulation, HabitatSimulator
 import trimesh
 import habitat.config.default_structured_configs as cfg
+from scenic.simulators.habitat.utils import scenic_to_habitat_map, habitat_to_scenic_map
 
 simulator HabitatSimulator()
 data_dir = '/home/kxu/habitat-lab/data/'
@@ -40,7 +41,7 @@ class Robot(HabitatAgent):
     yaw: 0
     roll: 0
     pitch: 0
-    ee_pos: None
+    # ee_pos: None
     _object_template_handle: None
     _has_grasp: True
     _grasp_manager: None
@@ -147,6 +148,12 @@ class SpotRobot(Robot):
                                                                           spawn_max_dist_to_obj=1.0)
         }
 
+    @property
+    def ee_pos(self):
+        ee_pos = self._articulated_agent.ee_transofrm().translation
+        x, y, z, _, _ , _ = habitat_to_scenic_map((ee_pos[0], ee_pos[1], ee_pos[2], 0, 0, 0))
+        return Vector(x, y, z)
+
 
 class KinematicHumanoid(HabitatAgent):
     name: "Humanoid"
@@ -154,6 +161,7 @@ class KinematicHumanoid(HabitatAgent):
     _articulated_agent_type: 'KinematicHumanoid'
     _humanoid_controller: None
     urdf_path: None
+    ee_pos: None
     shape: CylinderShape(dimensions=(0.508,0.559,1.75))
 
     @property
@@ -172,6 +180,13 @@ class KinematicHumanoid(HabitatAgent):
                                                               spawn_max_dist_to_obj=1.0),
             self.name + "_humanoid_pick_obj_id_action": cfg.HumanoidPickActionConfig(type="HumanoidPickObjIdAction")
         }
+
+    @property
+    def ee_pos(self):
+        offset =  self._articulated_agent.base_transformation.transform_vector(mn.Vector3(0, 0.3, 0))
+        ee_pos = env.sim.articulated_agent.ee_transform(0).translation + offset
+        x, y, z, _, _ , _ = habitat_to_scenic_map((ee_pos[0], ee_pos[1], ee_pos[2], 0, 0, 0))
+        return Vector(x, y, z)
 
 class Female_0(KinematicHumanoid):
     name: "Female_0"
