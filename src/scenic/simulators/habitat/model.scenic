@@ -108,18 +108,24 @@ class SpotRobot(Robot):
     name: "agent_1"
     object_type: "SpotRobot"
     _articulated_agent_type: "SpotRobot"
+    ee_pos: (0, 0.5 ,0)
     urdf_path: data_dir + 'robots/hab_spot_arm/urdf/hab_spot_arm.urdf'
     _policy_path_dict: dict(pick='/home/kxu/Scenic-habitat/src/scenic/simulators/habitat/policies/pick_latest.torchscript',
                        place='/home/kxu/Scenic-habitat/src/scenic/simulators/habitat/policies/place_latest_sample.torchscript')
     _policies: dict()
     shape: BoxShape(dimensions=(1.1, 0.5, 0.7))
-    _ik_arm_urdf: ""
     _sim_sensors: { # TODO temporary
                 "third_rgb": cfg.ThirdRGBSensorConfig(width=1024, height=1024),
                 "head_rgb": cfg.HeadRGBSensorConfig()
                 # "arm_rgb": cfg.ArmRGBSensorConfig()
                 # "articulated_agent_jaw_depth": cfg.JawDepthSensorConfig()
     }
+
+    # @property
+    # def ee_pos(self):
+        # ee_pos = self._articulated_agent.ee_transofrm().translation
+        # x, y, z, _, _ , _ = habitat_to_scenic_map((ee_pos[0], ee_pos[1], ee_pos[2], 0, 0, 0))
+        # return Vector(x, y, z)
 
     @property
     def _action_dict(self):
@@ -138,11 +144,6 @@ class SpotRobot(Robot):
                                                                           spawn_max_dist_to_obj=1.0)
         }
 
-    @property
-    def gripper_pos(self):
-        ee_pos = self._articulated_agent.ee_transofrm().translation
-        x, y, z, _, _ , _ = habitat_to_scenic_map((ee_pos[0], ee_pos[1], ee_pos[2], 0, 0, 0))
-        return Vector(x, y, z)
 
 
 class KinematicHumanoid(HabitatAgent):
