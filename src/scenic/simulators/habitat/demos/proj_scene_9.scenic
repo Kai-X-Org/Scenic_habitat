@@ -83,12 +83,17 @@ behavior ReachHandAndWalk(walk_position, reach_position):
             wait
     
 
-behavior Traverse(point1, point2):
+behavior Traverse():
     while True:
-        x, y, z = point1
-        do RobotNav(x=x, y=y, z=z)
-        x, y, z = point2
-        do RobotNav(x=x, y=y, z=z)
+        # x, y, z = point1
+        # do RobotNav(x=x, y=y, z=z)
+        do GoRel(y=1.0)
+        do TurnAround()
+        do GoRel(y=-1.0)
+        do TurnAround()
+        # x, y, z = point2
+        # do RobotNav(x=x, y=y, z=z)
+        
 
 ego = new Female_0 at (-0.5, -4.8, 0), with yaw -90 deg,
                                 with behavior ReachHandAndWalk((-4.5, -3.0, 0), (-0.5, -0.5, 0.5))
@@ -97,10 +102,10 @@ ego = new Female_0 at (-0.5, -4.8, 0), with yaw -90 deg,
 box = new GelatinBox on (0.12, -5.5, 0.61)
 spot = new SpotRobot at (-0.9, -5.5, 0), with behavior GrabAndNav()
 
-trav_point1 = (-3.5, Range(-2.5, -4.0), 0)
-trav_point2 = (-3.5, Range(-4.0, -5.0), 0)
+# trav_point1 = (-3.5, Range(-2.5, -4.0), 0)
+# trav_point2 = (-3.5, Range(-4.0, -5.0), 0)
 
-fetch = new FetchRobot at (-3.7, Range(-2.5, -5.0), 0), with yaw 90 deg, with behavior Traverse(trav_point1, trav_point2)
+fetch = new FetchRobot at (-3.7, Range(-2.5, -5.0), 0), with yaw 90 deg, with behavior Traverse()
 
 
 

@@ -38,21 +38,21 @@ behavior GoRel(x=0, y=0, z=0, rot=0, num_steps=100):
     dx = x/num_steps
     dy = y/num_steps
     dz = z/num_steps
-    
-    # print('taking action!')
+
     for _ in range(num_steps):
-        # print('taking action!')
-        take GoRelDeltaAction(self, dx, dy, dz)
-        
-        print(self.position)
-        # take GoRelDeltaAction()
-    # if self._articulated_agent_type == 'FetchRobot':
-        # terminate
+        take GoRelDeltaAction(dx, dy, dz)
+
 # behavior Rotate(rot_angle, num_steps=20):
     # delta_angle = self.yaw - rot_angle
+
 behavior TurnAround(num_steps=30):
-    rot_delta = 3.14/num_steps
-    for _ range(num_steps):
+    if self._articulated_agent.base_rot > 3.14:
+        angle = -3.14
+    else:
+        angle = 3.14
+
+    rot_delta = angle/num_steps
+    for _ in range(num_steps):
         take RotDeltaAction(rot_delta)
 
 behavior MoveAndBack(x=0, y=0, z=0, num_steps=100):
