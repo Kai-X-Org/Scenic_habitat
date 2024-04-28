@@ -282,8 +282,8 @@ class HabitatSimulation(Simulation):
         for agent, actions in allActions.items():
             for action in actions:
                 try:
-                    print("OBJECT TYPE:",agent.object_type)
-                    print("OBJECT ACTION:", action)
+                    # print("OBJECT TYPE:",agent.object_type)
+                    # print("OBJECT ACTION:", action)
                     a = action.applyTo(agent, self)
                 except Exception as e:
                     print(f"Failed to execute action, exception:\n{str(e)}")
@@ -384,13 +384,13 @@ class HabitatSimulation(Simulation):
                 open_vid=False,
             )
 
-            vut.make_video(
-                self.observations,
-                "agent_0_third_rgb",
-                "color",
-                f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_spot_{self.scenario_number}",
-                open_vid=False,
-            )
+            # vut.make_video(
+                # self.observations,
+                # "agent_0_third_rgb",
+                # "color",
+                # f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_spot_{self.scenario_number}",
+                # open_vid=False,
+            # )
 
             vut.make_video(
                 self.observations,

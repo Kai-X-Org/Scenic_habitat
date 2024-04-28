@@ -136,6 +136,31 @@ class HumanReachAction(Action):
         sim.step_action_dict["action_args"][obj.name + "_human_joints_trans"] = new_pose
         
 
+# class HumanReachNeutralAction(Action):
+    # def applyTo(self, obj, sim):
+        # pose =  mn.Vector(-4.86974, 0.731405, 0.0187876)
+
+class HumanReachAbsAction(Action):
+    def __init__(self, x=0, y=0, z=0, index_hand=0):
+        self.x = x
+        self.y = y
+        self.z = z
+        self.index_hand = index_hand
+
+    def applyTo(self, obj, sim):
+        obj._humanoid_controller.reset(obj._articulated_agent.base_transformation) # probelm, likely relative to human frame?
+        # offset = obj._articulated_agent.base_transformation.transform_vector(mn.Vector3(0, 0.3, 0)) # offset for hand
+        # hand_pose = obj._articulated_agent.ee_transform(self.index_hand).translation + offset
+        x, y, z, _, _, _ = sim.scenicToHabitatMap((self.x, self.y, self.z, 0, 0, 0))
+        hand_pose = mn.Vector3(x, y, z)
+        obj._humanoid_controller.calculate_reach_pose(hand_pose, index_hand=self.index_hand)
+
+        new_pose = obj._humanoid_controller.get_pose()
+        
+        sim.step_action_dict["action"] += tuple([obj.name + "_humanoid_joint_action"])
+        sim.step_action_dict["action_args"][obj.name + "_human_joints_trans"] = new_pose
+
+
 class HumanoidNavAction(Action):
     """
     Carry out navigating to an object for one timestep
@@ -149,10 +174,6 @@ class HumanoidNavAction(Action):
         self.z = z
 
     def applyTo(self, obj, sim):
-        print(f'OBJ AGENT ID: {obj._agent_id}')
-        print(f'OBJ NAME: {obj.name}')
-        print(f'OBJ type: {obj.object_type}')
-        print(f"base pos: {obj._articulated_agent.base_pos}")
 
         obj._humanoid_controller.reset(obj._articulated_agent.base_transformation) # probelm, likely relative to human frame?
         x, y, z, _, _, _ = scenic_to_habitat_map((self.x, self.y, self.z, 0, 0, 0))

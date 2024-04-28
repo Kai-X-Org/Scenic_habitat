@@ -47,14 +47,14 @@ behavior GoRel(x=0, y=0, z=0, rot=0, num_steps=100):
         print(self.position)
         # take GoRelDeltaAction()
     # if self._articulated_agent_type == 'FetchRobot':
-        terminate
+        # terminate
 
 behavior MoveAndBack(x=0, y=0, z=0, num_steps=100):
     try:
         do GoRel(x=x, y=y, z=z, num_steps=100)
     interrupt when (self.distanceToClosest(KinematicHumanoid) < 1.5):
         do GoRel(x=-x/2, y=-y/2, z=-z/2, num_steps=100)
-        terminate
+        # terminate
 
 behavior HumanGo(x=0, y=0, z=0, num_steps=100):
 
@@ -80,7 +80,7 @@ behavior HumanGo(x=0, y=0, z=0, num_steps=100):
         wait
         t1 = time.time()
     print('finish scene')
-    terminate
+    # terminate
 
 behavior HumanReach(x=0, y=0, z=0, index_hand=0, timesteps=250):
     arr = np.array([x, y, z])
@@ -95,8 +95,9 @@ behavior GoAndReach(reach_x=0, reach_y=0, reach_z=0, move_x=0, move_y=0, move_z=
 
 behavior RobotNav(x=0, y=0, z=0):
     for _ in range(100):
+        print('ROBOT NAVING')
         take OracleCoordAction(x, y, z)
-    terminate
+    # terminate
 
 behavior MoveSpotArm():
     take SpotMoveArmAction(arm_ctrl_angles=[1.57, -1.57, 0.0, 1.57, 0.0, 0.0, 0.0])
@@ -109,12 +110,12 @@ behavior MoveSpotArm():
     take SpotMoveArmAction()
 
 behavior HumanNav(x=0, y=0, z=0):
-    current_pos = self._articulated_agent.base_pos
-    self._articulated_agent.base_pos = current_pos
+    # current_pos = self._articulated_agent.base_pos
+    # self._articulated_agent.base_pos = current_pos
     for _ in range(100):
-        print("BASE POS:", self._articulated_agent.base_pos)
+        # print("BASE POS:", self._articulated_agent.base_pos)
         take HumanoidNavAction(x, y, z)
-    terminate
+    # terminate
 
 behavior FetchReach(x=0, y=0, z=0, frame='world'):
     # take FetchReachAction(x=x, y=y, z=z)

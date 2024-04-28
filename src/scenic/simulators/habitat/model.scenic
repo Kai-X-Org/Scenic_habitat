@@ -171,7 +171,6 @@ class KinematicHumanoid(HabitatAgent):
                                                               motion_control="human_joints", # name + "_human_joints"???
                                                               spawn_max_dist_to_obj=1.0),
             self.name + "_humanoid_pick_obj_id_action": cfg.HumanoidPickActionConfig(type="HumanoidPickObjIdAction")
-            
         }
 
 class Female_0(KinematicHumanoid):
