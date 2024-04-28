@@ -162,7 +162,14 @@ class HabitatSimulation(Simulation):
                 self.habitat_agents.append(obj)
                 obj._agent_id = agent_count
                 print(f"obj agent id: {obj._agent_id}")
-                obj.name = 'agent_' + str(agent_count)
+
+                if not obj._only_agent:
+                    obj.name = 'agent_' + str(agent_count)
+                else: 
+                    obj.name = ""
+                    print("ONLY AGENT?", obj._only_agent)
+                    print(obj._action_dict)
+
                 print("Object name:", obj.name)
                 agent_count += 1
 

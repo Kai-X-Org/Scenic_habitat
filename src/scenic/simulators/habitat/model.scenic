@@ -12,6 +12,7 @@ class HabitatAgent():
     object_type: 'agent'
     is_agent: True
     _agent_id: None
+    _only_agent: False
     #_object_id: self._articulated_agent.sim_obj.object_id
     _articulated_agent_type: None
     _motion_data_path: None
@@ -84,6 +85,15 @@ class FetchRobot(Robot):
     shape: CylinderShape(dimensions=(0.508,0.559,1.096))
     @property
     def _action_dict(self):
+        if self._only_agent:
+            return {
+                self.name + "oracle_magic_grasp_action": cfg.ArmActionConfig(type="MagicGraspAction"),
+                self.name + "base_velocity_action": cfg.BaseVelocityActionConfig(),
+                self.name + "oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
+                                                                              spawn_max_dist_to_obj=1.0),
+                self.name + "reach_action": cfg.ArmActionConfig(type="ArmEEAction") # TODO maybe a little more in the setup
+            }
+
         return {
             self.name + "_oracle_magic_grasp_action": cfg.ArmActionConfig(type="MagicGraspAction"),
             self.name + "_base_velocity_action": cfg.BaseVelocityActionConfig(),
@@ -122,6 +132,14 @@ class SpotRobot(Robot):
         # return  {self.name + "_arm_action": cfg.ArmActionConfig(type="MagicGraspAction"),
                        # self.name + "_base_velocity": cfg.BaseVelocityActionConfig()},
                 # self.name + "_oracle_coord_action"
+        if self._only_agent:
+            return {
+                "oracle_magic_grasp_action": cfg.ArmActionConfig(type="MagicGraspAction"),
+                "base_velocity_action": cfg.BaseVelocityActionConfig(),
+                "oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
+                                                                              spawn_max_dist_to_obj=1.0)
+            }
+
         return {
             self.name + "_oracle_magic_grasp_action": cfg.ArmActionConfig(type="MagicGraspAction"),
             self.name + "_base_velocity_action": cfg.BaseVelocityActionConfig(),
@@ -140,6 +158,13 @@ class KinematicHumanoid(HabitatAgent):
 
     @property
     def _action_dict(self):
+        if self._only_agent:
+            return {
+                "humanoid_joint_action": cfg.HumanoidJointActionConfig(),
+                "humanoid_navigate_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
+                                                                  motion_control="human_joints", # name + "_human_joints"???
+                                                                  spawn_max_dist_to_obj=1.0),
+                "humanoid_pick_obj_id_action": cfg.HumanoidPickActionConfig(type="HumanoidPickObjIdAction")}
         return {
             self.name + "_humanoid_joint_action": cfg.HumanoidJointActionConfig(),
             self.name + "_humanoid_navigate_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 

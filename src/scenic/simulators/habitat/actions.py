@@ -157,9 +157,14 @@ class HumanoidNavAction(Action):
         obj._humanoid_controller.reset(obj._articulated_agent.base_transformation) # probelm, likely relative to human frame?
         x, y, z, _, _, _ = scenic_to_habitat_map((self.x, self.y, self.z, 0, 0, 0))
         object_trans = mn.Vector3(x, y, z)
-        sim.step_action_dict["action"] += tuple([obj.name + "_humanoid_navigate_action"])
-        sim.step_action_dict["action_args"][obj.name + "_oracle_nav_lookat_action"] = object_trans
-        sim.step_action_dict["action_args"][obj.name + "_mode"] = 1  # not sure what this means, but it is done in the tutorial
+        if not obj._only_agent:
+            sim.step_action_dict["action"] += tuple([obj.name + "_humanoid_navigate_action"])
+            sim.step_action_dict["action_args"][obj.name + "_oracle_nav_lookat_action"] = object_trans
+            sim.step_action_dict["action_args"][obj.name + "_mode"] = 1  # not sure what this means, but it is done in the tutorial
+        else:
+            sim.step_action_dict["action"] += tuple([obj.name + "humanoid_navigate_action"])
+            sim.step_action_dict["action_args"][obj.name + "oracle_nav_lookat_action"] = object_trans
+            sim.step_action_dict["action_args"][obj.name + "mode"] = 1  # not sure what this means, but it is done in the tutorial
 
 class DummyHumanNav(Action):
     def __init__(self, x, y, z):
