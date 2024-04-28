@@ -67,4 +67,4 @@ human = new Female_0 at (-1.5, -5.5, 0), with behavior HumanNav(x=-1.5, y=-3.5, 
 spot = new SpotRobot at (-1.5, -6.5, 0), with behavior MoveSpotArm()
 
 # record (distance from human to ego) as dist
-record (distance from human to spot) as dist
+# record (distance from human to spot) as dist
