@@ -149,14 +149,17 @@ class HumanoidNavAction(Action):
         self.z = z
 
     def applyTo(self, obj, sim):
+        print(f'OBJ AGENT ID: {obj._agent_id}')
+        print(f'OBJ NAME: {obj.name}')
+        print(f'OBJ type: {obj.object_type}')
+        print(f"base pos: {obj._articulated_agent.base_pos}")
+
+        obj._humanoid_controller.reset(obj._articulated_agent.base_transformation) # probelm, likely relative to human frame?
         x, y, z, _, _, _ = scenic_to_habitat_map((self.x, self.y, self.z, 0, 0, 0))
         object_trans = mn.Vector3(x, y, z)
-        # print("Target POs: ", object_trans)
-        # print("OBJ NAME: ", obj.name)
         sim.step_action_dict["action"] += tuple([obj.name + "_humanoid_navigate_action"])
         sim.step_action_dict["action_args"][obj.name + "_oracle_nav_lookat_action"] = object_trans
         sim.step_action_dict["action_args"][obj.name + "_mode"] = 1  # not sure what this means, but it is done in the tutorial
-        # sim.step_action_dict["action_args"]["mode"] = 1  # not sure what this means, but it is done in the tutorial
 
 class DummyHumanNav(Action):
     def __init__(self, x, y, z):

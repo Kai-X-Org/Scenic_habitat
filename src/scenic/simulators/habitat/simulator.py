@@ -158,9 +158,10 @@ class HabitatSimulation(Simulation):
         lab_sensor_dict = dict()
         for obj in self.scene.objects:
             if obj.is_agent:
-                print("Setting up agent: ", obj.name)
+                print("Setting up agent: ", obj.object_type)
                 self.habitat_agents.append(obj)
                 obj._agent_id = agent_count
+                print(f"obj agent id: {obj._agent_id}")
                 obj.name = 'agent_' + str(agent_count)
                 print("Object name:", obj.name)
                 agent_count += 1
@@ -191,10 +192,11 @@ class HabitatSimulation(Simulation):
         self.env = utils.init_rearrange_env(self.agent_dict, action_dict, lab_sensor_dict, timestep=self.timestep) 
         self.sim = self.env.sim
         self.env.reset() 
-        utils.add_scene_camera(self.env, agent_id=0)        
+        utils.add_scene_camera(self.env, agent_id=None)        
         utils.add_scene_camera(self.env, name='scene_camera_rgb_2', 
                                camera_pos=mn.Vector3(2.0, 0.5, 6.5),
                                orientation=mn.Vector3(mn.Vector3(0, +1.57, 0)), agent_id=None)
+
         utils.add_scene_camera(self.env, name='scene_camera_rgb_3', 
                                camera_pos=mn.Vector3(0, 0.5, 6.5),
                                orientation=mn.Vector3(mn.Vector3(0, -1.57, 0)), agent_id=None)
@@ -205,10 +207,10 @@ class HabitatSimulation(Simulation):
         self.rigid_obj_mgr = self.sim.get_rigid_object_manager()
         self.agents_mgr = self.sim.agents_mgr
         # self.ik_helper = print("IK HELPER:", self.agents_mgr[1].ik_helper)
-        print("IK HELPER:", self.agents_mgr[1].ik_helper)
-        self.ik_helper = self.agents_mgr[1].ik_helper
+        # print("IK HELPER:", self.agents_mgr[1].ik_helper)
+        # self.ik_helper = self.agents_mgr[1].ik_helper
 
-        obs = self.env.step({"action": (), "action_args": {}})
+        # obs = self.env.step({"action": (), "action_args": {}})
         
         super().setup()  # Calls createObjectInSimulator for each object
         return
@@ -230,15 +232,15 @@ class HabitatSimulation(Simulation):
         if obj.is_agent:
             art_agent = self.env.sim.agents_mgr[obj._agent_id].articulated_agent  
 
-            if obj.object_type == 'FetchRobot': # TODO temporary solution
-                obj._ik_helper = self.ik_helper
-
             obj._articulated_agent = art_agent
             if obj._articulated_agent_type == 'KinematicHumanoid':
+                print("CREATING HUMAN")
                 print('data_path:!!!', obj._motion_data_path)
                 art_agent.sim_obj.motion_type = MotionType.KINEMATIC 
                 art_agent._fixed_base = True  
                 obj._humanoid_controller = HumanoidRearrangeController(obj._motion_data_path)
+
+                # HOPEFULLY IT IS NOT THIS STUFF BELOW GIVING THE PROBLEM
                 obj._humanoid_joint_action = HumanoidJointAction(config=HumanoidJointActionConfig(),
                                                                  sim=self.sim, name=f'agent_{obj._agent_id}')
             else:
@@ -248,11 +250,6 @@ class HabitatSimulation(Simulation):
                     obj._grasp_manager = self.sim.agents_mgr[obj._agent_id].grasp_mgrs[0]
                 
                 extra_files = {"net_meta_dict.pkl": ""} # TODO temporary hardcoding
-
-
-                # for action, model_dir in obj._policy_path_dict.items():
-                    # obj._policies[action] = torch.jit.load(model_dir, _extra_files=extra_files, map_location=self.device)
-                    # not loading policies just yet
 
             x, y, z, _, _, _ = self.scenicToHabitatMap((obj.position[0], obj.position[1], obj.position[2],0, 0, 0))
             art_agent.base_pos = mn.Vector3(x, y, z) 
@@ -278,8 +275,8 @@ class HabitatSimulation(Simulation):
         for agent, actions in allActions.items():
             for action in actions:
                 try:
-                    # print("OBJECT TYPE:",agent.object_type)
-                    # print("OBJECT ACTIon:", action)
+                    print("OBJECT TYPE:",agent.object_type)
+                    print("OBJECT ACTION:", action)
                     a = action.applyTo(agent, self)
                 except Exception as e:
                     print(f"Failed to execute action, exception:\n{str(e)}")
@@ -348,54 +345,56 @@ class HabitatSimulation(Simulation):
         print("FINISH SCENE, DESTROYING...")
         self.env.reset()
         self.env.close()
-        print("closed env")
-        # self.env.reset()
-        super().destroy()
-        return
-        # folder_name = "test_run_vids/"
-
-        # vut.make_video(
-            # self.observations,
-            # "scene_camera_rgb",
-            # "color",
-            # f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_{self.scenario_number}",
-            # open_vid=False,
-        # )
-
-        # vut.make_video(
-            # self.observations,
-            # "scene_camera_rgb_2",
-            # "color",
-            # f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_2_{self.scenario_number}",
-            # open_vid=False,
-        # )
-
-        # vut.make_video(
-            # self.observations,
-            # "scene_camera_rgb_3",
-            # "color",
-            # f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_3_{self.scenario_number}",
-            # open_vid=False,
-        # )
-
-        # vut.make_video(
-            # self.observations,
-            # "agent_0_third_rgb",
-            # "color",
-            # f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_spot_{self.scenario_number}",
-            # open_vid=False,
-        # )
-
-        # vut.make_video(
-            # self.observations,
-            # "agent_1_third_rgb",
-            # "color",
-            # f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_human_1_{self.scenario_number}",
-            # open_vid=False,
-        # )
-
+        # print("closed env")
+        # # self.env.reset()
         # super().destroy()
         # return
+        make_vid = True
+        if make_vid:
+            folder_name = "test_run_vids/"
+
+            vut.make_video(
+                self.observations,
+                "scene_camera_rgb",
+                "color",
+                f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_{self.scenario_number}",
+                open_vid=False,
+            )
+
+            vut.make_video(
+                self.observations,
+                "scene_camera_rgb_2",
+                "color",
+                f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_2_{self.scenario_number}",
+                open_vid=False,
+            )
+
+            vut.make_video(
+                self.observations,
+                "scene_camera_rgb_3",
+                "color",
+                f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_3_{self.scenario_number}",
+                open_vid=False,
+            )
+
+            vut.make_video(
+                self.observations,
+                "agent_0_third_rgb",
+                "color",
+                f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_spot_{self.scenario_number}",
+                open_vid=False,
+            )
+
+            vut.make_video(
+                self.observations,
+                "agent_1_third_rgb",
+                "color",
+                f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_human_1_{self.scenario_number}",
+                open_vid=False,
+            )
+
+        super().destroy()
+        return
 
     def habitatToRobotMap(self, pose):
         """

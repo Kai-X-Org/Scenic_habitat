@@ -106,11 +106,13 @@ behavior MoveSpotArm():
     while t1 - t0 < 1.5:
         wait
         t1 = time.time()
-    print('finish scene')
     take SpotMoveArmAction()
 
 behavior HumanNav(x=0, y=0, z=0):
+    current_pos = self._articulated_agent.base_pos
+    self._articulated_agent.base_pos = current_pos
     for _ in range(100):
+        print("BASE POS:", self._articulated_agent.base_pos)
         take HumanoidNavAction(x, y, z)
     terminate
 
