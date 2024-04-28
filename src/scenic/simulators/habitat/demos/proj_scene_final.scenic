@@ -27,9 +27,10 @@ behavior SpotPickUp():
     raise_pos = [0.0, -1.0, 0.0, 1.57, 0.0, 0.0, 0.0] # shoulder raise
     do MoveToJointAngles(raise_pos)
     
-    spot_ee_pos = self.ee_pos
+    # spot_ee_pos = self.ee_pos
     box_pos = box.position
-    diff_pos = box_pos - spot_ee_pos
+    # diff_pos = box_pos - spot_ee_pos
+    diff_pos = box_pos - self.ee_pos
     diff_norm = np.linalg.norm(np.array([diff_pos[0], diff_pos[1], diff_pos[2]]))  
     print(f"pos_difference norm: {diff_norm}")
     if diff_norm < 0.25:
@@ -114,4 +115,5 @@ fetch = new FetchRobot at (-3.7, Range(-2.5, -5.0), 0), with yaw 90 deg, with be
 
 record distance from spot to fetch as bot_dist
 record (ego.ee_pos - spot.ee_pos).norm as ee_dist
+record (spot.ee_pos - box.position).norm as box_dist
 
