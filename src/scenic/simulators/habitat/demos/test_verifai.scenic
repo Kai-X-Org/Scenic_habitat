@@ -16,13 +16,14 @@ import time
 
 # param EGO_Y = VerifaiRange(-5.6, -5.4)
 
-# human = new Female_0 at (-1.5, -5.5, 0), with _only_agent True,  with behavior HumanNav(x=-1.5, y=-3.5, z=0)
+spot = new SpotRobot at (-1.5, -6.5, 0)
+human = new Female_0 at (-1.5, -5.5, 0),  with behavior HumanNav(x=-1.5, y=-3.5, z=0)
 # human = new Female_0 at (-1.5, -5.5, 0)
 # ego = new Female_0 at (-1.5, -5.5, 0), with behavior HumanNav(x=-1.5, y=-3.5, z=0)
 # ego = new Female_0 at (-1.5, Range(-5.9, -5.4), 0), with behavior HumanNav(x=-1.5, y=-3.5, z=0)
 # ego = new Female_0 at (-1.5, EGO_Y, 0), with behavior HumanNav(x=-1.5, y=-3.5, z=0)
 # ego = new SpotRobot at (-1.5, -6.5, 0), with behavior MoveSpotArm()
-spot = new SpotRobot at (-1.5, -6.5, 0)
+# spot = new SpotRobot at (-1.5, -6.5, 0)
 # human = new Female_0 at (-1.5, -5.5, 0), with behavior HumanNav(x=-1.5, y=-3.5, z=0)
 # ego = new SpotRobot at (-1.5, -6.5, 0), with behavior MoveSpotArm()
 

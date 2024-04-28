@@ -13,19 +13,6 @@ behavior NavToObj(obj):
     x, y, z = obj.position
     do RobotNav(x=x, y=y, z=z)
 
-behavior RobustHumanNav(x=0, y=0, z=0, sample_radius=1.0):
-    x, y, z, _, _, _ = scenic_to_habitat_map((x, y, z, 0, 0, 0))
-    navigable = simulation().sim.pathfinder.is_navigable(np.array([x, y, z]))
-    print(f"Point Navigable: {navigable}")
-    if navigable:
-        do HumanNav(x=x, y=y, z=z)
-    else:
-        new_point = simulation().sim.pathfinder.get_random_navigable_point_near(circle_center=np.array([x, y, z]),
-                                                                                    radius=1.0)
-        x, y, z = new_point
-        print(f'new_point: {new_point}')
-        do HumanNav(x=x, y=y, z=z)
-
 
 behavior SpotPickUp(box=None):
     # start_pos = np.array(self._articulated_agent.arm_joint_pos)
@@ -83,11 +70,13 @@ behavior ReachHandAndWalk(walk_position, reach_position):
         reach_z = reach_position[2]
         print('Reaching')
         do HumanReach(x=reach_x, y=reach_y, z=reach_z, index_hand=0)
-        do HumanReach(x=0, y=0, z=0, index_hand=0)
+        # do HumanReach(x=-0.5, y=-0.5, z=0.5, index_hand=0)
         while True:
             wait
 
     interrupt when spot._holding_object:
+        # do HumanReach(x=-0.5, y=-0.5, z=0.5, index_hand=0)
+        do HumanReach(x=0, y=0, z=0, index_hand=0)
         take HumanStopAction()
         walk_x = walk_position[0]
         walk_y = walk_position[1]
@@ -99,14 +88,6 @@ behavior ReachHandAndWalk(walk_position, reach_position):
         # TODO add turning motion
         while True:
             wait
-
-behavior WhateverNav():
-    point = simulation().sim.pathfinder.get_random_navigable_point()
-    point[1] = 0
-    print("navable point:", point)
-    for _ in range(100):
-        print('Naving')
-        take DummyHumanNav(point[0], point[1],point[2])
     
 
 human = new Female_0 at (-0.5, -4.8, 0), with yaw -90 deg,
