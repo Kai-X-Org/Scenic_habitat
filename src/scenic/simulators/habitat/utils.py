@@ -57,6 +57,7 @@ def make_hab_cfg(agent_dict, action_dict, lab_sensor_dict, timestep=1):
     task_cfg.actions = action_dict
     # task_cfg.lab_sensors = lab_sensor_dict
     env_cfg = EnvironmentConfig()
+    env_cfg.max_episode_steps = 100000
     # FIXME line below has hardcoded directory
     dataset_cfg = DatasetConfig(type="RearrangeDataset-v0", 
                                 data_path="/home/kxu/habitat-lab/data/hab3_bench_assets/episode_datasets/small_large.json.gz") 
