@@ -21,6 +21,7 @@ from habitat.articulated_agents.robots import FetchRobot
 from habitat.config.default import get_agent_config
 from habitat.config.default_structured_configs import ThirdRGBSensorConfig, HeadRGBSensorConfig, HeadPanopticSensorConfig
 from habitat.config.default_structured_configs import SimulatorConfig, HabitatSimV0Config, AgentConfig
+import habitat.config.default_structured_configs as cfg
 from habitat.config.default import get_agent_config
 import habitat
 from habitat_sim.physics import JointMotorSettings, MotionType
@@ -43,6 +44,47 @@ from scenic.core.simulators import SimulationCreationError
 from scenic.syntax.veneer import verbosePrint
 
 # TODO: Import Robot-specific library
+
+def get_sensor_dict(obj):
+    obj_type = obj.object_type
+    _sim_sensors = { # TODO temporary
+        "third_rgb": cfg.ThirdRGBSensorConfig(width=1024, height=1024),
+        "head_rgb": cfg.HeadRGBSensorConfig(),
+    }
+    return _sim_sensors
+
+
+def get_action_dict(obj):
+    obj_type = obj.object_type
+    name = obj.name
+
+    if obj_type == 'SpotRobot':
+        return {
+            name + "_oracle_magic_grasp_action": cfg.ArmActionConfig(type="MagicGraspAction"),
+            name + "_base_velocity_action": cfg.BaseVelocityActionConfig(),
+            name + "_oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction",
+                                                                          spawn_max_dist_to_obj=1.0)
+        }
+
+    elif obj_type == 'KinematicHumanoid':
+        return {
+            name + "_humanoid_joint_action": cfg.HumanoidJointActionConfig(),
+            name + "_humanoid_navigate_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction",
+                                                              motion_control="human_joints", # name + "_human_joints"???
+                                                              spawn_max_dist_to_obj=1.0),
+            name + "_humanoid_pick_obj_id_action": cfg.HumanoidPickActionConfig(type="HumanoidPickObjIdAction")
+        }
+
+    elif obj_type == 'FetchRobot':
+        return {
+            name + "_oracle_magic_grasp_action": cfg.ArmActionConfig(type="MagicGraspAction"),
+            name + "_base_velocity_action": cfg.BaseVelocityActionConfig(),
+            name + "_oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction",
+                                                                          spawn_max_dist_to_obj=1.0),
+        }
+
+    else:
+        return dict()
 
 
 class HabitatSimCreationError(SimulationCreationError):
@@ -167,13 +209,11 @@ class HabitatSimulation(Simulation):
                     obj.name = 'agent_' + str(agent_count)
                 else: 
                     obj.name = ""
-                    print("ONLY AGENT?", obj._only_agent)
-                    print(obj._action_dict)
 
                 print("Object name:", obj.name)
                 agent_count += 1
 
-                sim_sensors = obj._sim_sensors
+                sim_sensors = get_sensor_dict(obj)
 
                 x, y, z = obj.position
                 ik_arm_urdf = ""
@@ -188,7 +228,7 @@ class HabitatSimulation(Simulation):
                 else:
                     self.agent_dict[obj.name] = agent_config 
 
-                action_dict.update(obj._action_dict)
+                action_dict.update(get_action_dict(obj))
                 lab_sensor_dict.update(obj._lab_sensors)
         
         # print(f"Current Action Dict: {action_dict}")
@@ -295,7 +335,10 @@ class HabitatSimulation(Simulation):
         # necessary since env.step(...) does not return observation
         # from sensors added after env is created, for some reason
         # breakpoint()
-        self.env_observations.append(self.env.step(self.step_action_dict))
+        try:
+            self.env_observations.append(self.env.step(self.step_action_dict))
+        except Exception as e:
+            raise HabitatSimRuntimeError(f"Fail to step, an error has occured{e}", e)
         self.observations.append(self.sim.get_sensor_observations()) 
         # TODO call articulated_agent.update to update camera angles...wait, might not need it
         self.step_action_dict = {

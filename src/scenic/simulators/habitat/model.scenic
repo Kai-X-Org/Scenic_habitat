@@ -20,15 +20,15 @@ class HabitatAgent():
     _motion_data_path: None
     _articulated_agent: None
     _policy_path_dict: dict()
-    _sim_sensors: { # TODO temporary
-        "third_rgb": cfg.ThirdRGBSensorConfig(width=1024, height=1024),
-        "head_rgb": cfg.HeadRGBSensorConfig(),
-    }
+    # _sim_sensors: { # TODO temporary
+        # "third_rgb": cfg.ThirdRGBSensorConfig(width=1024, height=1024),
+        # "head_rgb": cfg.HeadRGBSensorConfig(),
+    # }
     _lab_sensors: dict()
 
-    @property
-    def _action_dict(self):
-        return dict()
+    # @property
+    # def _action_dict(self):
+        # return dict()
 
 
 
@@ -84,24 +84,24 @@ class FetchRobot(Robot):
     # _ik_arm_urdf: "/home/kxu/habitat-lab/data/robots/hab_fetch/robots/fetch_arm.urdf"
     urdf_path: data_dir + 'robots/hab_fetch/robots/hab_fetch.urdf'
     shape: CylinderShape(dimensions=(0.508,0.559,1.096))
-    @property
-    def _action_dict(self):
-        if self._only_agent:
-            return {
-                self.name + "oracle_magic_grasp_action": cfg.ArmActionConfig(type="MagicGraspAction"),
-                self.name + "base_velocity_action": cfg.BaseVelocityActionConfig(),
-                self.name + "oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
-                                                                              spawn_max_dist_to_obj=1.0),
-                # self.name + "reach_action": cfg.ArmActionConfig(type="ArmEEAction") # TODO maybe a little more in the setup
-            }
+    # @property
+    # def _action_dict(self):
+        # if self._only_agent:
+            # return {
+                # self.name + "oracle_magic_grasp_action": cfg.ArmActionConfig(type="MagicGraspAction"),
+                # self.name + "base_velocity_action": cfg.BaseVelocityActionConfig(),
+                # self.name + "oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
+                                                                              # spawn_max_dist_to_obj=1.0),
+                # # self.name + "reach_action": cfg.ArmActionConfig(type="ArmEEAction") # TODO maybe a little more in the setup
+            # }
 
-        return {
-            self.name + "_oracle_magic_grasp_action": cfg.ArmActionConfig(type="MagicGraspAction"),
-            self.name + "_base_velocity_action": cfg.BaseVelocityActionConfig(),
-            self.name + "_oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
-                                                                          spawn_max_dist_to_obj=1.0),
-            # self.name + "_reach_action": cfg.ArmActionConfig(type="ArmEEAction") # TODO maybe a little more in the setup
-        }
+        # return {
+            # self.name + "_oracle_magic_grasp_action": cfg.ArmActionConfig(type="MagicGraspAction"),
+            # self.name + "_base_velocity_action": cfg.BaseVelocityActionConfig(),
+            # self.name + "_oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
+                                                                          # spawn_max_dist_to_obj=1.0),
+            # # self.name + "_reach_action": cfg.ArmActionConfig(type="ArmEEAction") # TODO maybe a little more in the setup
+        # }
 
 class SpotRobot(Robot):
     # name: "SpotRobot"
@@ -114,12 +114,12 @@ class SpotRobot(Robot):
                        place='/home/kxu/Scenic-habitat/src/scenic/simulators/habitat/policies/place_latest_sample.torchscript')
     _policies: dict()
     shape: BoxShape(dimensions=(1.1, 0.5, 0.7))
-    _sim_sensors: { # TODO temporary
-                "third_rgb": cfg.ThirdRGBSensorConfig(width=1024, height=1024),
-                "head_rgb": cfg.HeadRGBSensorConfig()
-                # "arm_rgb": cfg.ArmRGBSensorConfig()
-                # "articulated_agent_jaw_depth": cfg.JawDepthSensorConfig()
-    }
+    # _sim_sensors: { # TODO temporary
+                # "third_rgb": cfg.ThirdRGBSensorConfig(width=1024, height=1024),
+                # "head_rgb": cfg.HeadRGBSensorConfig()
+                # # "arm_rgb": cfg.ArmRGBSensorConfig()
+                # # "articulated_agent_jaw_depth": cfg.JawDepthSensorConfig()
+    # }
 
     # @property
     # def ee_pos(self):
@@ -127,22 +127,22 @@ class SpotRobot(Robot):
         # x, y, z, _, _ , _ = habitat_to_scenic_map((ee_pos[0], ee_pos[1], ee_pos[2], 0, 0, 0))
         # return Vector(x, y, z)
 
-    @property
-    def _action_dict(self):
-        if self._only_agent:
-            return {
-                "oracle_magic_grasp_action": cfg.ArmActionConfig(type="MagicGraspAction"),
-                "base_velocity_action": cfg.BaseVelocityActionConfig(),
-                "oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
-                                                                              spawn_max_dist_to_obj=1.0)
-            }
+    # @property
+    # def _action_dict(self):
+        # if self._only_agent:
+            # return {
+                # "oracle_magic_grasp_action": cfg.ArmActionConfig(type="MagicGraspAction"),
+                # "base_velocity_action": cfg.BaseVelocityActionConfig(),
+                # "oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
+                                                                              # spawn_max_dist_to_obj=1.0)
+            # }
 
-        return {
-            self.name + "_oracle_magic_grasp_action": cfg.ArmActionConfig(type="MagicGraspAction"),
-            self.name + "_base_velocity_action": cfg.BaseVelocityActionConfig(),
-            self.name + "_oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
-                                                                          spawn_max_dist_to_obj=1.0)
-        }
+        # return {
+            # self.name + "_oracle_magic_grasp_action": cfg.ArmActionConfig(type="MagicGraspAction"),
+            # self.name + "_base_velocity_action": cfg.BaseVelocityActionConfig(),
+            # self.name + "_oracle_coord_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
+                                                                          # spawn_max_dist_to_obj=1.0)
+        # }
 
 
 
@@ -155,22 +155,22 @@ class KinematicHumanoid(HabitatAgent):
     urdf_path: None
     shape: CylinderShape(dimensions=(0.508,0.559,1.75))
 
-    @property
-    def _action_dict(self):
-        if self._only_agent:
-            return {
-                "humanoid_joint_action": cfg.HumanoidJointActionConfig(),
-                "humanoid_navigate_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
-                                                                  motion_control="human_joints", # name + "_human_joints"???
-                                                                  spawn_max_dist_to_obj=1.0),
-                "humanoid_pick_obj_id_action": cfg.HumanoidPickActionConfig(type="HumanoidPickObjIdAction")}
-        return {
-            self.name + "_humanoid_joint_action": cfg.HumanoidJointActionConfig(),
-            self.name + "_humanoid_navigate_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
-                                                              motion_control="human_joints", # name + "_human_joints"???
-                                                              spawn_max_dist_to_obj=1.0),
-            self.name + "_humanoid_pick_obj_id_action": cfg.HumanoidPickActionConfig(type="HumanoidPickObjIdAction")
-        }
+    # @property
+    # def _action_dict(self):
+        # if self._only_agent:
+            # return {
+                # "humanoid_joint_action": cfg.HumanoidJointActionConfig(),
+                # "humanoid_navigate_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
+                                                                  # motion_control="human_joints", # name + "_human_joints"???
+                                                                  # spawn_max_dist_to_obj=1.0),
+                # "humanoid_pick_obj_id_action": cfg.HumanoidPickActionConfig(type="HumanoidPickObjIdAction")}
+        # return {
+            # self.name + "_humanoid_joint_action": cfg.HumanoidJointActionConfig(),
+            # self.name + "_humanoid_navigate_action": cfg.OracleNavActionConfig(type="OracleNavCoordinateAction", 
+                                                              # motion_control="human_joints", # name + "_human_joints"???
+                                                              # spawn_max_dist_to_obj=1.0),
+            # self.name + "_humanoid_pick_obj_id_action": cfg.HumanoidPickActionConfig(type="HumanoidPickObjIdAction")
+        # }
 
     @property
     def ee_pos(self):
