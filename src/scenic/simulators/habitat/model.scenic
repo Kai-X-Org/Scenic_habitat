@@ -151,6 +151,7 @@ class KinematicHumanoid(HabitatAgent):
     object_type: 'KinematicHumanoid'
     _articulated_agent_type: 'KinematicHumanoid'
     _humanoid_controller: None
+    _in_position: False
     urdf_path: None
     shape: CylinderShape(dimensions=(0.508,0.559,1.75))
 
