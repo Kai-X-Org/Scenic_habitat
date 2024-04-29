@@ -111,7 +111,7 @@ class HabitatSimRuntimeError(SimulationCreationError):
 
     def __init__(self, msg, exc):
         self.msg = exc.args[0]
-        self.file_name, self.lineno = exc.filename, exc.lineno
+        # self.file_name, self.lineno = exc.filename, exc.lineno
         super().__init__(self.msg)
         self.with_traceback(exc.__traceback__)
 
@@ -239,6 +239,8 @@ class HabitatSimulation(Simulation):
         self.env = utils.init_rearrange_env(self.agent_dict, action_dict, lab_sensor_dict, timestep=self.timestep) 
         self.sim = self.env.sim
         self.env.reset() 
+        print(f"MAX STEPS {self.env._max_episode_steps}")
+        print(f"MAX STEPS {self.env._max_episode_seconds}")
         utils.add_scene_camera(self.env, agent_id=None)        
         utils.add_scene_camera(self.env, name='scene_camera_rgb_2', 
                                camera_pos=mn.Vector3(2.0, 0.5, 6.5),
@@ -339,6 +341,7 @@ class HabitatSimulation(Simulation):
             self.env_observations.append(self.env.step(self.step_action_dict))
         except Exception as e:
             raise HabitatSimRuntimeError(f"Fail to step, an error has occured{e}", e)
+        # self.env_observations.append(self.env.step(self.step_action_dict))
         self.observations.append(self.sim.get_sensor_observations()) 
         # TODO call articulated_agent.update to update camera angles...wait, might not need it
         self.step_action_dict = {
