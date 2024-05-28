@@ -407,7 +407,7 @@ class HabitatSimulation(Simulation):
         # # self.env.reset()
         # super().destroy()
         # return
-        make_vid = True
+        make_vid = False
         if make_vid:
             folder_name = "test_run_vids/"
 
