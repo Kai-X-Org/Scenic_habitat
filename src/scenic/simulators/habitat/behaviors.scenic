@@ -101,7 +101,7 @@ behavior GoAndReach(reach_x=0, reach_y=0, reach_z=0, move_x=0, move_y=0, move_z=
 
 behavior RobotNav(x=0, y=0, z=0):
     for _ in range(100):
-        print(f'{self.object_type} ROBOT NAVING')
+        # print(f'{self.object_type} ROBOT NAVING')
         take OracleCoordAction(x, y, z)
     # terminate
 

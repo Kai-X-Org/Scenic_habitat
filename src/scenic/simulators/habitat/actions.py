@@ -166,7 +166,7 @@ class HumanoidNavAction(Action):
         self.z = z
 
     def applyTo(self, obj, sim):
-        print(f"HUMANOID NAVING")
+        # print(f"HUMANOID NAVING")
 
         obj._humanoid_controller.reset(obj._articulated_agent.base_transformation) # probelm, likely relative to human frame?
         x, y, z, _, _, _ = scenic_to_habitat_map((self.x, self.y, self.z, 0, 0, 0))
