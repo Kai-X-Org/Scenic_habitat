@@ -207,7 +207,7 @@ class OracleCoordAction(Action):
         x, y, z, _, _, _ = scenic_to_habitat_map((self.x, self.y, self.z, 0, 0, 0))
         # object_trans = mn.Vector3(x, y, z)
         object_trans = np.array([x, y, z])
-        print(f"OBJ NAME: {obj.object_type}")
+        # print(f"OBJ NAME: {obj.object_type}")
         sim.step_action_dict["action"] += tuple([obj.name + "_oracle_coord_action"])
         sim.step_action_dict["action_args"][obj.name + "_oracle_nav_lookat_action"] = object_trans
 
@@ -256,12 +256,12 @@ class FetchReachAction(Action):
 
     def applyTo(self, obj, sim):
         x, y, z, _, _, _ = scenic_to_habitat_map((self.x, self.y, self.z, 0, 0, 0))
-        print(f"TARGET EE POINT WORLD FRAME: {x, y, z}")
+        # print(f"TARGET EE POINT WORLD FRAME: {x, y, z}")
         transformation = obj._articulated_agent.sim_obj.transformation
         transformation_inv = transformation.inverted()
         ee_pos = transformation_inv.transform_point(mn.Vector3(x, y, z))
         # ee_pos = transformation.transform_point(mn.Vector3(x, y, z))
-        print(f"TRANSFORMED EE POINT BASE FRAME: {ee_pos}")
+        # print(f"TRANSFORMED EE POINT BASE FRAME: {ee_pos}")
         # TODO can reference the steps done for the HumanReachAction
         # transform = obj._articulated_agent.ee_transform()
         # ee_pos = mn.Vector3(x, y, z)
