@@ -1,3 +1,5 @@
+# Acknowledgements: A siginificant part of the following code is taken/modified from
+# The Habitat 3.0 tutorial Jupoyter notebook by Xavi Puig at Meta
 import habitat_sim
 import pdb
 import magnum as mn
@@ -21,6 +23,7 @@ from habitat.config.default_structured_configs import ArmActionConfig, BaseVeloc
 from habitat.core.env import Env
 from omegaconf import OmegaConf
 import os
+
 
 def make_sim_cfg(agent_dict):
     # Start the scene config
@@ -53,9 +56,7 @@ def make_hab_cfg(agent_dict, action_dict, lab_sensor_dict, timestep=1):
     """
     sim_cfg = make_sim_cfg(agent_dict)
     task_cfg = TaskConfig(type="RearrangeEmptyTask-v0")
-    # task_cfg = TaskConfig()
     task_cfg.actions = action_dict
-    # task_cfg.lab_sensors = lab_sensor_dict
     env_cfg = EnvironmentConfig()
     env_cfg.max_episode_steps = int(1e20)
     env_cfg.max_episode_seconds = int(1e20)
@@ -114,7 +115,6 @@ def init_rearrange_env(agent_dict, action_dict, lab_sensor_dict, timestep=1):
     """
     hab_cfg = make_hab_cfg(agent_dict, action_dict, lab_sensor_dict, timestep=timestep)
     res_cfg = OmegaConf.create(hab_cfg)
-    # breakpoint()
     return Env(res_cfg)
 
 def add_scene_camera(env, name='scene_camera_rgb', camera_pos: mn.Vector3 = mn.Vector3(0, 4, 7),
@@ -170,8 +170,6 @@ def habitat_to_scenic_map(pose, obj=None):
     Args:
     pose: (x, y, z, roll, pitch, yaw)
     """
-    # assert len(pose) == 4
-    # return self.RobotToScenicMap(self.HabitatToRobotMap(pose), obj=obj)
     g = np.array([[0, 1, 0, 0], 
                   [0, 0, 1, 0], 
                   [1, 0, 0, 0], 
