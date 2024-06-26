@@ -38,12 +38,10 @@ import scenic.simulators.habitat.utils as utils
 
 if errors.verbosityLevel == 0:  # suppress pygame advertisement at zero verbosity
     os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
-# import pygame
 
 from scenic.core.simulators import SimulationCreationError
 from scenic.syntax.veneer import verbosePrint
 
-# TODO: Import Robot-specific library
 
 def get_sensor_dict(obj):
     obj_type = obj.object_type
@@ -158,7 +156,6 @@ class HabitatSimulator(Simulator):
         )
 
     def destroy(self):
-        # TODO add code to be run when Scenic runs terminates, if needed
         super().destroy()
 
 
@@ -255,11 +252,6 @@ class HabitatSimulation(Simulation):
         self.stage_attr_mgr = self.sim.get_stage_template_manager()
         self.rigid_obj_mgr = self.sim.get_rigid_object_manager()
         self.agents_mgr = self.sim.agents_mgr
-        # self.ik_helper = print("IK HELPER:", self.agents_mgr[1].ik_helper)
-        # print("IK HELPER:", self.agents_mgr[1].ik_helper)
-        # self.ik_helper = self.agents_mgr[1].ik_helper
-
-        # obs = self.env.step({"action": (), "action_args": {}})
         
         super().setup()  # Calls createObjectInSimulator for each object
         return
@@ -324,8 +316,6 @@ class HabitatSimulation(Simulation):
         for agent, actions in allActions.items():
             for action in actions:
                 try:
-                    # print("OBJECT TYPE:",agent.object_type)
-                    # print("OBJECT ACTION:", action)
                     a = action.applyTo(agent, self)
                 except Exception as e:
                     print(f"Failed to execute action, exception:\n{str(e)}")
@@ -349,23 +339,15 @@ class HabitatSimulation(Simulation):
             "action_args": dict()
         } # clearing step_action_dict
 
-        # print(self.env_observations[-1].keys())
-        # print(self.env_observations[-1])
 
 
     def getProperties(self, obj, properties):
-        # print(self.sim.articulated_agent.base_pos)
         if obj.is_agent:
             if obj.object_type == 'SpotRobot':
                 ee_pos = obj._articulated_agent.ee_transform().translation
                 x, y, z, _, _, _ = self.habitatToScenicMap((ee_pos[0], ee_pos[1], ee_pos[2], 0, 0, 0))
-                # print(f"EE pos{x, y, z}")
                 obj.ee_pos = Vector(x, y, z)
 
-            # if obj.object_type == 'KinematicHumanoid':
-                # offset =  obj._articulated_agent.base_transformation.transform_vector(mn.Vector3(0, 0.3, 0))
-                # hand_pos = obj._articulated_agent.ee_transform(0).translation + offset
-                # obj.ee_pos = hand_pos
 
             x, y, z = obj._articulated_agent.base_pos
             x, y, z, _, _, _ = self.habitatToScenicMap((x, y, z, 0, 0, 0))
@@ -385,7 +367,6 @@ class HabitatSimulation(Simulation):
             x, y, z = obj._managed_rigid_object.translation
             rotation = obj._managed_rigid_object.rotation 
             x, y, z, _, _, _ = self.habitatToScenicMap((x, y, z, 0, 0, 0))
-            # print(f"Obj pos: {x, y, z}")
             d = dict(
                     position=Vector(x, y, z),
                     yaw=0,
@@ -403,10 +384,6 @@ class HabitatSimulation(Simulation):
         print("FINISH SCENE, DESTROYING...")
         self.env.reset()
         self.env.close()
-        # print("closed env")
-        # # self.env.reset()
-        # super().destroy()
-        # return
         make_vid = False
         if make_vid:
             folder_name = "test_run_vids/"
@@ -435,13 +412,6 @@ class HabitatSimulation(Simulation):
                 open_vid=False,
             )
 
-            # vut.make_video(
-                # self.observations,
-                # "agent_0_third_rgb",
-                # "color",
-                # f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_spot_{self.scenario_number}",
-                # open_vid=False,
-            # )
 
             vut.make_video(
                 self.observations,
@@ -461,40 +431,6 @@ class HabitatSimulation(Simulation):
 
         super().destroy()
         return
-
-    def habitatToRobotMap(self, pose):
-        """
-        Converts from the habitat map frame to the Robot map frame
-        Args:
-        pose = Tuple(x, y, z, yaw)
-        """
-        pass
-
-    def robotToHabitatMap(self, pose):
-        """
-        Converts from the Robot map frame to the habitat map frame
-        Args:
-        pose: (x, y, z, yaw)
-        """
-        pass
-
-    def scenicToRobotMap(self, pose, obj=None):
-        """
-        Converts from the Scenic map coordinate to the Robot map frame
-        Args:
-        pose: (x, y, z, yaw)
-        """
-        pass
-
-
-    def robotToScenicMap(self, pose, obj=None):
-        """
-        Converts from the Robot 'map' frame coordinate to the Scenic map coordinate
-        Args:
-        pose: (x, y, z, yaw)
-        """
-        assert len(pose) == 4
-        pass
 
     def scenicToHabitatMap(self, pose, obj=None):
         """
