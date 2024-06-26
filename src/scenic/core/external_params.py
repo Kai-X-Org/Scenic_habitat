@@ -262,7 +262,8 @@ class VerifaiSampler(ExternalSampler):
         return self.sampler.getSample()
 
     def valueFor(self, param):
-        return self.cachedSample[param.index]
+        # return self.cachedSample[param.index]
+        return getattr(self.cachedSample, f'param{param.index}')
 
 
 class ExternalParameter(Distribution):
