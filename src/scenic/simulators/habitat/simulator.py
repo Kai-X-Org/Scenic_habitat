@@ -38,12 +38,10 @@ import scenic.simulators.habitat.utils as utils
 
 if errors.verbosityLevel == 0:  # suppress pygame advertisement at zero verbosity
     os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
-# import pygame
 
 from scenic.core.simulators import SimulationCreationError
 from scenic.syntax.veneer import verbosePrint
 
-# TODO: Import Robot-specific library
 
 def get_sensor_dict(obj):
     obj_type = obj.object_type
@@ -136,8 +134,6 @@ class HabitatSimulator(Simulator):
         self.record = record
         self.scenario_number = 0
 
-        # TODO Decide the form of your client
-        self.client = dict()
 
     def createSimulation(self, scene, timestep, **kwargs):
         if timestep is not None and timestep != self.timestep:
@@ -158,7 +154,6 @@ class HabitatSimulator(Simulator):
         )
 
     def destroy(self):
-        # TODO add code to be run when Scenic runs terminates, if needed
         super().destroy()
 
 
@@ -255,12 +250,6 @@ class HabitatSimulation(Simulation):
         self.stage_attr_mgr = self.sim.get_stage_template_manager()
         self.rigid_obj_mgr = self.sim.get_rigid_object_manager()
         self.agents_mgr = self.sim.agents_mgr
-        # self.ik_helper = print("IK HELPER:", self.agents_mgr[1].ik_helper)
-        # print("IK HELPER:", self.agents_mgr[1].ik_helper)
-        # self.ik_helper = self.agents_mgr[1].ik_helper
-
-        # obs = self.env.step({"action": (), "action_args": {}})
-        
         super().setup()  # Calls createObjectInSimulator for each object
         return
 
@@ -343,7 +332,7 @@ class HabitatSimulation(Simulation):
             raise HabitatSimRuntimeError(f"Fail to step, an error has occured{e}", e)
         # self.env_observations.append(self.env.step(self.step_action_dict))
         self.observations.append(self.sim.get_sensor_observations()) 
-        # TODO call articulated_agent.update to update camera angles...wait, might not need it
+
         self.step_action_dict = {
             "action": tuple(),
             "action_args": dict()
