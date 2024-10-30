@@ -69,7 +69,7 @@ class RotDeltaAction(Action):
 
 class HumanGoEnvAction(Action):
     """
-    This works, yay!
+    Tells the human where to go relative to its current coordinate
     """
     def __init__(self, x=0, y=0, z=0):
         self.x = x
@@ -91,6 +91,9 @@ class HumanGoEnvAction(Action):
         sim.step_action_dict["action_args"][obj.name + "_human_joints_trans"] = human_joints_trans
 
 class HumanStopAction(Action):
+    """
+    Tells the humanoid to stop moving
+    """
     def applyTo(self, obj, sim):
         self.art_agent = obj._articulated_agent
 
@@ -106,9 +109,11 @@ class HumanStopAction(Action):
 
 class HumanReachAction(Action):
     """
-    Still in the works
-    target_pos is the relative position
-    seems like z is actually up
+    Lets the humanoid move its hands
+
+    Args:
+    x, y, z : float The position to move the hand
+    index_hand : int Which hand to use. 0 is left, 1 is right
     """
     def __init__(self, x=0, y=0, z=0, index_hand=0):
         self.x = x
@@ -132,6 +137,13 @@ class HumanReachAction(Action):
 
 
 class HumanReachAbsAction(Action):
+    """
+    Lets the humanoid move its hands
+
+    Args:
+    x, y, z : float The position to move the hand
+    index_hand : int Which hand to use. 0 is left, 1 is right
+    """
     def __init__(self, x=0, y=0, z=0, index_hand=0):
         self.x = x
         self.y = y
@@ -152,7 +164,12 @@ class HumanReachAbsAction(Action):
 
 class HumanoidNavAction(Action):
     """
-    Carry out navigating to an object for one timestep
+    Lets a KinematicHumanoid to move to the desired position using the oracle
+    path planner. The human's animation will also play.
+
+    Args:
+    x, y, z : float Position to move to
+    
     """
     def __init__(self, x=0, y=0, z=0):
         """
@@ -191,6 +208,17 @@ class DummyHumanNav(Action):
         
 
 class OracleCoordAction(Action):
+    """
+    Given a coordinate, uses the habitat's oracle path planner
+    to move the robot to the specified position.
+    Should be executed in a while loop
+    Works for all agents.
+    Note that this just moves the agents' base, the motion animation will not play
+
+    Args:
+
+    x, y, z: float The position to move to
+    """
 
     def __init__(self, x=0, y=0, z=0):
         self.x = x
@@ -204,6 +232,8 @@ class OracleCoordAction(Action):
         sim.step_action_dict["action_args"][obj.name + "_oracle_nav_lookat_action"] = object_trans
 
 class OracleMagicGraspAction(Action):
+    """
+    """
     def __init__(self, grip_action=0):
         self.grip_action = grip_action
 
@@ -213,14 +243,27 @@ class OracleMagicGraspAction(Action):
 
 
 class OpenGripperAction(Action):
+    """
+    Opens the gripper
+    """
     def applyTo(self, obj, sim):
         obj._articulated_agent.open_gripper()
 
 class CloseGripperAction(Action):
+    """
+    Closes the gripper
+    """
     def applyTo(self, obj, sim):
         obj._articulated_agent.close_gripper()
 
 class SnapToObjectAction(Action):
+    """
+    Snaps a traget object to the robot's gripper (if the robot has one),
+    regardless of where the object is
+
+    Args:
+    target_obj : Object The Scenic object we want the robot to grab
+    """
     def __init__(self, target_obj):
         self.target_obj_id = target_obj._object_id
 
@@ -230,10 +273,15 @@ class SnapToObjectAction(Action):
 
 
 class SpotMoveArmAction(Action):
+    """
+    Sets the Spot robot's arm joint angles to the specified angles
+
+    Args:
+    arm_ctrl_angles : list[float] The joint angles to be set,
+    from arm base to gripper wrist, in this order
+    """
     def __init__(self, arm_ctrl_angles=[0.0, -3.14, 0.0, 3.0, 0.0, 0.0, 0.0]):
         self.arm_ctrl_angles = arm_ctrl_angles
 
     def applyTo(self, obj, sim):
-
-        # arm_ctrl = [0.0, 0.0, 0.0, 3.0, 0.0, 0.0, 0.0]
         obj._articulated_agent.arm_joint_pos = self.arm_ctrl_angles
