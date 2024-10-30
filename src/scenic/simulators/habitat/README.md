@@ -9,7 +9,5 @@ This folder contains the Scenic interface to Meta Habitat 3.0 simulator.
 ## Setup Instructions
     - If you don't have Scenic installed, please follow the instructions [here](https://docs.scenic-lang.org/en/latest/quickstart.html) ; note tht while the official Scenic docs uses `pyvenv` for its virtual environments, using `conda/mamba` environment also works and is recommended here for Habitat.
     - Install Habitat according to the instructions [here](https://github.com/facebookresearch/habitat-lab)
-    - TODO add notes about omega conf
     - `pip` will likely give error messages about incompatible version requirments for `numpy`, `antlr`, and `omega-conf` between Scenic and Habitat. For these packages, use versions that Habitat requires.
     - Run `pip uninstall pygame` to uninstall `pygame`. Run this after installing VerifAI, too.
-    - TODO, add notes about downloading all the datasets!!!
