@@ -45,7 +45,7 @@ from scenic.syntax.veneer import verbosePrint
 
 def get_sensor_dict(obj):
     obj_type = obj.object_type
-    _sim_sensors = { # TODO temporary
+    _sim_sensors = {
         "third_rgb": cfg.ThirdRGBSensorConfig(width=1024, height=1024),
         "head_rgb": cfg.HeadRGBSensorConfig(),
     }
@@ -226,8 +226,6 @@ class HabitatSimulation(Simulation):
                 action_dict.update(get_action_dict(obj))
                 lab_sensor_dict.update(obj._lab_sensors)
         
-        # print(f"Current Action Dict: {action_dict}")
-        
         # FIXME line below may cause problem. Defaulting dicts to dict(), but that might not be the default
         # of all the Configs???
         self.action_dict = action_dict
@@ -275,8 +273,6 @@ class HabitatSimulation(Simulation):
                 art_agent.sim_obj.motion_type = MotionType.KINEMATIC 
                 art_agent._fixed_base = True  
                 obj._humanoid_controller = HumanoidRearrangeController(obj._motion_data_path)
-
-                # HOPEFULLY IT IS NOT THIS STUFF BELOW GIVING THE PROBLEM
                 obj._humanoid_joint_action = HumanoidJointAction(config=HumanoidJointActionConfig(),
                                                                  sim=self.sim, name=f'agent_{obj._agent_id}')
             else:
@@ -311,8 +307,6 @@ class HabitatSimulation(Simulation):
         for agent, actions in allActions.items():
             for action in actions:
                 try:
-                    # print("OBJECT TYPE:",agent.object_type)
-                    # print("OBJECT ACTION:", action)
                     a = action.applyTo(agent, self)
                 except Exception as e:
                     print(f"Failed to execute action, exception:\n{str(e)}")
@@ -336,17 +330,12 @@ class HabitatSimulation(Simulation):
             "action_args": dict()
         } # clearing step_action_dict
 
-        # print(self.env_observations[-1].keys())
-        # print(self.env_observations[-1])
-
-
     def getProperties(self, obj, properties):
         # print(self.sim.articulated_agent.base_pos)
         if obj.is_agent:
             if obj.object_type == 'SpotRobot':
                 ee_pos = obj._articulated_agent.ee_transform().translation
                 x, y, z, _, _, _ = self.habitatToScenicMap((ee_pos[0], ee_pos[1], ee_pos[2], 0, 0, 0))
-                # print(f"EE pos{x, y, z}")
                 obj.ee_pos = Vector(x, y, z)
 
             # if obj.object_type == 'KinematicHumanoid':
@@ -372,7 +361,6 @@ class HabitatSimulation(Simulation):
             x, y, z = obj._managed_rigid_object.translation
             rotation = obj._managed_rigid_object.rotation 
             x, y, z, _, _, _ = self.habitatToScenicMap((x, y, z, 0, 0, 0))
-            # print(f"Obj pos: {x, y, z}")
             d = dict(
                     position=Vector(x, y, z),
                     yaw=0,
@@ -390,14 +378,9 @@ class HabitatSimulation(Simulation):
         print("FINISH SCENE, DESTROYING...")
         self.env.reset()
         self.env.close()
-        # print("closed env")
-        # # self.env.reset()
-        # super().destroy()
-        # return
         make_vid = False
         if make_vid:
             folder_name = "test_run_vids/"
-
             vut.make_video(
                 self.observations,
                 "scene_camera_rgb",
@@ -406,82 +389,9 @@ class HabitatSimulation(Simulation):
                 open_vid=False,
             )
 
-            vut.make_video(
-                self.observations,
-                "scene_camera_rgb_2",
-                "color",
-                f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_2_{self.scenario_number}",
-                open_vid=False,
-            )
-
-            vut.make_video(
-                self.observations,
-                "scene_camera_rgb_3",
-                "color",
-                f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}scene_overview_3_{self.scenario_number}",
-                open_vid=False,
-            )
-
-            # vut.make_video(
-                # self.observations,
-                # "agent_0_third_rgb",
-                # "color",
-                # f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_spot_{self.scenario_number}",
-                # open_vid=False,
-            # )
-
-            vut.make_video(
-                self.observations,
-                "agent_1_third_rgb",
-                "color",
-                f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_spot_1_{self.scenario_number}",
-                open_vid=False,
-            )
-
-            vut.make_video(
-                self.observations,
-                "agent_2_third_rgb",
-                "color",
-                f"/home/kxu/Scenic_habitat/src/scenic/simulators/habitat/{folder_name}test_fetch_1_{self.scenario_number}",
-                open_vid=False,
-            )
 
         super().destroy()
         return
-
-    def habitatToRobotMap(self, pose):
-        """
-        Converts from the habitat map frame to the Robot map frame
-        Args:
-        pose = Tuple(x, y, z, yaw)
-        """
-        pass
-
-    def robotToHabitatMap(self, pose):
-        """
-        Converts from the Robot map frame to the habitat map frame
-        Args:
-        pose: (x, y, z, yaw)
-        """
-        pass
-
-    def scenicToRobotMap(self, pose, obj=None):
-        """
-        Converts from the Scenic map coordinate to the Robot map frame
-        Args:
-        pose: (x, y, z, yaw)
-        """
-        pass
-
-
-    def robotToScenicMap(self, pose, obj=None):
-        """
-        Converts from the Robot 'map' frame coordinate to the Scenic map coordinate
-        Args:
-        pose: (x, y, z, yaw)
-        """
-        assert len(pose) == 4
-        pass
 
     def scenicToHabitatMap(self, pose, obj=None):
         """
