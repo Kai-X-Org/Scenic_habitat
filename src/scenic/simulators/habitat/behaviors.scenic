@@ -28,13 +28,11 @@ behavior GoToLookAt(obj):
         agent_displ = (cur_pos - prev_pos).length()
         agent_rot = np.abs(cur_rot - prev_rot)
 
-    # wait
     for _ in range(20):
         wait
 
 
 behavior GoRel(x=0, y=0, z=0, rot=0, num_steps=100):
-    # agent = simulation().sim.agents_mgr[self._agent_id].articulated_agent
     dx = x/num_steps
     dy = y/num_steps
     dz = z/num_steps
@@ -42,8 +40,6 @@ behavior GoRel(x=0, y=0, z=0, rot=0, num_steps=100):
     for _ in range(num_steps):
         take GoRelDeltaAction(dx, dy, dz)
 
-# behavior Rotate(rot_angle, num_steps=20):
-    # delta_angle = self.yaw - rot_angle
 
 behavior TurnAround(num_steps=30):
     if self._articulated_agent.base_rot > 3.14:
@@ -60,14 +56,10 @@ behavior MoveAndBack(x=0, y=0, z=0, num_steps=100):
         do GoRel(x=x, y=y, z=z, num_steps=100)
     interrupt when (self.distanceToClosest(KinematicHumanoid) < 1.5):
         do GoRel(x=-x/2, y=-y/2, z=-z/2, num_steps=100)
-        # terminate
 
 behavior HumanGo(x=0, y=0, z=0, num_steps=100):
 
     step_count = 0
-    # pos_delta = Vector(x, y, z)
-    
-    # x, y, z = self.position + pos_delta
     start_position = self.position
     while step_count < num_steps and \
             not np.isclose((self.position - start_position).norm(), Vector(x, y, z).norm(), atol=0.1):
