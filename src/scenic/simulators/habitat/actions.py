@@ -23,8 +23,27 @@ from scenic.simulators.habitat.utils import scenic_to_habitat_map
 
 
 class GoRelDeltaAction(Action):
+    """
+    Move the robot relative to its current position
+    Args:
+    dx, dy, dz : float The position to move to relative to current position
 
-    def __init__(self, dx=0, dy=0, dz=0, rot=0):
+    Note: each invocation of this action only executes for 1 timestep.
+    Should put in while loop to actually have the robot move
+
+    Example:
+    To move the robot 1 meter in x relative to its current position:
+
+    distance = 1
+    moved_dist = 0
+    while moved_dist < distance:
+        take GoRelDeltaAction(dx=0.1)
+        moved_dist += 0.1
+
+    dx, dy, dz thus controls, in a sense, the velocity
+    """
+
+    def __init__(self, dx=0, dy=0, dz=0):
         self.pos_delta = mn.Vector3(dx, dy, dz)
     
     def applyTo(self, obj, sim):
@@ -36,32 +55,17 @@ class GoRelDeltaAction(Action):
         return
 
 class RotDeltaAction(Action):
+    """
+    Rotates (yaw)  the robot about its current position.
+    Args:
+    rot_delta : float How much to rotate per timestep
+    """
     def __init__(self, rot_delta):
         self.rot_delta = rot_delta
 
     def applyTo(self, obj, sim):
         obj._articulated_agent.base_rot += self.rot_delta
 
-class HumanGoAction(Action):
-    def __init__(self, x=0, y=0, z=0):
-        self.x = x
-        self.y = y
-        self.z = z
-
-    def applyTo(self, obj, sim):
-        self.art_agent = obj._articulated_agent
-        x, y, z, _, _, _ = sim.scenicToHabitatMap((self.x, self.y, self.z,0,0,0)) # TODO some sketchy coordinate transfomr here
-
-        rel_pose = mn.Vector3(x, y, z)
-
-        obj._humanoid_controller.reset(obj._articulated_agent.base_transformation) # probelm, likely relative to human frame?
-        obj._humanoid_controller.calculate_walk_pose(rel_pose)
-
-        human_joints_trans = obj._humanoid_controller.get_pose()
-        
-        arg_name = obj._humanoid_joint_action._action_arg_prefix + "human_joints_trans"
-        arg_dict = {arg_name: human_joints_trans}
-        obj._humanoid_joint_action.step(**arg_dict)
 
 class HumanGoEnvAction(Action):
     """
