@@ -234,8 +234,6 @@ class HabitatSimulation(Simulation):
         self.env = utils.init_rearrange_env(self.agent_dict, action_dict, lab_sensor_dict, timestep=self.timestep) 
         self.sim = self.env.sim
         self.env.reset() 
-        print(f"MAX STEPS {self.env._max_episode_steps}")
-        print(f"MAX STEPS {self.env._max_episode_seconds}")
         utils.add_scene_camera(self.env, agent_id=None)        
         utils.add_scene_camera(self.env, name='scene_camera_rgb_2', 
                                camera_pos=mn.Vector3(2.0, 0.5, 6.5),
@@ -508,8 +506,6 @@ class HabitatSimulation(Simulation):
         Args:
         pose: (x, y, z, roll, pitch, yaw)
         """
-        # assert len(pose) == 4
-        # return self.RobotToScenicMap(self.HabitatToRobotMap(pose), obj=obj)
         g = np.array([[0, 1, 0, 0], 
                       [0, 0, 1, 0], 
                       [1, 0, 0, 0], 
