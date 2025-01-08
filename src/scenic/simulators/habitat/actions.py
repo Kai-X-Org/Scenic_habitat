@@ -193,20 +193,6 @@ class HumanoidNavAction(Action):
             sim.step_action_dict["action_args"][obj.name + "oracle_nav_lookat_action"] = object_trans
             sim.step_action_dict["action_args"][obj.name + "mode"] = 1  # not sure what this means, but it is done in the tutorial
 
-class DummyHumanNav(Action):
-    def __init__(self, x, y, z):
-        self.x = x
-        self.y = y
-        self.z = z
-
-    def applyTo(self, obj, sim):
-        object_trans = mn.Vector3(self.x, self.y, self.z)
-        sim.step_action_dict["action"] += tuple([obj.name + "_humanoid_navigate_action"])
-        sim.step_action_dict["action_args"][obj.name + "_oracle_nav_lookat_action"] = object_trans
-        sim.step_action_dict["action_args"][obj.name + "_mode"] = 1  # not sure what this means, but it is done in the tutorial
-        
-        
-
 class OracleCoordAction(Action):
     """
     Given a coordinate, uses the habitat's oracle path planner

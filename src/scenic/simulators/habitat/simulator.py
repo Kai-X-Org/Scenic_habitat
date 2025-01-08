@@ -226,8 +226,6 @@ class HabitatSimulation(Simulation):
                 action_dict.update(get_action_dict(obj))
                 lab_sensor_dict.update(obj._lab_sensors)
         
-        # FIXME line below may cause problem. Defaulting dicts to dict(), but that might not be the default
-        # of all the Configs???
         self.action_dict = action_dict
         self.env = utils.init_rearrange_env(self.agent_dict, action_dict, lab_sensor_dict, timestep=self.timestep) 
         self.sim = self.env.sim
@@ -337,11 +335,6 @@ class HabitatSimulation(Simulation):
                 ee_pos = obj._articulated_agent.ee_transform().translation
                 x, y, z, _, _, _ = self.habitatToScenicMap((ee_pos[0], ee_pos[1], ee_pos[2], 0, 0, 0))
                 obj.ee_pos = Vector(x, y, z)
-
-            # if obj.object_type == 'KinematicHumanoid':
-                # offset =  obj._articulated_agent.base_transformation.transform_vector(mn.Vector3(0, 0.3, 0))
-                # hand_pos = obj._articulated_agent.ee_transform(0).translation + offset
-                # obj.ee_pos = hand_pos
 
             x, y, z = obj._articulated_agent.base_pos
             x, y, z, _, _, _ = self.habitatToScenicMap((x, y, z, 0, 0, 0))
