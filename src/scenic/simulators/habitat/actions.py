@@ -219,6 +219,8 @@ class OracleCoordAction(Action):
 
 class OracleMagicGraspAction(Action):
     """
+    Performs the Habitat oracle magic grasp action,
+    with action specified by grip_action
     """
     def __init__(self, grip_action=0):
         self.grip_action = grip_action
